@@ -84,7 +84,7 @@ disable-model-invocation: false
 ### 1 结构与格式
 括号配对/嵌套；`#` 吞代码；引号闭合。`.yml` 须 **UTF-8 BOM**（无 BOM 整文件被忽略/乱码）；`.txt` 建议 BOM。**BOM 双镜像（必查）**：`main_menu\localization\<lang>\` 与 `in_game\localization\<lang>\` 键必须完全一致（加载 main_menu 侧为主），脚本对比键数。重复键/空值；yml 键须在语言头（`l_simp_chinese:`/`l_english:`）下缩进（顶格键毁文件）。
 
-### 2 事件结构（权威格式见 D:/dsh-plugins/kb/eu5-modding/fields/common-events.md）
+### 2 事件结构（权威格式见 <KB>\fields\common-events.md）
 事件 ID 必须 `namespace.integer`（0<integer<10000）且 mod 内唯一。type 五选一；category 只定图标；outcome = positive/neutral/negative（三值，默认 neutral）。title/desc/选项 name（`<id>.a/.b`，不写裸中文）/custom_tooltip（`.tt` 键）引用的 loc 键均须存在（镜像两侧）。复杂效果包 hidden_effect；调试事件 orphan=yes+is_human=yes；ai_chance 用 base/add。
 
 ### 3 作用域与具名 scope
@@ -101,7 +101,7 @@ disable-model-invocation: false
 引用类 ID 目录与核对规则见 `<KB>\tools\audit-ids.md`。原则：查原版 `game\in_game\common\<类目>\` 与 mod 自身，存在才通过，查不到标 `[存疑]`；效果/触发器词条明显笔误→错误，疑似→`[存疑]`+候选，不断言；`$参数$` 未传刷 missing 报错。
 
 ### 6 本地化（与 EU4 差异最大）
-事件键 `<namespace>.<id>.title/.desc/.a/.a.tt`。**名称即 loc 键**（漏一个显示 raw key）——各类前缀规则（STATIC_MODIFIER_NAME_/AUTO_MODIFIER_NAME_/cb_/relation/war_name/块名/ARTIST_TYPE_/country_description_category_/PERFORM_ 消息键等）见 `<KB>\tools\loc-keys.md`。**不需要 loc**（勿误报）：modifier 类型名（引擎处理）、rebel demand 名。占位符配对 `[Root.GetName]`/`$KEY$`。跨 mod 引用原版 loc 键→标"外部依赖"。**新建法律/政策必须查撞名**——显示名与键名**都**要查（对照本体 `main_menu\localization\simp_chinese\`），只查显示名不查键名会覆盖本体本地化（见 `law-design.md` 第九节）。
+事件键 `<namespace>.<id>.title/.desc/.a/.a.tt`。**名称即 loc 键**（漏一个显示 raw key）——各类前缀规则（STATIC_MODIFIER_NAME_/AUTO_MODIFIER_NAME_/cb_/relation/war_name/块名/ARTIST_TYPE_/country_description_category_/PERFORM_ 消息键等）见 `<KB>\tools\loc-keys.md`。**不需要 loc**（勿误报）：modifier 类型名（引擎处理）、rebel demand 名。占位符配对 `[Root.GetName]`/`$KEY$`。跨 mod 引用原版 loc 键→标"外部依赖"。**新建法律/政策必须查撞名**——显示名与键名**都**要查（对照本体 `main_menu\localization\simp_chinese\`），只查显示名不查键名会覆盖本体本地化（见 <KB>\guides\law-design.md 第九节）。
 
 ### 7 文件合并体系
 - INJECT：**顺序敏感块（country_name_construction、levies 等"第一个匹配生效"的块）不能用**（追加排 fallback 后轮不到）——整体覆盖文件、新条目插 fallback 前（levies 特化单位置顶）。

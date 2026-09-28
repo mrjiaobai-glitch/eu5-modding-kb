@@ -180,7 +180,7 @@ trust_<key>      / trust_giving_<key>    / trust_receiving_<key>     / trust_dec
 | 保护 | `overlord_protects_external`（默认 yes）/ `overlord_protects_other_subjects`（默认 no）/ `counts_as_external` |
 | 解链 | `subject_can_cancel` / `overlord_can_cancel`、`annulled_by_peace_treaty`（默认 yes）、`annullment_favours_required`、`can_be_force_broken_in_peace_treaty`、**`will_join_independence_wars`** |
 | **长链** | **`on_overlord_becomes_a_subject = cancel_subjects / transfer_subjects / nothing`**（默认 nothing → 允许"附属国-宗主国"长链，与词条原文一致） |
-| 外交占用 | **`diplomatic_capacity_cost_scape = <float>`**（乘在外交容量公式上）、`has_limited_diplomacy`、`can_change_rank`、`can_change_heir_selection` |
+| 外交占用 | **`diplomatic_capacity_cost_scale = <float>`**（乘在外交容量公式上）、`has_limited_diplomacy`、`can_change_rank`、`can_change_heir_selection` |
 | 战争相关 | `war_score_cost`（和约里建立该附属的战争分数）、`base_antagonism`（建立时的敌意上限，0 或负值 = 用引擎默认） |
 | AI | `diplo_chance_accept_subject` / `diplo_chance_accept_overlord`（**按标签配权重**，如 `border_distance = -0.1`）、`ai_wants_to_be_overlord` / `ai_wants_to_be_subject` |
 | 思潮 | `institution_spread_to_overlord` / `institution_spread_to_subject` |

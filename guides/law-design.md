@@ -38,6 +38,35 @@
 
 > 附带一条本体 readme 的自相矛盾：readme 警告「`custom_description` 的 `text` 键不可与 effect 键同名」，而 `unlock_law_effect` **正是这样定义的**。它是本体自身写法且被调用数百次，实际工作正常——该警告针对的是丢失 subject/object/value 拾取的场景。
 
+### ⚠ 解锁成功 ≠ 永久有效：`potential` 会被引擎周期复查（高危）
+
+引擎**周期性复查** `law` / `government_reform` 的 `potential`，**一旦失效，整条法律连同已选中的政策一起被自动撤销**（不是隐藏、不是保留，是移除）。
+
+**实测事故**：某法律的 `potential` 里写了 `estate_power(estate_type:士兵阶层) > 0`。而 EU5 **军队即 soldiers POP**——军队全灭／整军遣散／组建军团转移全部部队／出租整军，都会让这个阶层力量归零，等价于"国家没有任何军队"。结果：法律消失 → 重建军队后回来 → 再选 → 再被撤，玩家观感是"**法律反复被自动撤销**"。
+
+**铁律**：`law` / `reform` 的 `potential` 只放**几乎不变**的条件——政体、宗教、改革、tag。
+**绝不放会随局势波动的动态值**（兵力、阶层力量、金币、战争状态）。
+
+- 「想隐藏 UI」→ 用 `potential`
+- 「想防止被撤销」→ 必须保证**已生效后 potential 恒真**
+
+最小改法（已生效的内容保留，门控只挡"从未选过 + 无阶层"的纯平民国家）：
+
+```
+potential = {
+    OR = {
+        "estate_power(estate_type:xxx)" > 0
+        has_policy = <本法律的任一政策>
+    }
+}
+```
+
+也可以**直接删掉 law 级 `potential`**（原版 `army_doctrine_law` 就没有）。
+
+> **对本 mod 的结论**：两条法律用 `has_unlocked_law_trigger = { type = X }` 作 potential，依赖政府改革 `on_activate` 设下的 `unlocked_law_<type>` 变量——**该变量不会被撤销，所以本写法天然安全**。但将来若在 potential 里加任何动态条件，就会踩这个坑。
+
+> 完整机制、原版证例与修复手法见 `cases\laws-events-and-estates-2026-09.md` §1。（原版证例：`feudal_de_jure_law` 以 `government_type` 为 potential，政体一变法律即消失，证明"引擎自动撤销"是**标准行为而非 bug**。）
+
 ## 四、政策的通行配方（三件套 + 时长）
 
 ```

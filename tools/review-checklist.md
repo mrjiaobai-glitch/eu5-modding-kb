@@ -46,6 +46,7 @@
 - **`rebel_demands` 的 `concession_effect` 必须含 `pacify_rebel_pops`**（原版 12/13），否则让步后叛军不平息（`fields\common-rebel_demands.md`）。
 - **`defines` 覆盖原版零使用**：改常量牵动多人哈希与存档兼容（`fields\main_menu-game_rules.md`）。
 - **`law` 与 `policy` 是两个概念**（law 只锁/解锁，policy 才可切换）（`vanilla\vanilla-law-and-estate.md`）。
+- **`law`／`reform` 的 `potential` 会被引擎周期复查，失效即整条撤销**——potential 里出现**动态值**（兵力、阶层力量、金币、战争状态）即是错误；只允许政体／宗教／改革／tag 这类几乎不变的条件。要求"已生效后 potential 恒真"（`guides\law-design.md` §三、`cases\laws-events-and-estates-2026-09.md` §1）。
 
 ## 五、本地化（脚本可判）
 
@@ -53,6 +54,7 @@
 2. **肯定/否定成对**：只写 `<键>` 不写 `NOT_<键>`，在 `NOT = { … }` 里就是 raw key；人称回退是**最后一个可用**而非第一个（`fields\common-trigger-effect-localization.md`）。
 3. 占位符 `$…$` 必须配对（`$MONTHS|0$` 取整）；`[Root.GetName]` 方括号表达式照抄原版（`guides\localization.md`）。
 4. 事件/任务/静态修正/特质/死因/继承法的键前缀各不相同：**逐类对照 `tools\loc-keys.md`**，别按印象写。
+5. **新建法律／政策／建筑／改革必须查撞名**：**显示名与键名都**要对照本体 `main_menu\localization\simp_chinese\` 全目录查一遍——同名政策出现在两条不同法律里，UI 上就是两个同名条目（两条法律都合法加载、都能选，只是分不清）；**键名撞了会直接覆盖本体本地化**。只查显示名不查键名是不够的（`guides\law-design.md` §九）。
 
 ## 六、合并与覆盖（脚本可判 + 人工确认）
 
