@@ -1,5 +1,9 @@
 # main_menu/common/dlc（DLC 定义）
 
+> **一句话**：DLC 定义的十三个字段与三档实测，说明块名等于门控取值且 mod 不能靠这里注册自己。
+> **什么时候看**：要按 DLC 门控内容、查 has_dlc 取值或 DLC 图标与文案配置时翻这篇。
+> **体量**：58 行 · 约 3 分钟通读
+
 来源：**本类目没有 readme、也没有 info**——`dlc\D000_shared\main_menu\common\dlc\` 里 3 个档全字段实查（`fate_of_the_phoenix.txt` 410 B / `ancient_monuments_pack.txt` 439 B / `sacred_sites_pack.txt` 376 B）。
 
 > ⚠️ **基础包的 `main_menu\common\` 下根本没有 `dlc\` 这个类目**——它只存在于 DLC 目录里（`dlc\<包>\…`）。机制解析见 `vanilla\vanilla-dlc-and-assets.md` §一/§二。

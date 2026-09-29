@@ -1,5 +1,9 @@
 # common/music_player_tracks（音乐播放器曲目）
 
+> **一句话**：音乐播放器曲目条目：三个可选字段、条目名必须是 wwise 事件键，以及曲名与简介键的本地化写法。
+> **什么时候看**：加曲目、改曲名与简介文案，或要确认新增音乐需同时动哪几处时翻这篇。
+> **体量**：58 行 · 约 3 分钟通读
+
 来源：`in_game\common\music_player_tracks\music_player_tracks.info`（**533 B**）+ `00_music_player_tracks.txt`（10.9 KB）实查
 
 ## 字段

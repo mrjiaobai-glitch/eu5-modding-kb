@@ -1,5 +1,9 @@
 # common/cultures、culture_groups、languages、religions 等（文化·宗教字段库）
 
+> **一句话**：文化宗教字段库：文化、文化组、语言、语族、宗教、学派、宗教人士与骑士团八类，逐字段标注原版出现率与必填判断。
+> **什么时候看**：改文化、宗教、语言名字库或学派骑士团，判断字段必填还是可选时看。
+> **体量**：196 行 · 约 9 分钟通读
+
 覆盖来源：**本档是本库唯一"非 readme 来源"的字段文档**——文化有 `in_game\common\cultures\00_cultures.info`、文化组有 `00_culture_groups.info` 两个官方示例文件（下称 .info），而**宗教、语言、学派、骑士团没有任何 readme/.info**，字段表全部来自**对原版实查**（括号内为该字段在原版的出现数 / 总数，可作为"必填 or 罕见"的判断依据；统计用花括号深度解析，见 `pitfalls.md` §十三）。
 
 相邻 readme 已覆盖的系统见另档：`common-religion.md`（religious_aspects / factions / focuses）、`common-gods.md`、`common-holy_sites.md`、`common-movements.md`、`common-town_rights.md`。

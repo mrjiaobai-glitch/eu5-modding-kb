@@ -1,5 +1,9 @@
 # common/trigger_localization 与 effect_localization（tooltip 文本权威）
 
+> **一句话**：tooltip 文本权威：触发器与效果本地化的字段、人称与否定成对规则，及各类触发器的键名推导。
+> **什么时候看**：界面上出现 raw key 或人称错乱、要补触发器与效果的 tooltip 文案时翻这篇。
+> **体量**：94 行 · 约 5 分钟通读
+
 来源：`in_game\common\trigger_localization\_trigger_localization.info`（**5,756 B / 152 行，GUI 层最完整的文档之一**）；`effect_localization\` **没有 info**，其格式由数据文件头注释（`country_effects.txt` 前 5 行）给出
 
 ## 为什么这两档算 GUI

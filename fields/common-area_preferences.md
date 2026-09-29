@@ -1,5 +1,9 @@
 # common/area_preferences（区域偏好：AI 探索与征服目标区）
 
+> **一句话**：AI 探索与征服的区域偏好数据：偏好类型、倍率与地理键，须用 add_area_preference 指派给国家才会生效。
+> **什么时候看**：想让某国 AI 往特定方向殖民或扩张、或排查偏好不生效时看。
+> **体量**：83 行 · 约 4 分钟通读
+
 来源：**无 readme**——`in_game\common\area_preferences\` 两个文件的**文件头注释即权威**（原文："area preference definitions - pure data, no country or allowed fields. Use `add_area_preference = <key>` in on_game_start, missions, or events to assign them."）
 
 ## 字段

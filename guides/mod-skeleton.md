@@ -1,5 +1,9 @@
 # Mod 骨架（mod-skeleton）
 
+> **一句话**：本机 mod 目录实查出的骨架：目录结构、metadata.json 注册、文件命名与编码规则，附 DLC 包结构对照。
+> **什么时候看**：新建 mod 时最先看——定目录、写 metadata.json、命名文件都在这一步。
+> **体量**：74 行 · 约 4 分钟通读
+
 mod 目录（本机示例）：`%USERPROFILE%\Documents\Paradox Interactive\Europa Universalis V\mod\`（launcher 加载）。已装 mod 参照：`刀锋与王座`、`尼泊尔王公自用平衡`。
 
 ## 目录结构（真实 mod 实查）

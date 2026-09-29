@@ -1,5 +1,9 @@
 # 原版解析：地图与地理层级（vanilla map & geography）
 
+> **一句话**：讲五级静态层级树（大陆／次大陆／区域／地区／预设省份／地点）、运行时省份与预设省份的区别，以及地点键、位图色与寻路数据的实查结论。
+> **什么时候看**：加地点或改地图层级、核对 location id 与位图色、写 scripted_geography 地理包，或需要区分 province 与 province_definition 时翻这篇。
+> **体量**：269 行 · 约 13 分钟通读
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 **核心文件**：`in_game\map_data\default.map`（181KB / 1629 行，地图总声明 + 特殊地点区）、`map_data\definitions.txt`（491KB，**五级静态层级树**）、`map_data\location_templates.txt`（3.7MB / **28573 条**，地点属性表）、`map_data\named_locations\00_default.txt`（28490 条地点→位图色）、`map_data\locations.png`（8.7MB 位图）、`map_data\rivers.png`、`map_data\nodes.dat`（11MB 二进制寻路）、`map_data\ports.csv`（4421 行）、`map_data\adjacencies.csv`（184 行）；脚本侧 `in_game\common\scripted_geography\`（3 文件 / **27 个地理包** + `scripted_geography.info`）；开局数据 `main_menu\setup\start\`（**25 档**，02–27、缺 01/17；本节只解析到 16）。
@@ -99,13 +103,13 @@ wrap_x = yes                         # 经度环绕
 
 | 段 | 数量 | 内容 | 谁在用它 |
 |---|---|---|---|
-| `sea_zones` | **4821** | 全部海区（波罗的海/北海/地中海…按注释分组） | 海军、贸易、海事存在 |
+| `sea_zones` | **4821** | 全部海区（波罗的海/北海/地中海…按注释分组） | 海军、贸易、海上存在 |
 | `lakes` | **919** | 湖泊（含瑞典/芬兰/英伦/意大利/新西兰…，带注释分组） | `topography = lakes`、`is_adjacent_to_lake` |
 | `impassable_mountains` | **1878** | 不可通行山地与荒地（含大量环礁小岛） | 阻断行军（含注释 `# Blocks unit movement.`） |
 | `non_ownable` | **153** | 不可拥有走廊（撒哈拉/叙利亚沙漠/阿拉伯半岛等 corridor） | 有注释 `# Can be colored by whoever owns the most of the province's neighbors.` |
 | `earthquakes` | **3254** | 地震带地点（意大利/巴尔干/安纳托利亚/东地中海…密集） | `earthquake_location_pulse`（见自然环境篇 §四） |
 | `volcanoes` | **102** | 火山地点 + 历史喷发注释（Mount St. Helens / Kelud / Tambora / Vesuvius / Fuji…，含"Strength"列） | `volcano_location_pulse` |
-| `sound_toll` | **3** | 通行费海峡：`oresund = helsingor`、`gulf_izmit = constantinople`、`strait_hormuz = hormuz` | 贸易篇的通行费收入 |
+| `sound_toll` | **3** | 通行费海峡：`oresund = helsingor`、`gulf_izmit = constantinople`、`strait_hormuz = hormuz` | 贸易篇的海峡通行费收入 |
 
 ## 四、`location_templates.txt`：地点属性表（三篇的汇合点）
 
@@ -230,8 +234,8 @@ borneo_geography = {
 | `province_definition` | `scripted_geography`、建筑/事件的静态成立条件（如 `montana_province`）、`any_location_in_province_definition` |
 | `topography` / `vegetation` / `climate` | 战斗 `defender`/frontage、行军、邻近度、RGO 建造时间与上限、人口容量、粮食、视野、海军损耗、天气衰减、疾病 R0 —— 全在自然环境篇 |
 | `raw_material` / `culture` / `religion`（location_templates） | 开局 RGO、文化宗教分布 —— 生产建筑篇 / 文化与宗教篇 |
-| `sea_zones` + `ports.csv` + `adjacencies.csv` | 海军、贸易路径、海事存在、封锁 |
-| `sound_toll` | 通行费收入（贸易篇） |
+| `sea_zones` + `ports.csv` + `adjacencies.csv` | 海军、贸易路径、海上存在、封锁 |
+| `sound_toll` | 海峡通行费收入（贸易篇） |
 | `volcanoes` / `earthquakes` | 两个灾变 pulse（自然环境篇 §四） |
 | `impassable_mountains` / `non_ownable` | 行军阻断、控制力与着色规则 |
 | `market_manager`（setup） | 市场中心清单（贸易篇） |

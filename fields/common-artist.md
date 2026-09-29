@@ -1,5 +1,9 @@
 # common/artist_types 与 common/artist_work
 
+> **一句话**：艺术家两档字段：学科门类的门槛与宫廷修正，艺术品类型的夺取开关、三类 modifier 与按角色作用域的可用条件。
+> **什么时候看**：做艺术家与艺术品内容，或核对修正作用域与本地化前缀时看。
+> **体量**：41 行 · 约 2 分钟通读
+
 来源：`in_game\common\artist_types\readme.txt`、`in_game\common\artist_work\readme.txt`
 
 ## artist_types（艺术家学科门类）

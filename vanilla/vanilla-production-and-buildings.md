@@ -1,5 +1,43 @@
 # 原版解析：生产与建筑（vanilla production & buildings）
 
+> **一句话**：讲原产 RGO 与建筑两条生产路径：74 种商品、45 档建筑类型、生产方式输入与 41 个建筑上限公式，并标出 `main_menu` 区的数值来源。
+> **什么时候看**：加商品、建筑或生产方式，改建筑上限价格与建造需求，或遇到"改了没生效"要分清三区文件时翻这篇。
+> **体量**：431 行 · 约 20 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、两条生产路径总览](#一两条生产路径总览)
+- [二、原产（RGO）](#二原产rgo)
+  - [2.1 定义与五种方法](#21-定义与五种方法)
+  - [2.2 工人（`rgo_pops`）](#22-工人rgo_pops)
+  - [2.3 扩张：价格、队列、批量 UI](#23-扩张价格队列批量-ui)
+  - [2.4 上限从哪来](#24-上限从哪来)
+  - [2.5 通胀与情报](#25-通胀与情报)
+  - [2.6 ⚠️ 陷阱：`rgo_building_category` **不是**原产升级](#26-️-陷阱rgo_building_category-不是原产升级)
+- [三、商品：两条路径的接口](#三商品两条路径的接口)
+- [四、建筑（building）](#四建筑building)
+  - [4.1 字段权威](#41-字段权威)
+  - [4.2 实查字段 vs readme：**漏了 23 个**](#42-实查字段-vs-readme漏了-23-个)
+  - [4.3 实例解剖：啤酒四级链（`production_beer.txt`，321 行）](#43-实例解剖啤酒四级链production_beertxt321-行)
+  - [4.4 等级上限体系（`script_values\building_caps.txt`，1031 行 / 41 个公式）](#44-等级上限体系script_valuesbuilding_capstxt1031-行--41-个公式)
+  - [4.5 价格与成本](#45-价格与成本)
+  - [4.6 建造需求（`construction_demand`）](#46-建造需求construction_demand)
+  - [4.7 位置等级门槛与"免费建筑位"](#47-位置等级门槛与免费建筑位)
+- [五、生产方式（production_method）](#五生产方式production_method)
+  - [5.1 字段权威](#51-字段权威)
+  - [5.2 原版实际在用的额外字段](#52-原版实际在用的额外字段)
+  - [5.3 结构：维护型 vs 生产型](#53-结构维护型-vs-生产型)
+  - [5.4 啤酒的 7 种输入变体（`production_beer.txt:21–106`）](#54-啤酒的-7-种输入变体production_beertxt21106)
+- [六、经济循环：投产度 / 雇佣 / 补贴 / 淘汰](#六经济循环投产度--雇佣--补贴--淘汰)
+  - [6.1 投产度（establishment）—— 系统已定义但**默认关闭**](#61-投产度establishment-系统已定义但默认关闭)
+  - [6.2 雇佣、裁员与补贴](#62-雇佣裁员与补贴)
+  - [6.3 效果清单（mod 的写入接口）](#63-效果清单mod-的写入接口)
+  - [6.4 AI 相关常量（改平衡时最容易漏）](#64-ai-相关常量改平衡时最容易漏)
+- [七、建筑类别与施工音效](#七建筑类别与施工音效)
+- [八、Mod 改造建议（可改 vs 硬编码）](#八mod-改造建议可改-vs-硬编码)
+- [九、中文检索键](#九中文检索键)
+
 版本基准：EU5 1.3.x。**注意分区**：建筑/生产方式/商品/上限公式都在 **`in_game\`** 区；而"数值默认值"（雇佣规模、建造时间、投产度目标、建筑价格档）在 **`main_menu\common\script_values\default_values.txt`**；修正名登记在 **`main_menu\common\modifier_type_definitions\00_modifier_types.txt`**；常量在 **`loading_screen\common\defines\00_defines.txt`**。改建筑时漏掉 main_menu 区是最常见的"改了没生效"。
 
 | 路径 | 规模 | 作用 |
@@ -34,7 +72,7 @@
 | `subsidy` | 补贴 | 亏损建筑由所有者每月补足 |
 | `rgo_mining/farming/forestry/hunting/gathering` | 矿场/农场/林场/狩猎场/采集场 | 五种原产方法 |
 | `rural_settlement/town/city/megalopolis` | 乡村/集镇/城市/大都市 | 四个 `location_rank`，是建筑的**可建造门槛** |
-| `market_access` | 市场准入 | 低准入同时惩罚**建筑等级上限**与 RGO 利润 |
+| `market_access` | 市场接入度 | 低准入同时惩罚**建筑等级上限**与 RGO 利润 |
 
 ## 一、两条生产路径总览
 
@@ -246,7 +284,7 @@ rgo_building_category = {
 三条要点：
 
 1. **产业升级链 = 同一块地能塞的等级跃升**（dev 系数 0.1 → 0.25 → 0.5 → 1.0），所以"工厂化"的本质是把同一块地的等级预算放大 10 倍。
-2. **低市场准入惩罚**：guild/workshop/manufactory/mills 四个上限都带
+2. **低市场接入度惩罚**：guild/workshop/manufactory/mills 四个上限都带
    `if = { limit = { market_access < 0.75 } multiply = { value = market_access add = 0.25 } }`，末了 `min = 1`。
    注意 `plantation_cap` / `rural_building_cap` / `estate_building_stackable_level` **没有**这一条（农村建筑不吃准入惩罚）。
 3. **原产与建筑耦合**：种植园上限 = 原产工人上限×2，农村建筑上限/阶层建筑上限都含 `max_rgo_workers`×0.5 —— 想在农村刷建筑，先把 RGO 堆起来。

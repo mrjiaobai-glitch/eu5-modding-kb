@@ -1,5 +1,9 @@
 # in_game/common/missions（任务链 · 任务节点）
 
+> **一句话**：任务链与任务节点的字段权威：链级与节点级字段、select_trigger 目标选择器、六个 on_action 钩子与本地化键。
+> **什么时候看**：写或审查任务包、要核对 select_trigger、duration、final 与任务奖励开关时翻这篇。
+> **体量**：141 行 · 约 7 分钟通读
+
 来源：`in_game\common\missions\____Info.txt`（**61 行；本目录没有 readme.txt，该 .info 就是字段权威**）+ 11 个任务包实查（142 KB / **11 条任务链 / 108 个任务节点**）
 
 > 体系解析与制作用法见 `vanilla\vanilla-events-and-missions.md` §五；本档是**字段权威 + 原版实测 + 审查要点**。

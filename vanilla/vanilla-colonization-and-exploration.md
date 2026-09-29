@@ -1,5 +1,41 @@
 # 原版解析：殖民与探索（vanilla colonization & exploration）
 
+> **一句话**：梳理探索三动作、特许殖民地与迁徙执行器、征服者、殖民领附属国与殖民地联邦 IO，并给出 `NColony` 常量与区域偏好、CB 清单。
+> **什么时候看**：做殖民或探索内容、改迁徙与殖民领规则、加殖民 CB 或调探索偏好与成本时翻这篇。
+> **体量**：310 行 · 约 15 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、总览：四层结构](#一总览四层结构)
+- [二、探索（exploration）](#二探索exploration)
+  - [2.1 前置与游戏规则](#21-前置与游戏规则)
+  - [2.2 三个动作与"三选"](#22-三个动作与三选)
+  - [2.3 价格、工期与常量](#23-价格工期与常量)
+  - [2.4 "发现"是**区域级**的](#24-发现是区域级的)
+  - [2.5 月度脉冲与事件](#25-月度脉冲与事件)
+- [三、特许殖民地（colonial charter）](#三特许殖民地colonial-charter)
+  - [3.1 创建与放弃](#31-创建与放弃)
+  - [3.2 目标选择与引擎候选](#32-目标选择与引擎候选)
+  - [3.3 成本常量（`NColony`，defines 2524–2550）](#33-成本常量ncolonydefines-25242550)
+- [四、迁徙（migration）——真正的执行器](#四迁徙migration真正的执行器)
+  - [4.1 引擎效果](#41-引擎效果)
+  - [4.2 三个来源（原版全部用法）](#42-三个来源原版全部用法)
+  - [4.3 迁徙吸引力与其他迁移工具](#43-迁徙吸引力与其他迁移工具)
+- [五、征服者（conquistador）](#五征服者conquistador)
+- [六、政治层：殖民领 · 联邦 · 革命](#六政治层殖民领--联邦--革命)
+  - [6.1 殖民领 `colonial_nation`](#61-殖民领-colonial_nation)
+  - [6.2 四种"殖民/海外"附属国对比（原版实测）](#62-四种殖民海外附属国对比原版实测)
+  - [6.3 殖民地联邦 IO（`international_organizations\colonial_federation.txt`）](#63-殖民地联邦-iointernational_organizationscolonial_federationtxt)
+  - [6.4 殖民革命局势（`situations\colonial_revolution.txt`）](#64-殖民革命局势situationscolonial_revolutiontxt)
+- [七、战争与外交层](#七战争与外交层)
+  - [7.1 五个殖民/探索 CB（`casus_belli\`）](#71-五个殖民探索-cbcasus_belli)
+  - [7.2 四个国家交互与两个和平条款](#72-四个国家交互与两个和平条款)
+- [八、AI 与探索/征服偏好（`area_preferences\`）](#八ai-与探索征服偏好area_preferences)
+- [九、耦合表（跨系统接口）](#九耦合表跨系统接口)
+- [十、Mod 改造建议（可改 vs 硬编码）](#十mod-改造建议可改-vs-硬编码)
+- [十一、中文检索键](#十一中文检索键)
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 | 类目 | 规模 | 权威 |
@@ -202,7 +238,7 @@ remove_migration = { owner  from  to }
 | 可否吞并 | **no** | 可（20 年 + 好感 150） | — | **no** |
 | 外交容量系数 | 0.5 | **0.1** | 0.5 | 0.5 |
 | 列强分转移 | 0.75 | 0.5 | 0.5 | 0.75 |
-| 商人力量转宗主 | 0.33 | — | — | — |
+| 贸易优势转宗主 | 0.33 | — | — | — |
 | 政体 | republic | — | — | republic |
 | 特色修正 | 人口容量 +10%、允许 RGO 奴隶、忠诚 +20 | 军事战术 +0.5、**最大控制 +0.5**、整合速度 +1.0、异文化征召 +0.5、`blocked_from_peace = yes` | 内阁效率 **−40%**、立法效率 +0.1、禁止改教 | 出口效率（小贸易加成） |
 
@@ -272,7 +308,7 @@ remove_migration = { owner  from  to }
 | 角色（角色篇） | 探险家/征服者都是**角色**（`is_valid_for_exploration`、`explorer` 类特质、`EXPLORER_EXTRA_LIFE = 15`）；`settle_the_frontier` 用廷臣当殖民者并带"忠诚度变量" |
 | 内阁（角色篇 §六） | 4 个殖民行动全走内阁（`ability = adm` ×3、`mil` ×1），效率受 `country_cabinet_efficiency` 影响 |
 | 疾病（天灾篇） | `COLONY_DISEASE_UTILITY_PENALTY = 50`、`AI_MIGRATION_THRESHOLD_FOR_DISEASED_LOCATIONS = 0.05`——AI 会避开疟疾区 |
-| 贸易市场（贸易篇） | `AI_COLONIAL_EXPORT_SCORE_BONUS = 3`（海外种植园商品出口加分）、殖民领 33% 商人力量上交 |
+| 贸易市场（贸易篇） | `AI_COLONIAL_EXPORT_SCORE_BONUS = 3`（海外种植园商品出口加分）、殖民领 33% 贸易优势上交 |
 | 生产建筑（生产篇） | 殖民领拿到 `allow_rgo_slave_demand`；`DEVELOPMENT_AT_NEW_COLONY = 5` 决定新殖民地起点 |
 | 战争（战斗篇） | 5 个殖民 CB + `take_capital_colony_war` 战争目标 + 2 个放弃类和平条款 |
 | 附属国（外交篇） | 4 种殖民附属国的纳贡/外交容量/参战字段（§6.2） |

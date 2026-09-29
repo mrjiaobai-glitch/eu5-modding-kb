@@ -1,5 +1,9 @@
 # Defines 体系（defines）
 
+> **一句话**：引擎常量文件 00_defines.txt 的 N 块索引与实查数值（战斗、AI、POP、殖民等），并给出直接覆盖与游戏规则覆盖两种改法。
+> **什么时候看**：要改任何引擎常量前，先用这张索引定位它属于哪个 N 块、大致行号与现值。
+> **体量**：85 行 · 约 4 分钟通读
+
 位置：`loading_screen\common\defines\`（三处）：
 - `00_defines.txt`（2609 行）——全部引擎常量
 - `graphic\00_graphics.txt`——图形常量
@@ -11,7 +15,7 @@
 |---|---|---|
 | NGame | 1–33 | 时间（START_DATE "1337.4.1" / END_DATE "1836.12.31"）、HOUR_TICK=2、游戏速度表 |
 | NCityAudio / NAlertAudio / NJominiMap / NGUI / NText | 35–116 | 音频/地图/GUI/文本 |
-| NCountry | 117–298 | 国家级（稳定度、威望、厌战等） |
+| NCountry | 117–298 | 国家级（稳定度、威望、厌战度等） |
 | NMercenary | 299–324 | 雇佣兵（MERCENARY_PRISONER_MAX_MORALE=0.6） |
 | **NUnit** | 325–399 | 单位：REGIMENT_SIZE=1000、LAND_MORALE=3.0、NAVAL_MORALE=3.0、MONTHLY_REINFORCE=0.25、MONTHLY_REPAIR=0.1、ATTRITION_LACK_OF_FOOD=5、LEVY_MAINTENANCE_FACTOR=0.01、ARMY_MOVEMENT_SPEED=0.13、NAVY_MOVEMENT_SPEED=0.5 |
 | **NCombat** | 402–513 | 战斗：COMBAT_DICE_SIDE=10、COMBAT_BASE=5、COMBAT_MAX=15、COMBAT_DAMAGE_MULT=0.01、HOURS_PER_PHASE=5、MINIMUM_COMBAT_DURATION=24、MINIMUM_NAVAL_COMBAT_DURATION=72、STRAIT_CROSSING_DICE=-2、RIVER_CROSSING_DICE=-1、SEA_LANDING_DICE=-1、MAX_FRONTAGE_OVERSTACKING=1.25、LAND_LEVY_COMBAT_IMPACT=0.75、INITIATIVE_*、ASSAULT_*、SIEGE_*、DAYS_PER_SIEGE_PHASE=30、MAX_BREACH=3、TRADITION_GAIN_LAND=10 |

@@ -1,5 +1,9 @@
 # 事件制作（events）
 
+> **一句话**：官方事件格式的全字段清单，从 namespace、type 到 option，附四种触发方式、本地化键规则与原版 7,470 个事件的字段用量统计。
+> **什么时候看**：动手写事件、或不确定某个事件字段原版到底用不用时，逐字段对照本文。
+> **体量**：109 行 · 约 5 分钟通读
+
 权威来源：`in_game\events\readme.txt`（官方事件格式文档，115 行，逐条提炼如下）。真实样例：`in_game\events\volcano_events.txt`（火山，含 scripted_effect 嵌套）、`in_game\events\debug\qa_debug.txt`（调试事件模板）。
 
 ## 文件级规则

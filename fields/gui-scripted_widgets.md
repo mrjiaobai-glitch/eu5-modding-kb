@@ -1,5 +1,9 @@
 # gui/scripted_widgets（声明式挂载控件）
 
+> **一句话**：声明式挂载控件：用一行 txt 映射即可挂上控件，且 visible 必须写成函数返回的布尔值。
+> **什么时候看**：想让 mod 控件出现在原版界面上而不覆盖原版文件时翻这篇。
+> **体量**：46 行 · 约 3 分钟通读
+
 来源：`main_menu\gui\scripted_widgets\_scripted_widgets.info`（**554 B，本类目唯一权威**）
 
 ## 机制

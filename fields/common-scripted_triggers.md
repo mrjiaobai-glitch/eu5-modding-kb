@@ -1,5 +1,9 @@
 # common/scripted_triggers（脚本化触发器）
 
+> **一句话**：脚本化触发器的定义与 $参数$ 文本替换用法，以及 custom_description 键不能与触发器键同名的坑。
+> **什么时候看**：抽公共触发器、写带参数的触发器，或遇到 missing trigger 报错时翻这篇。
+> **体量**：39 行 · 约 2 分钟通读
+
 来源：`in_game\common\scripted_triggers\readme.txt`
 
 ## 定义与使用

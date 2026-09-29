@@ -1,5 +1,9 @@
 # common/scripted_effects（脚本化效果）
 
+> **一句话**：脚本化效果的定义与 $参数$ 文本替换用法，以及 custom_description 键不能与效果键同名的坑。
+> **什么时候看**：抽公共效果、写带参数的效果，或遇到 missing effect 报错时翻这篇。
+> **体量**：48 行 · 约 3 分钟通读
+
 来源：`in_game\common\scripted_effects\readme.txt`
 
 ## 定义与使用

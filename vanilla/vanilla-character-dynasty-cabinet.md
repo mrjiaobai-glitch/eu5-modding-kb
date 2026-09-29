@@ -1,5 +1,43 @@
 # 原版解析：角色 · 王朝 · 内阁（vanilla character, dynasty & cabinet）
 
+> **一句话**：讲角色与王朝在开局数据而非 `common\`，并给出 147 个特质、44 种继承法、15 种摄政、73 个内阁行动与脚本接口的实查结论。
+> **什么时候看**：加角色或王朝、改继承与摄政规则、写内阁行动与角色交互，或调肖像基因与死因时翻这篇。
+> **体量**：376 行 · 约 18 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、角色](#一角色)
+  - [1.1 三能力与年龄阶段（`NCharacter`）](#11-三能力与年龄阶段ncharacter)
+  - [1.2 随机角色生成偏向](#12-随机角色生成偏向)
+  - [1.3 婚姻与生育](#13-婚姻与生育)
+  - [1.4 肖像与基因（`genes\` + `ethnicities\`）](#14-肖像与基因genes--ethnicities)
+  - [1.5 死因（`death_reason\`，3 文件）](#15-死因death_reason3-文件)
+- [二、特质（`traits\`，147 个 / 9 类别）](#二特质traits147-个--9-类别)
+  - [2.1 类别分布](#21-类别分布)
+  - [2.2 字段权威（`_traits.info`）](#22-字段权威_traitsinfo)
+  - [2.3 获取途径（`NCharacter`）](#23-获取途径ncharacter)
+- [三、王朝（dynasty）](#三王朝dynasty)
+  - [3.1 定义在开局数据里（`main_menu\setup\start\04_dynasties.txt`）](#31-定义在开局数据里main_menusetupstart04_dynastiestxt)
+  - [3.2 角色侧字段（`character_db`，`05_characters.txt`）](#32-角色侧字段character_db05_characterstxt)
+  - [3.3 机制与脚本面](#33-机制与脚本面)
+- [四、继承（`heir_selections\`，**44 种 / 5 文件**）](#四继承heir_selections44-种--5-文件)
+  - [4.1 清单](#41-清单)
+  - [4.2 字段族（`00_heir_selections.info`）](#42-字段族00_heir_selectionsinfo)
+- [五、摄政（`regencies\`，**15 种**）](#五摄政regencies15-种)
+- [六、内阁（`cabinet_actions\`，**73 个行动**）](#六内阁cabinet_actions73-个行动)
+  - [6.1 席位与规模](#61-席位与规模)
+  - [6.2 ⚠️ 核心公式：readme 与本体冲突（差 10 倍）](#62-️-核心公式readme-与本体冲突差-10-倍)
+  - [6.3 字段族（readme 109 行）](#63-字段族readme-109-行)
+  - [6.4 效率、成本与阶层联动](#64-效率成本与阶层联动)
+- [七、角色交互（`character_interactions\`，**34 个**）](#七角色交互character_interactions34-个)
+- [八、教育 · 艺术家 · 艺术品](#八教育--艺术家--艺术品)
+  - [8.1 儿童教育（`child_educations\`，**6 种**）](#81-儿童教育child_educations6-种)
+  - [8.2 艺术家与艺术品（`artist_types\` 13 种 / `artist_work\` 21 种）](#82-艺术家与艺术品artist_types-13-种--artist_work-21-种)
+- [九、耦合表](#九耦合表)
+- [十、Mod 改造建议（可改 vs 硬编码）](#十mod-改造建议可改-vs-硬编码)
+- [十一、中文检索键](#十一中文检索键)
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 | 类目 | 规模 | 权威 |

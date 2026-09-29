@@ -1,5 +1,9 @@
 # in_game/common：六个小型注册表（insults / scripted_country_names / building_categories / location_ranks / historical_scores / hegemons）
 
+> **一句话**：六个无 readme 小型注册表的实查：侮辱文本、脚本化国名、建筑类别、地点等级、历史评分与霸权。
+> **什么时候看**：要动侮辱语、自动国名、建筑音效归类、霸权条件这类小表时翻这篇。
+> **体量**：117 行 · 约 6 分钟通读
+
 来源：六个类目全部**无 readme**，逐档实查（2026-09）。逐个给出"条目数 / 字段 / 用法 / 坑"。
 
 ---

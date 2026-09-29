@@ -1,5 +1,38 @@
 # 原版解析：战斗与战争（vanilla combat & war）
 
+> **一句话**：上篇讲怎么打赢（单位、`NCombat` 常数、地形、围城、战争目标），下篇讲战争本身（102 个 CB、战争分数热情、64 个和约条款、土地承诺）。
+> **什么时候看**：调战斗与围城数值、写 CB 或和约条款、改战争分数与战争热情权重，或查宣战代价时翻这篇。
+> **体量**：354 行 · 约 17 分钟通读
+
+## 目录
+
+- [一、部队组织](#一部队组织)
+- [二、单位体系](#二单位体系)
+  - [陆军 6 类（`common\unit_categories\`）](#陆军-6-类commonunit_categories)
+  - [兵种模板与升级（`common\unit_types\`）](#兵种模板与升级commonunit_types)
+- [三、战斗常数（`NCombat`）](#三战斗常数ncombat)
+- [四、地形修正](#四地形修正)
+- [五、围城（`NCombat` 后半段）](#五围城ncombat-后半段)
+- [六、战争目标（`common\wargoals\`，readme 权威）](#六战争目标commonwargoalsreadme-权威)
+- [七、宣战侧：宣战理由（`casus_belli`）与宣战代价](#七宣战侧宣战理由casus_belli与宣战代价)
+  - [7.1 CB 系统（67 个 CB 文件 + 40 行 readme）](#71-cb-系统67-个-cb-文件--40-行-readme)
+  - [7.2 宣战代价（`prices\00_hardcoded.txt`，全部 8 条）](#72-宣战代价prices00_hardcodedtxt全部-8-条)
+- [八、战争状态机：战争分数 · 参与度 · 战争热情（`NWar` + `NDiplomacy`）](#八战争状态机战争分数--参与度--战争热情nwar--ndiplomacy)
+  - [8.1 战争分数（warscore）](#81-战争分数warscore)
+  - [8.2 参与度（participation）—— EU5 的"战争贡献账本"](#82-参与度participation-eu5-的战争贡献账本)
+  - [8.3 战争热情（`WAR_ENTHUSIASM_*`，33 条）](#83-战争热情war_enthusiasm_33-条)
+  - [8.4 逼降：Call for Peace 与无条件投降](#84-逼降call-for-peace-与无条件投降)
+- [九、和约：条款系统与战争分数定价](#九和约条款系统与战争分数定价)
+  - [9.1 条款系统（`peace_treaties\`，**64 个条款定义 / 53 数据档** + readme）](#91-条款系统peace_treaties64-个条款定义--53-数据档--readme)
+  - [9.2 战争分数定价（`NDiplomacy` 的和约段，46 条）](#92-战争分数定价ndiplomacy-的和约段46-条)
+  - [9.3 `WAR_WORTH`（战争价值）：和约里"这块地值多少"的底账](#93-war_worth战争价值和约里这块地值多少的底账)
+- [十、盟友、土地承诺与战后](#十盟友土地承诺与战后)
+  - [10.1 土地承诺与"分赃"（`NWar`，EU5 特色）](#101-土地承诺与分赃nwareu5-特色)
+  - [10.2 战后：停战、复仇主义与强制和平](#102-战后停战复仇主义与强制和平)
+- [十一、脚本钩子与 AI 常量](#十一脚本钩子与-ai-常量)
+- [十二、Mod 改造建议](#十二mod-改造建议)
+- [十三、中文检索键](#十三中文检索键)
+
 版本基准：EU5 1.3.x。核心文件：`loading_screen\common\defines\00_defines.txt`（`NUnit` 325–399、`NCombat` 402–513、**`NWar` 2419–2479**、`NDiplomacy` 1992–2417 的战争段）、`common\unit_categories\`、`common\unit_types\`、`common\topography\`、`common\vegetation\`、`common\wargoals\`（readme 权威）、**`common\casus_belli\`（67 数据档 / 102 个 CB 定义 + 40 行 readme）**、**`common\peace_treaties\`（53 数据档 / 64 个条款定义 + readme）**、**`common\prices\00_hardcoded.txt`（宣战价格 8 条）**、`common\ai_diplochance\00_ai_diplochance.txt`（强制和平/威胁宣战/请求和平的权重表）。
 
 > **本篇的分工**：§一–§六 = **怎么打赢**（部队、战斗、围城、战争目标）；**§七–§十 = 战争本身**（宣战 → 战争分数与热情 → 和约 → 战后）；§十一–§十三 = 钩子、Mod、检索键。
@@ -73,7 +106,7 @@
 | `EXPERIENCE_GAIN` | 30 | 战斗经验 |
 | `TRADITION_GAIN_LAND / _NAVAL` | 10 / 20 | 传统 |
 | `COMBAT_IMPRISONED_UNIT_DEATH_RATE` | 0.4 | 俘虏死亡率 |
-| `LAND_WAR_EXHAUSTION_FROM_LOSSES` | 1（海军 ×1.5），`MAX_WAR_EXHAUSTION_FROM_BATTLE` 5.0 | 厌战（`ALERT_HIGH_WAR_EXHAUSTION = 10`、AI `SAFE_AMOUNT_OF_WAR_EXHAUSTION = 5`） |
+| `LAND_WAR_EXHAUSTION_FROM_LOSSES` | 1（海军 ×1.5），`MAX_WAR_EXHAUSTION_FROM_BATTLE` 5.0 | 厌战度（`ALERT_HIGH_WAR_EXHAUSTION = 10`、AI `SAFE_AMOUNT_OF_WAR_EXHAUSTION = 5`） |
 | `PRESTIGE_FROM_LAND/_NAVAL`、`PRESTIGE_VS_RIVAL` | 0.5 / 0.5 / 1.5 | 威望（打宿敌 ×1.5） |
 | 海战专属 | `NAVAL_MORALE_DAMAGE_MODIFIER 0.2`、`NAVAL_LOW_MORALE_THRESHOLD 1.5`、`NAVAL_COMBAT_SHIP_STR_SINK_THRESHOLD 0.1`、`NAVAL_RETREAT_CHANCE 10` | 海战士气伤害仅 20% |
 
@@ -148,9 +181,9 @@
 | 价格键 | 代价 |
 |---|---|
 | `declaring_war` | **karma 10**（基础） |
-| `war_no_cb` | **稳定 15 + 厌战 1 + karma 10 + 正义 10** |
-| `war_on_same_religion_no_cb` | **稳定 30 + 厌战 2 + karma 20 + 正义 20** |
-| `war_breaking_truce` | **稳定 50 + 厌战 1** |
+| `war_no_cb` | **稳定 15 + 厌战度 1 + karma 10 + 正义 10** |
+| `war_on_same_religion_no_cb` | **稳定 30 + 厌战度 2 + karma 20 + 正义 20** |
+| `war_breaking_truce` | **稳定 50 + 厌战度 1** |
 | `war_breaking_truce_with_guarantor` | 稳定 10 |
 | `war_great_relations`（好感 ≥100 时宣战） | **稳定 20** |
 | `war_good_relations`（好感 ≥50） | 稳定 10 |
@@ -281,7 +314,7 @@ WAR_WORTH_BASE = 2                    + 税基 × 0.2              + 建筑数 �
 | 机制 | 常量 / 入口 |
 |---|---|
 | **停战** | `TRUCE_YEARS = 5`、`SCALED_TRUCE_YEARS = 10`、`CASUS_BELLI_MONTHS = 120`（CB 存续 120 月，可被 CB 逐条覆盖）、**`REVANCHISM_MONTHLY_DECAY = 0.833`** |
-| 破停战 | `war_breaking_truce` = 稳定 50 + 厌战 1；`on_truce_broken` 钩子 |
+| 破停战 | `war_breaking_truce` = 稳定 50 + 厌战度 1；`on_truce_broken` 钩子 |
 | **强制和平 / 威胁宣战** | 交互：`subject_enforce_peace`（宗主对附庸，需 `overlord_can_enforce_peace_on_subject = yes`）、`union_enforce_peace`（需 `modifier:union_allowed_enforce_peace = yes`）；AI 接受度权重表在 `ai_diplochance\00_ai_diplochance.txt` |
 | 干预附庸战争 | `intervene_in_subject_war` / `intervene_in_subject_civil_war` / `intervene_in_union_civil_war`（界面 `confirm_intervene_war_popup.gui`、`select_war_to_intervene.gui`） |
 | 战争热度下降 | 打久了自动降温：`WAR_ENTHUSIASM_TIME_*`、白和 3 年规则、`CALL_FOR_PEACE_*` |
@@ -318,7 +351,7 @@ requestpeace  = { enforced_demand = 1   surrendered_to_other = -100   desperatio
 原版用例：科索沃战役变量、帖木儿击杀计数、特殊单位经验（`grant_special_unit_experience`）、百年战争局势在 `on_war_declared` 里开局（判断 FRA/ENG 是否已开战）。
 
 **AI 战斗常量（`NAI`）**：`BATTLE_WIN_CHANCE_GENERAL_MIL_FACTOR = 0.25`（100 军事 ≈ +25% 等效兵力）、`INITIATIVE_COMBAT_STRENGTH_FACTOR = 0.025`、`AI_FLANKING_COMBAT_STRENGTH_FACTOR = 0.3`、`AI_RECOVER_MORALE_THRESHOLD = 66`、`AI_RETREAT_DICE_MORALE_THRESHOLD = 0.45`、`AI_RETREAT_FLANK_MORALE_THRESHOLD = 0.40`、`AI_REINFORCE_BATTLE_DISTANCE_LIMIT = 3`。
-**AI 战争倾向**：`AI_WAR_EXHAUSTION_EXPANSION_PENALTY = 0.1`（每点厌战降低开新战概率）、`SAFE_AMOUNT_OF_WAR_EXHAUSTION = 5`。
+**AI 战争倾向**：`AI_WAR_EXHAUSTION_EXPANSION_PENALTY = 0.1`（每点厌战度降低开新战概率）、`SAFE_AMOUNT_OF_WAR_EXHAUSTION = 5`。
 
 ## 十二、Mod 改造建议
 
@@ -344,6 +377,6 @@ requestpeace  = { enforced_demand = 1   surrendered_to_other = -100   desperatio
 
 **战斗**：`morale`（士气）、`frontage`（正面宽度）、`initiative`（主动性）、`combat_speed`（战斗速度）；战争目标名在各 `*_l_simp_chinese.yml` 的 `war_goal_*` 键。
 
-**战争（`game_concepts_l_simp_chinese.yml`）**：`game_concept_casus_belli` **宣战理由**（:1080）、`game_concept_truce` **停战**（:1421）、`game_concept_war_exhaustion`（厌战）、`game_concept_war_score`（战争分数）、`game_concept_war_enthusiasm`（战争热情）、`game_concept_call_to_arms` 召唤参战（:1015）、`game_concept_coalition` 包围网（:2043）、`game_concept_great_power` 列强（:1163）、`game_concept_hegemony` 霸权（:1171）。
+**战争（`game_concepts_l_simp_chinese.yml`）**：`game_concept_casus_belli` **宣战理由**（:1080）、`game_concept_truce` **停战**（:1421）、`game_concept_war_exhaustion`（厌战度）、`game_concept_war_score`（战争分数）、`game_concept_war_enthusiasm`（战争热情）、`game_concept_call_to_arms` 召唤参战（:1015）、`game_concept_coalition` 包围网（:2043）、`game_concept_great_power` 列强（:1163）、`game_concept_hegemony` 霸权（:1171）。
 
 **界面**（`in_game\gui\`）：**`declare_war_lateralview.gui`（103KB）**、**`peace_offer_view.gui`（74KB）**、`war_lateralview.gui`（75KB）、`battle_lateralview.gui`（81KB）、`battle_result.gui`（60KB）、**`shared\combat_tooltips.gui`（155KB，全库最大单文件之一）**、`shared\war_tooltips.gui`（32KB）、`wars_ledger.gui`、`war_viewer.gui`、`threaten_war.gui`、`confirm_intervene_war_popup.gui`、`select_war_to_intervene.gui`、`attribute_columns\war.gui`；局势/灾难专属面板 `panels\situation\hundred_years_war|hussite_wars|italian_wars|war_of_religions.gui`、`panels\disaster\*civil_war*.gui`。

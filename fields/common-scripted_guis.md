@@ -1,5 +1,9 @@
 # common/scripted_guis（脚本化 GUI）
 
+> **一句话**：脚本化 GUI 的字段全表：可见与可用条件、效果、saved_scopes，以及让 AI 也会点的三个字段。
+> **什么时候看**：想把一段脚本包装成界面按钮、或要让 AI 也能触发同一个动作时翻这篇。
+> **体量**：60 行 · 约 3 分钟通读
+
 来源：`in_game\common\scripted_guis\scripted_guis.info`（**1,004 B，本类目唯一权威**）+ `economy_satisfaction_target.txt`（**17.8 KB**，原版唯一数据文件）实查
 
 ## 字段（info 全表）

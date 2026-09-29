@@ -1,5 +1,9 @@
 # in_game/common/persistent_dna（固定角色外貌 DNA）
 
+> **一句话**：给指定角色固定外貌的 DNA 档：priority、tags、genes 三字段与禁止用 DNA 强制穿戴附件的警告。
+> **什么时候看**：改历史人物长相、要核对 tags 与 genes 是否生效，或想知道穿戴该走哪时翻这篇。
+> **体量**：52 行 · 约 3 分钟通读
+
 来源：**无 readme**——`custom_characters.txt`（**676,826 B / 12,344 行 / 105 个条目**）实查；**文件头注释即官方警告**。
 
 ## 它是什么

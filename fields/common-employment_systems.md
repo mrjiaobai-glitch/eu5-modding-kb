@@ -1,5 +1,9 @@
 # common/employment_systems（就业系统）
 
+> **一句话**：就业系统字段：国家修正、决定建筑先拿到雇员的优先级数值，以及 AI 选择使用哪个系统的评估值。
+> **什么时候看**：调建筑雇员的分配顺序，或给就业系统加修正时看。
+> **体量**：27 行 · 约 2 分钟通读
+
 来源：`in_game\common\employment_systems\readme.txt`
 
 ## 用途

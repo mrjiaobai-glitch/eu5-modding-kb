@@ -1,5 +1,9 @@
 # gui/attribute_columns（列表列——外观侧）
 
+> **一句话**：列表列的外观侧写法：types 加 type 加 blockoverride 组装列控件，与数据侧列名一一对接。
+> **什么时候看**：改列表列长相、要确认与 common 侧列名的对应关系时翻这篇。
+> **体量**：65 行 · 约 3 分钟通读
+
 来源：**无 readme**（数据侧权威是 `in_game\common\attribute_columns\readme.txt` 2,142 B，见 `fields\common-attribute_columns.md`）；本档覆盖 `in_game\gui\attribute_columns\`（**42 文件 / 171 KB**）的外观定义。
 
 ## 两域分工（关键）

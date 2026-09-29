@@ -1,5 +1,9 @@
 # common/unit_abilities、unit_categories、unit_formation_preference（单位能力/类别）
 
+> **一句话**：单位能力、单位类别与阵型偏好三件套的字段，含通用、陆战与海战三组战斗修正清单与作用域。
+> **什么时候看**：写单位能力或单位类别、要调战斗与后勤修正时翻这篇。
+> **体量**：67 行 · 约 4 分钟通读
+
 覆盖 readme：`in_game\common\unit_abilities\readme.txt`、`in_game\common\unit_categories\readme.txt`、`in_game\common\unit_formation_preference\readme.txt`
 
 ## unit_abilities（单位能力）

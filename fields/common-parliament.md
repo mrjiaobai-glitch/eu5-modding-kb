@@ -1,5 +1,9 @@
 # common/parliament_agendas、parliament_issues、parliament_types（议会）
 
+> **一句话**：议会三件套的字段表：议程、议题与议会类型，各字段作用域随 type 在国家与国际组织之间切换。
+> **什么时候看**：写或改议会议程、议题、议会类型，要核对 type 决定的作用域时翻这篇。
+> **体量**：61 行 · 约 3 分钟通读
+
 覆盖 readme：`in_game\common\parliament_agendas\readme.txt`、`in_game\common\parliament_issues\readme.txt`、`in_game\common\parliament_types\readme.txt`
 
 ## parliament_agendas

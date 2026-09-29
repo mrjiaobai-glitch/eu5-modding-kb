@@ -1,5 +1,9 @@
 # common/customizable_localization（动态文本）
 
+> **一句话**：动态文本字段：作用域类型、按序取首个命中的文本块与兜底项、父键加后缀的继承写法，以及界面里的调用方式。
+> **什么时候看**：写随语言变形的文本，或排查取不到值显示原始键时看。
+> **体量**：64 行 · 约 3 分钟通读
+
 来源：`in_game\common\customizable_localization\customizable_localization.info`（**604 B，权威**）+ 26 个数据文件（**3.8 MB**）实查
 
 ## 字段（info 全表）

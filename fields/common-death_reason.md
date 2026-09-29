@@ -1,5 +1,9 @@
 # common/death_reason（死因）+ common/designated_heir_reason（指定继承人理由）
 
+> **一句话**：死因与指定继承人理由两档：随机掷骰池、触发与权重、可携带参数，以及参数顺序决定本地化键后缀的命名规则。
+> **什么时候看**：加死因、配本地化键组合，或查继承人理由空块键时翻这篇。
+> **体量**：87 行 · 约 4 分钟通读
+
 来源：**本体没有 readme**——字段由 4 个数据文件反推（`in_game\common\death_reason\00_hardcoded.txt` 544 B、`01_content.txt` 887 B、`02_life_expectancy.txt` 3 502 B、`designated_heir_reason\00_standard.txt` 193 B）
 
 ## death_reason 字段

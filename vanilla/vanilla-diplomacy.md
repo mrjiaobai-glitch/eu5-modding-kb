@@ -1,5 +1,9 @@
 # 原版解析：外交（vanilla diplomacy）
 
+> **一句话**：梳理 138 个国家交互、34 种条约关系与 20 个附属国定义，含外交官／容量／范围、敌意、`ai_disposition` 态度机与常量。
+> **什么时候看**：加国家交互或条约关系、改附属国与忠诚独立倾向、调敌意与外交范围，或做 AI 外交内容时翻这篇。
+> **体量**：297 行 · 约 14 分钟通读
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 **核心文件**：`in_game\common\country_interactions\`（89 文件 / 346KB / **138 个交互**，`readme.txt` **238 行**为字段权威）、`common\scripted_relations\`（35 文件 / 94KB / **34 种条约关系**，readme 同为两百余行）、`common\subject_types\`（18 档 / 72KB / **20 个附属国定义**，readme 约 100 字段）、`common\diplomatic_costs\`（`00_hardcoded.txt` + `01_from_script.txt`）、`common\rival_criteria\`、`common\join_war_rules\`、`common\scripted_diplomatic_objectives\`、`common\insults\00_insults.txt`；常量在 **`loading_screen\common\defines\00_defines.txt` 的 `NDiplomacy`（1992–2417 行，426 行）**；等级相关在 `common\country_ranks\00_default.txt` 的 `rank_modifier`。
@@ -138,7 +142,7 @@
 |---|---|
 | 身份 | `type`（diplomacy/subject/union）、**`relation_type = oneway/mutual`**（单向 = 给予方/接受方）、**`uses_diplo_capacity = none/mutual/giving/receiving`** + `diplomatic_capacity_cost = <script value>` |
 | 断链 | `block_when_at_war`、`break_on_war`、`break_on_becoming_subject`、**`break_on_not_spying`**、`annulled_by_peace_treaty` + **`annullment_favours_required`**（用人情解除） |
-| 效果开关 | `disallow_war`（**禁止宣战**）、`embargo`、`military_access`、`fleet_basing_rights`、`food_access`、`is_exempt_from_sound_toll`、`is_exempt_from_isolation`、`block_building`、**`lifts_fog_of_war`**、**`lifts_trade_protection`**（取消市场保护主义） |
+| 效果开关 | `disallow_war`（**禁止宣战**）、`embargo`、`military_access`、`fleet_basing_rights`、`food_access`、`is_exempt_from_sound_toll`、`is_exempt_from_isolation`、`block_building`、**`lifts_fog_of_war`**、**`lifts_trade_protection`**（取消市场保护） |
 | 参战 | **`called_in_defensively` / `called_in_offensively` = none/mutual/giving/receiving** |
 | 双向转移 | `trade_to_first/second`（市场吸引力）、`gold_to_first/second`、`favors_to_first/second`、**`institution_spread_to_first/second`**（思潮传播） |
 | 价格 | `diplomatic_cost`、`war_declaration_cost`（**该关系存在时宣战要付的代价**）、`buy_price`（未写 = 不可买）、`monthly_ongoing_price_first_country` / `_second_country`（持续维护费） |
@@ -259,7 +263,7 @@ trust_<key>      / trust_giving_<key>    / trust_receiving_<key>     / trust_dec
 
 | 接到 | 具体 |
 |---|---|
-| 贸易（贸易篇） | 条约关系能开关：贸易准入、禁运、通行费豁免、孤立豁免、**市场保护主义取消**（`lifts_trade_protection`）、双向市场吸引力（`trade_to_first/second`） |
+| 贸易（贸易篇） | 条约关系能开关：贸易准入、禁运、通行费豁免、孤立豁免、**取消市场保护**（`lifts_trade_protection`）、双向市场吸引力（`trade_to_first/second`） |
 | 文化宗教（文化与宗教篇） | `culture_view` / `religion_view` 与 `same_culture/court_language/common_language` **直接进 AI 接受度**；敌意的来源项就是文化·宗教·语言·政府·社会价值；王室联姻与共主邦联 |
 | 战争 | 宣战理由（宿敌/间谍网造 CB）、停战（`TRUCE_YEARS = 5` / `SCALED_TRUCE_YEARS = 10`）、召唤参战（条约的 `called_in_*` + 附属六件套）、战争热情（盟友倍率）；**战争侧完整机制（CB 三段门与生成进度、宣战代价 8 条价格、战争分数/参与度/热情、和约 64 个条款定义（53 数据档）与 46 条定价、WAR_WORTH、土地承诺与分赃、无条件投降）见 `vanilla\vanilla-combat.md` §七–§十** |
 | IO / 灾难局势 | IO 成员占外交容量；HRE 全套交互（选举/赐爵/自由市/帝国圈/帝国军）；教廷（绝罚/停圣事/贿选）；`belongs_to_international_organization` 进接受度 |

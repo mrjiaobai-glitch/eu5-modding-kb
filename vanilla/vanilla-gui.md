@@ -1,5 +1,44 @@
 # 原版解析：界面层 GUI（vanilla GUI）
 
+> **一句话**：逆向原版界面层：类型继承、blockoverride 覆盖契约、控件复用与 datamodel 绑定，以及筛选项、属性列、脚本化 GUI 与消息类型。
+> **什么时候看**：改界面布局、加筛选项或属性列、写 SGUI 与自定义本地化，或逆向 `.gui` 找不到官方文档时翻这篇。
+> **体量**：427 行 · 约 20 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、总览：GUI 是"四层拼起来"的](#一总览gui-是四层拼起来的)
+- [二、规模与组织](#二规模与组织)
+  - [2.1 三个加载域](#21-三个加载域)
+  - [2.2 `in_game\gui\` 的内部结构（6 个子目录）](#22-in_gamegui-的内部结构6-个子目录)
+  - [2.2b 前端/启动界面 GUI（8 个子目录，第八轮补齐）](#22b-前端启动界面-gui8-个子目录第八轮补齐)
+  - [2.3 根目录：41 个 `*lateralview.gui` + 巨型单文件](#23-根目录41-个-lateralviewgui--巨型单文件)
+  - [2.4 27 B 存根契约（一个值得注意的原版模式）](#24-27-b-存根契约一个值得注意的原版模式)
+- [三、`.gui` 语法模型（实测计数）](#三gui-语法模型实测计数)
+  - [3.0 校验白名单：`in_game\gui_validation_settings.json`（第八轮补齐）](#30-校验白名单in_gamegui_validation_settingsjson第八轮补齐)
+  - [3.1 控件库与复用](#31-控件库与复用)
+  - [3.2 真实片段（`ui_library.gui` 的标签页按钮）](#32-真实片段ui_librarygui-的标签页按钮)
+  - [3.3 交互与状态字段计数](#33-交互与状态字段计数)
+  - [3.4 `GetVariableSystem`：GUI 自己的变量存储](#34-getvariablesystemgui-自己的变量存储)
+  - [3.5 界面动画（timeline animation，**原版 56 个 `.gui` 在用**）](#35-界面动画timeline-animation原版-56-个-gui-在用)
+- [四、数据函数层（GUI 能拿到什么）](#四数据函数层gui-能拿到什么)
+- [五、Scripted GUI：玩家能点、AI 也能点](#五scripted-gui玩家能点ai-也能点)
+  - [5.1 定义（`common\scripted_guis\`，权威 = `scripted_guis.info` 1,004 B）](#51-定义commonscripted_guis权威--scripted_guisinfo-1004-b)
+  - [5.2 界面侧调用](#52-界面侧调用)
+  - [5.3 原版用量（少而深）](#53-原版用量少而深)
+- [六、四个数据驱动目录](#六四个数据驱动目录)
+  - [6.1 `attribute_columns`（列）——`gui\` 管外观、`common\` 管数据](#61-attribute_columns列gui-管外观common-管数据)
+  - [6.2 `filters`（筛选器）——GUI 层唯一有实质文档的目录](#62-filters筛选器gui-层唯一有实质文档的目录)
+  - [6.3 `sort_keys`（排序键）](#63-sort_keys排序键)
+  - [6.4 `messagetypes.txt`（消息/通知系统，`main_menu\gui\`）](#64-messagetypestxt消息通知系统main_menugui)
+  - [6.5 `main_menu\notifications\game.txt`（通知/对话框，1 档 / 2 KB）](#65-main_menunotificationsgametxt通知对话框1-档--2-kb)
+- [七、相关支撑层](#七相关支撑层)
+- [八、Mod 改造建议（可改 vs 硬编码）＋ 三个坑](#八mod-改造建议可改-vs-硬编码-三个坑)
+  - [8.1 四条硬规则](#81-四条硬规则)
+  - [8.2 三个坑（都有官方原文）](#82-三个坑都有官方原文)
+  - [8.3 该改哪一层（决策表）](#83-该改哪一层决策表)
+- [九、中文检索键](#九中文检索键)
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 | 类目 | 规模 | 权威 |
@@ -16,6 +55,8 @@
 | `gui\shared\` | 51 文件 / 1.6 MB（**过半是 tooltip 库**） | — |
 
 > ⚠️ **官方文档总量：5 份、约 4.8 KB**（filters readme 2,212 + attribute_columns readme 2,142 + scripted_guis.info 1,004 + customizable_localization.info 604 + scripted_widgets.info 554 + 两个面板 readme 463/540）。**10.7 MB 的界面层只配了 4.8 KB 说明**——GUI 是 EU5 文档最薄的一层，学它只能靠逆向 `.gui` 本体。
+
+
 
 ## 术语对照（中文译名与内部名）
 

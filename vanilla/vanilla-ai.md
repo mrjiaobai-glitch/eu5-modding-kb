@@ -1,5 +1,33 @@
 # 原版解析：AI（vanilla AI）
 
+> **一句话**：把 AI 拆成性格、权重、节拍、常量与脚本钩子五层，含 `NAI` 段 746 个常量、16 张外交接受度表与难度攻击性，并标注可改点。
+> **什么时候看**：改 AI 性格与接受度权重、调难度或攻击性、排查 AI 为何不打不签不建，或接 AI 脚本钩子时翻这篇。
+> **体量**：387 行 · 约 18 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、总览：AI 是"六层"结构](#一总览ai-是六层结构)
+- [二、性格层（`common\ai_personalities\`，8 种）](#二性格层commonai_personalities8-种)
+- [三、权重层：AI 想做某件事的评分](#三权重层ai-想做某件事的评分)
+  - [3.1 `ai_will_do`（**660 处**）——AI 评分的主力](#31-ai_will_do660-处ai-评分的主力)
+  - [3.2 其余权重键](#32-其余权重键)
+  - [3.3 `ai_diplochance\00_ai_diplochance.txt`——**16 张外交接受度表**](#33-ai_diplochance00_ai_diplochancetxt16-张外交接受度表)
+- [四、节拍层：AI 多久想一次](#四节拍层ai-多久想一次)
+- [五、常量层：`NAI` 段 746 个常量（515–1444 行）](#五常量层nai-段-746-个常量5151444-行)
+  - [5.1 战争平衡与胜率（决定"敢不敢打"）](#51-战争平衡与胜率决定敢不敢打)
+  - [5.2 扩张与征服欲望（`CONQUER_DESIRE_*` 27 个）](#52-扩张与征服欲望conquer_desire_-27-个)
+  - [5.3 战争与和平 AI](#53-战争与和平-ai)
+  - [5.4 军事 AI（`HUNT_ARMIES_` / `CARPET_SIEGE_` / 撤退）](#54-军事-aihunt_armies_--carpet_siege_--撤退)
+  - [5.5 外交、威胁与结盟](#55-外交威胁与结盟)
+  - [5.6 经济、建造与殖民](#56-经济建造与殖民)
+  - [5.7 储蓄模式（破产前 AI 的"过冬"状态）](#57-储蓄模式破产前-ai-的过冬状态)
+- [六、脚本钩子层（原版用量极少，但都是 mod 的正规入口）](#六脚本钩子层原版用量极少但都是-mod-的正规入口)
+- [七、难度与攻击性（`main_menu\common\static_modifiers\difficulty.txt`）](#七难度与攻击性main_menucommonstatic_modifiersdifficultytxt)
+- [八、AI 的认知边界（"看得见"与"记得住"）](#八ai-的认知边界看得见与记得住)
+- [九、Mod 改造建议（可改 vs 硬编码）](#九mod-改造建议可改-vs-硬编码)
+- [十、中文检索键](#十中文检索键)
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 | 类目 | 规模 | 权威 |
@@ -136,7 +164,7 @@ revoke_privileges_importance_modifier / revoke_privileges_stability_tolerance
 
 ```
 royal_marriage                # 联姻：不同宗教 −100 / 不同宗教组 −200 / 年龄(女) −10 / 联姻期望 +1…
-demand_become_subject_action  # 要求臣服：base −50、负债 +1.0、负稳定 +0.2、厌战 +0.5
+demand_become_subject_action  # 要求臣服：base −50、负债 +1.0、负稳定 +0.2、厌战度 +0.5
 offermilaccess / buy_milaccess
 offerloan                     # 一堆 −1000 硬否决：贷款太小 / 到期太早 / 太晚 / 利率太高 / 已有太多贷款
 sell_location / buy_location  # 注意两表符号相反（卖看 location_value +100，买看 capital −99999）

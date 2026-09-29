@@ -1,5 +1,9 @@
 # common/character_interactions（角色交互）
 
+> **一句话**：角色交互字段：对本国与他国角色的可用开关、价格与支付方、目标选择、AI 检查频率与冷却，根是角色而国家走另一作用域。
+> **什么时候看**：写角色交互，或排查根作用域与国家级触发写成角色时看。
+> **体量**：42 行 · 约 2 分钟通读
+
 来源：`in_game\common\character_interactions\readme.txt`
 
 ## 顶层字段

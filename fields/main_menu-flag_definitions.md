@@ -1,5 +1,9 @@
 # main_menu/common/flag_definitions（旗帜规则）
 
+> **一句话**：旗帜规则：列表加 flag_definition 的完整取旗流程、字段频次与触发器作用域对照表。
+> **什么时候看**：给国家配旗、写条件旗或宗主角标，要核对优先级与作用域时翻这篇。
+> **体量**：68 行 · 约 4 分钟通读
+
 来源：**文件头自带官方字段文档**（`00_flag_definitions.txt` 第 1–33 行注释即完整 schema + 作用域表）+ 9,622 行数据实查（**259 个列表 / 1,133 个 `flag_definition`**）。
 
 > 机制全貌（含 COA 本体、随机池、图集）见 `vanilla\vanilla-heraldry-and-flags.md`；本档是**字段权威 + 原版实测**。

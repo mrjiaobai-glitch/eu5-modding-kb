@@ -1,5 +1,9 @@
 # common/holy_site_types 与 common/holy_sites（圣地）
 
+> **一句话**：圣地两档：圣地类型的三个作用域修正与缩放规则，圣地本体的地点、类型、重要度、宗教列表及可选的神祇化身关联。
+> **什么时候看**：加圣地，或核对类型、神祇、化身等引用与重要度取值时看。
+> **体量**：38 行 · 约 2 分钟通读
+
 覆盖 readme：`in_game\common\holy_site_types\readme.txt`、`in_game\common\holy_sites\readme.txt`
 
 ## holy_site_types

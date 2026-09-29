@@ -1,5 +1,9 @@
 # common/generic_action_ai_lists（通用行动的 AI 列表）
 
+> **一句话**：把通用行动分组给 AI 的列表：可见条件与行动清单两个字段，未入列表的行动进全局列表，用于缩小 AI 的评估范围。
+> **什么时候看**：缩小 AI 对通用行动的评估范围，或核对行动清单引用时看。
+> **体量**：31 行 · 约 2 分钟通读
+
 来源：`in_game\common\generic_action_ai_lists\readme.txt`
 
 ## 用途

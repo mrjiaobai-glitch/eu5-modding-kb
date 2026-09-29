@@ -1,5 +1,9 @@
 # 原版解析：科技与时代（vanilla tech & age）
 
+> **一句话**：梳理时代—思潮—革新三层链条：6 个时代的修正与商品需求曲线、思潮 9 条传播通道速率、3178 条革新的字段与研究进度公式。
+> **什么时候看**：改时代节奏与修正、加思潮或革新、调研究速度，或要核对时代／思潮／革新这几个中文译名时翻这篇。
+> **体量**：254 行 · 约 12 分钟通读
+
 版本基准：EU5 1.3.x。核心文件：`common\age\00_default.txt`、`common\advances\`（190+ 文件）、`common\institution\`（6 个时代文件 + readme）、`events\ages.txt`、`common\script_values\institution_spread.txt`、`loading_screen\common\defines\00_defines.txt:190-193`。
 
 ## 术语对照（中文译名与内部名不同，易错）

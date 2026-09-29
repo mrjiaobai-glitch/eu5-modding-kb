@@ -1,5 +1,9 @@
 # 原版解析：事件 · 任务（vanilla events & missions）
 
+> **一句话**：实测原版 7,470 个事件与 11 条任务链的体量分布、字段真实使用次数、触发方式与任务奖励规则，并划出可改点与硬编码边界。
+> **什么时候看**：写事件或任务链、判断某字段原版是否真在用、排查任务不触发与奖励不生效时翻这篇。
+> **体量**：156 行 · 约 8 分钟通读
+
 版本基准：EU5 1.3.x。**本篇是什么**：事件与任务这两套"内容容器"的**原版体系实测**——原版怎么摆放 7,470 个事件、任务链由什么驱动、哪些字段文档里有而原版从不用、默认游戏规则会把什么关掉。
 
 > **分工**：字段全集见 `fields\common-events.md`、`fields\common-missions.md`；"怎么写一个事件"见 `guides\event-making.md`；调度语法（`events` / `random_events` / `delay` / `on_action` 全集）见 `fields\common-on_action.md` 与 `guides\scripting-core.md` §四。本篇只讲**原版事实与可改点**。

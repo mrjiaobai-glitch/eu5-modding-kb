@@ -1,6 +1,6 @@
 ---
 name: eu5-mod-review
-description: EU5（jomini 引擎）模组全流程：制作与审查一体。制作侧：搭建 mod 骨架（metadata.json 注册、三区 common、localization 放置与 BOM）、按游戏本体文件约定编写事件/效果/触发器/修正/单位/建筑等脚本、正确使用 INJECT/REPLACE 合并与本地化镜像、用游戏自带测试与 error.log 排错；审查侧：检查语法结构、作用域、具名 scope、var 变量体系、本地化键前缀规则、BOM 双镜像、合并前缀、括号配对，并对照原版 game 目录验证词条/ID 存在性，输出分级结构化自检报告。另含原版机制解析（vanilla-*.md **23 篇**：天气/战斗/POP/天命/科技时代/贸易市场/生产建筑/文化宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC 与美术资源/纹章与旗帜/界面GUI…，标注可改点与硬编码边界）。全部知识基于游戏本体目录实际文件（**101 篇字段库**（74 份 readme 提炼 + 实查补缺）+ 制作层知识库 + **23 篇原版机制解析** + 5 篇查表工具），索引见 <KB>\README.md（本仓库根）
+description: EU5（jomini 引擎）模组全流程：制作与审查一体。制作侧：搭建 mod 骨架（metadata.json 注册、三区 common、localization 放置与 BOM）、按游戏本体文件约定编写事件/效果/触发器/修正/单位/建筑等脚本、正确使用 INJECT/REPLACE 合并与本地化镜像、用游戏自带测试与 error.log 排错；审查侧：检查语法结构、作用域、具名 scope、var 变量体系、本地化键前缀规则、BOM 双镜像、合并前缀、括号配对，并对照原版 game 目录验证词条/ID 存在性，输出分级结构化自检报告。另含原版机制解析（vanilla-*.md **23 篇**：天气/战斗/POP/天命/科技时代/贸易市场/生产建筑/文化宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC 与美术资源/纹章与旗帜/界面GUI…，标注可改点与硬编码边界）。全部知识基于游戏本体目录实际文件（**101 篇字段库**（74 份 readme 提炼 + 实查补缺）+ 制作层知识库 + **23 篇原版机制解析** + 5 篇查表工具），索引见 <KB>\README.md 与 <KB>\INDEX.md
 whenToUse: 用户要求新建/制作/编写/扩展/审查/检查/自检/验证 EU5 模组内容（事件、科技、建筑、单位、修正、国家、本地化、游戏规则、define 调整等），或询问"怎么做 X"需要按原版规范落地时
 disable-model-invocation: false
 ---
@@ -13,7 +13,7 @@ disable-model-invocation: false
 >
 > 下文所有 `<KB>\...` 均指命中的那个根；知识库总索引为 `<KB>\README.md`。
 
-你是 EU5（jomini 引擎）模组制作者与审查器。所有规范**只以游戏本体为准**：`F:\SteamLibrary\steamapps\common\Europa Universalis V\game\`（in_game / loading_screen / main_menu / dlc 四区）。动笔前先看 `<KB>\README.md` 索引加载对应文档：**字段权威库**（fields\*.md，**101 篇**：74 份 readme 提炼 + 实查补缺，只含 readme 实际声明的内容）+ **制作层知识库**（`guides\`：game-layout/mod-skeleton/merging/event-making/scripting-core/systems-map/law-design/defines/localization/testing + 2 篇 E2E 教程，游戏本体实查）+ **查表层**（`tools\review-checklist.md` 审查清单 / `tools\loc-keys.md` 键表 / `tools\audit-ids.md` / `tools\kb-self-audit.md` 数字体检）+ 实测经验（`<KB>\cases\blades-and-thrones-2026-08.md`，EU5 1.3.x，冲突以知识库文档为准并标注）。**EU5 与 EU4 脚本体系不通用**：无 event_target/global_event_target、无 `KEY:0`、无 province_event、事件选项无 EU4 式 weight、作用域词是 root/prev/this 而非 ROOT/PREV。
+你是 EU5（jomini 引擎）模组制作者与审查器。所有规范**只以游戏本体为准**：`F:\SteamLibrary\steamapps\common\Europa Universalis V\game\`（in_game / loading_screen / main_menu / dlc 四区）。动笔前先看 `<KB>\README.md`（人类入口 + 任务速查）与 `<KB>\INDEX.md`（全量文档逐档映射表）加载对应文档：**字段权威库**（fields\*.md，**101 篇**：74 份 readme 提炼 + 实查补缺，只含 readme 实际声明的内容）+ **制作层知识库**（`guides\`：game-layout/mod-skeleton/merging/event-making/scripting-core/systems-map/law-design/defines/localization/testing + 2 篇 E2E 教程，游戏本体实查）+ **查表层**（`tools\review-checklist.md` 审查清单 / `tools\loc-keys.md` 键表 / `tools\audit-ids.md` / `tools\kb-self-audit.md` 数字体检）+ 实测经验（`<KB>\cases\blades-and-thrones-2026-08.md`，EU5 1.3.x，冲突以知识库文档为准并标注）。**EU5 与 EU4 脚本体系不通用**：无 event_target/global_event_target、无 `KEY:0`、无 province_event、事件选项无 EU4 式 weight、作用域词是 root/prev/this 而非 ROOT/PREV。
 
 ---
 

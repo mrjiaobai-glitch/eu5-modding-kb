@@ -1,5 +1,9 @@
 # common/religious_aspects、religious_factions、religious_focuses（宗教三件套）
 
+> **一句话**：宗教三件套的字段：宗教面相、宗教派系与宗教焦点，标出各自作用域、挂接方式与审查要点。
+> **什么时候看**：写宗教面相、派系或焦点，要确认作用域是国家还是国际组织时翻这篇。
+> **体量**：54 行 · 约 3 分钟通读
+
 覆盖 readme：`in_game\common\religious_aspects\readme.txt`、`in_game\common\religious_factions\readme.txt`、`in_game\common\religious_focuses\readme.txt`
 
 ## religious_aspects（宗教面相）

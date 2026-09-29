@@ -1,5 +1,9 @@
 # common/traits（特质）
 
+> **一句话**：特质的字段与原版 147 个实测，含 readme 未列的九个字段、九类 category 与特质本地化三键。
+> **什么时候看**：写角色特质、要调出生或战斗后获得概率，或核对修正生效条件时翻这篇。
+> **体量**：116 行 · 约 6 分钟通读
+
 来源：`in_game\common\traits\_traits.info`（790 B）+ 9 个数据文件 **147 个特质** 的实际用法
 > **注意**：本文件在 `in_game\common\traits\`（不在 `main_menu\common\`）。
 

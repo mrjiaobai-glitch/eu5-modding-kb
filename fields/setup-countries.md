@@ -1,5 +1,9 @@
 # setup/countries（国家定义，00_readme.info）
 
+> **一句话**：国家定义的字段与 2340 个国家块的字段分布，标出 readme 模板里原版零使用的两个字段。
+> **什么时候看**：加国家、要写地图色与文化宗教定义，或核对难度与描述类别时翻这篇。
+> **体量**：45 行 · 约 3 分钟通读
+
 来源：`in_game\setup\countries\00_readme.info`（注意扩展名为 .info，不是 readme.txt）
 
 ## 格式

@@ -1,5 +1,9 @@
 # common/scripted_relations（脚本化外交关系）
 
+> **一句话**：脚本化外交关系的字段全表：类型、外交容量、战争与间谍中断条件、各类价格与 AI 评估字段。
+> **什么时候看**：写自定义外交关系、要配置中断条件与 AI 意愿时翻这篇。
+> **体量**：82 行 · 约 4 分钟通读
+
 来源：`in_game\common\scripted_relations\readme.txt`
 
 ## 基础字段

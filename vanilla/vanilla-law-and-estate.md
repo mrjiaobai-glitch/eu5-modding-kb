@@ -1,5 +1,44 @@
 # 原版解析：法律 · 阶层 · 议会（vanilla law, estate & parliament）
 
+> **一句话**：讲法律／政策／阶层／议会三环的机制层：8 个阶层与特权、33 档法律、议会类型诉求议程、13 条叛乱诉求与 `NEstate` 常量，并标出硬编码边界。
+> **什么时候看**：设计法律与政策、调阶层力量与满意度、做议会诉求或叛乱谈判内容，或排查法律被自动撤销时翻这篇。
+> **体量**：355 行 · 约 17 分钟通读
+
+## 目录
+
+- [术语对照](#术语对照)
+- [一、三环总览](#一三环总览)
+- [二、阶层（`common\estates\00_default.txt`）](#二阶层commonestates00_defaulttxt)
+  - [8 个阶层与基础数值](#8-个阶层与基础数值)
+  - [三个核心数值（官方词条）](#三个核心数值官方词条)
+  - [三套修正块（线性差值模型）](#三套修正块线性差值模型)
+  - [经济角色](#经济角色)
+  - [阶层与角色](#阶层与角色)
+  - [文化与宗教影响（`NEstate`）](#文化与宗教影响nestate)
+  - [其他常量（`NEstate`）](#其他常量nestate)
+- [三、阶层特权（`common\estate_privileges\`）](#三阶层特权commonestate_privileges)
+- [四、阶层互动（Estate Interactions）——「阶层行动」面板](#四阶层互动estate-interactions阶层行动面板)
+  - [核心两个（`generic_actions\estates.txt`）](#核心两个generic_actionsestatestxt)
+  - [紧急行动 8 个（`estate_emergency_actions.txt`，每个 **5 年冷却**）](#紧急行动-8-个estate_emergency_actionstxt每个-5-年冷却)
+  - [其他来源（横跨大量行动文件，凡带 `estate_type` / 阶层门控的都进这个体系）](#其他来源横跨大量行动文件凡带-estate_type--阶层门控的都进这个体系)
+- [五、议会（Parliament）](#五议会parliament)
+  - [机制链条](#机制链条)
+  - [原版实测：数量与字段出现率（花括号深度解析）](#原版实测数量与字段出现率花括号深度解析)
+  - [议程字段（`parliament_agendas\readme.txt`）](#议程字段parliament_agendasreadmetxt)
+  - [诉求字段（`parliament_issues\readme.txt`）](#诉求字段parliament_issuesreadmetxt)
+  - [议会行动（`generic_actions\parliament.txt`，10 个）](#议会行动generic_actionsparliamenttxt10-个)
+  - [紧急行动（`generic_actions\estate_emergency_actions.txt`）——按阶层定向索取](#紧急行动generic_actionsestate_emergency_actionstxt按阶层定向索取)
+  - [议会相关修正键](#议会相关修正键)
+  - [议会类型与 IO 议会](#议会类型与-io-议会)
+- [六、叛乱诉求（`common\rebel_demands\`，13 条）](#六叛乱诉求commonrebel_demands13-条)
+- [七、法律（Laws）与政策（Policies）](#七法律laws与政策policies)
+  - [结构（`laws\readme.txt` 权威）](#结构lawsreadmetxt-权威)
+  - [⭐ IO 政策可"改写整个国际组织"](#-io-政策可改写整个国际组织)
+  - [法律解锁 vs 政策变更（⚠️ 这是两个不同概念，勿混用）](#法律解锁-vs-政策变更️-这是两个不同概念勿混用)
+  - [政策变更的八条途径（议会只是其中最常用的一种）](#政策变更的八条途径议会只是其中最常用的一种)
+- [八、Mod 改造建议（可改 vs 硬编码）](#八mod-改造建议可改-vs-硬编码)
+- [九、中文检索键](#九中文检索键)
+
 版本基准：EU5 1.3.x。核心文件：`common\estates\00_default.txt`（1275 行，8 个阶层）、`common\estate_privileges\`（8 文件，`nobles_estate.txt` 40KB 最大）、`common\laws\`（33 文件 + `readme.txt`）、`common\parliament_types|parliament_issues|parliament_agendas\`（各带 readme）、`common\rebel_demands\`（**13 条诉求**，含 12 条按叛乱类别的默认诉求）、`common\generic_actions\estates.txt` / `estate_emergency_actions.txt` / `parliament.txt` / `io_parliament.txt`、defines **`NEstate`（1639–1687）**。机制描述引自游戏内百科词条。
 
 > **三篇的分工**：本篇是**机制层**（系统怎么运转、数值在哪、什么被硬编码）；`guides\law-design.md` 是**制作层**（怎么写一条法律：字段用法、解锁链三处同步、政策配方、池子大小、命名三禁）；**政体与改革、官僚部门、社会价值观、国家等级**另见 `vanilla\vanilla-government-and-reform.md`（阶层的"上游"在那里）。三篇配合读。
@@ -11,7 +50,7 @@
 | `estate` | **阶层** | 国家内部利益集团（8 个） |
 | `estate_power` | 阶层力量 | 政府内政治力量 |
 | `estate_satisfaction` | 阶层满意度 | 需求满足程度 |
-| `estate_opinions` | 阶层观感 | 阶层**对他国**的观感 |
+| `estate_opinions` | 阶层外交倾向 | 阶层**对他国**的观感 |
 | `estate_privilege` | 阶层特权 | 提高阶层力量的特殊权利 |
 | `crown_power` | 王室力量 | 被阶层力量总和削弱 |
 | `law` | **法律** | 容器，含多个政策 |
@@ -61,7 +100,7 @@
 |---|---|
 | **阶层力量** | 很大程度取决于该阶层**下辖 POP 类型的人口规模** + 享有的**特权**；不同 POP 类型权重差异巨大（贵族远高于奴隶）。**所有阶层力量之和削弱王室力量**；地点的**人口规模 + 阶层力量 + POP 类型**决定该地**税基如何分配** |
 | **阶层满意度** | 高 → 国家获奖励修正；低 → 惩罚修正；**过低 → 无法从该阶层招募陆军/海军征召**；**并直接影响该阶层下辖 POP 的满意度**（→ 传导到叛乱） |
-| **阶层观感** | `opinion = { }` 块按来源逐项列：基础 opinion、威望差、权力投射差、社会价值轴偏差（`aristocracy_vs_plutocracy`、`serfdom_vs_free_subjects` 等） |
+| **阶层外交倾向** | `opinion = { }` 块按来源逐项列：基础 opinion、威望差、权力投射差、社会价值轴偏差（`aristocracy_vs_plutocracy`、`serfdom_vs_free_subjects` 等） |
 
 ### 三套修正块（线性差值模型）
 
@@ -69,8 +108,8 @@
 
 | 块 | 倍率（注释原文） | 实例（教士 / 市民） |
 |---|---|---|
-| `satisfaction` | ×(满意度 − 0.5) | 教士：研究速度 +0.5、外交声誉 +2；市民：商人力量 +0.5、生产效率 |
-| `high_power` | ×(相对力量 − 0.25)，仅当 > 阈值 | 教士：`clergy_estate_max_tax = -0.5`、改宗速度 **+2.0**、稳定度成本效率 +1、朝灵性主义漂移、`court_language_is_liturgical_language_importance_modifier = 12`；市民：`burghers_estate_max_tax = -0.5`、**商人容量 +100%**、海军维护效率 +0.5、宫廷语言=市场语言重要性 +12 |
+| `satisfaction` | ×(满意度 − 0.5) | 教士：研究速度 +0.5、外交声誉 +2；市民：贸易优势 +0.5、生产效率 |
+| `high_power` | ×(相对力量 − 0.25)，仅当 > 阈值 | 教士：`clergy_estate_max_tax = -0.5`、改宗速度 **+2.0**、稳定度成本效率 +1、朝灵性主义漂移、`court_language_is_liturgical_language_importance_modifier = 12`；市民：`burghers_estate_max_tax = -0.5`、**贸易容量 +100%**、海军维护效率 +0.5、宫廷语言=市场语言重要性 +12 |
 | `low_power` | ×−(相对力量 − 0.25)，仅当 < 阈值 | 教士：`clergy_estate_max_tax = +0.25`；市民：+0.5、语言重要性 −6 |
 
 ⚠️ **`high_power` 的代价设计**：阶层强大给机制性加成，但**同步扩大其免税额度**（贵族 `high_power` 时 `nobles_estate_max_tax = -1.0` 即完全免税）。"强阶层 = 收不到它的税，换机制加成"是原版的平衡轴。

@@ -1,5 +1,9 @@
 # common/ai_scripted_expansion_score 与 ai_scripted_expansion_target
 
+> **一句话**：AI 扩张评估的两类脚本：一个为战争目标加减分，一个用候选列表让 AI 看到本会忽略的国家，含各字段作用域。
+> **什么时候看**：要让 AI 主动打某个国家、或排查扩张目标不出现时看。
+> **体量**：39 行 · 约 2 分钟通读
+
 来源：`in_game\common\ai_scripted_expansion_score\readme.txt`、`in_game\common\ai_scripted_expansion_target\readme.txt`
 
 ## ai_scripted_expansion_score（AI 评估未来战争时为扩张目标加减分）

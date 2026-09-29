@@ -1,5 +1,9 @@
 # 原版解析：天命（vanilla mandate of heaven）
 
+> **一句话**：拆解天命系统的数值载体天朝威仪 `celestial_authority`、宣称天命 CB、夺取天命和约、入会条件与中华王朝危机，并标出可改点与硬编码边界。
+> **什么时候看**：要改天命数值、CB 条件、入会门槛或天命丧失危机，或写中华圈内容时翻这篇（天朝 IO 本身另见 IO 篇）。
+> **体量**：179 行 · 约 9 分钟通读
+
 版本基准：EU5 1.3.x。**本篇只讲天命系统本身**（宣称天命 CB、夺取天命和约、天命丧失危机、入会条件、科举与专属内容）；**天朝 IO 的结构已拆到 `vanilla\vanilla-international-organizations.md`**（作为 IO 的案例深挖 §六），两篇合读。核心文件：
 
 | 文件 | 内容 |
@@ -97,7 +101,7 @@ cb_claim_mandate_of_heaven = {
   - `confucian_group`：上述汉文化 + **korean + 日本（saigoku/tougoku/kyushu/touhoku）+ tamna + bai + hlai** ← 日、朝满足条件
   - `jurchen_group`：jurchen / haixi / hurga / udege
   - `mongolian_group`：mongolian / sarta / monguor / sibe / bonan / yugur / oirat / daur / buryat / khamag / kharchin / tumed
-- 汉化轴（`societal_values\00_default.txt:389-426`）：左 = Sinicized（立法效率 +0.25、研究 +0.1、商人容量 +0.2、朝贡收入 +0.25、文化传统 −0.5）；右 = Unsinicized（稳定度成本效率 +0.66、威望衰减 −0.002、文化传统 +0.5、商人容量 −0.2）。轴解锁：文化组非 `chinese_group` 且（是 CHI 附庸 ／ 首都位于东亚或东南亚 ／ 是中原 IO 成员）
+- 汉化轴（`societal_values\00_default.txt:389-426`）：左 = Sinicized（立法效率 +0.25、研究 +0.1、贸易容量 +0.2、朝贡收入 +0.25、文化传统 −0.5）；右 = Unsinicized（稳定度成本效率 +0.66、威望衰减 −0.002、文化传统 +0.5、贸易容量 −0.2）。轴解锁：文化组非 `chinese_group` 且（是 CHI 附庸 ／ 首都位于东亚或东南亚 ／ 是中原 IO 成员）
 
 ## 五、和平条约"夺取天命"（`peace_treaties\take_mandate_of_heaven.txt`）
 

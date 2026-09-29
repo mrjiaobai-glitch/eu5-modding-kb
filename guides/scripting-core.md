@@ -1,5 +1,9 @@
 # 核心脚本体系（scripting-core）
 
+> **一句话**：四大脚本基石的写法：script_values 公式、scripted_effects / triggers 宏、on_action 定义键，兼作用域与变量。
+> **什么时候看**：写数值、效果宏、条件宏或往 on_action 挂内容之前，用这里的语法与键全集核对。
+> **体量**：113 行 · 约 6 分钟通读
+
 四大基石：**script_values**（数值）、**scripted_effects**（效果宏）、**scripted_triggers**（条件宏）、**on_action**（触发钩子）。权威来源：`in_game\common\script_values\_script_values.info`、`in_game\common\scripted_effects\readme.txt`、`in_game\common\on_action\on_actions.info`。
 
 ## 一、Script Values（`in_game\common\script_values\`）

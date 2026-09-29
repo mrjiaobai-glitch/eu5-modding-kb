@@ -1,5 +1,9 @@
 # common/attribute_columns（属性列）
 
+> **一句话**：交互界面里"列"的定义：widget 与宽度、是否吸收剩余宽度，以及按文本或数值排序的 sort 块结构。
+> **什么时候看**：给通用行动或角色交互的目标列表加列、加排序时翻这篇。
+> **体量**：37 行 · 约 2 分钟通读
+
 来源：`in_game\common\attribute_columns\readme.txt`
 
 ## 用途

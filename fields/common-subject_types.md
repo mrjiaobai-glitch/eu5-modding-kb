@@ -1,5 +1,38 @@
 # common/subject_types（附庸类型）
 
+> **一句话**：附庸类型的 74 字段全景与作用域表，含纳贡、吞并速度、忠诚、解约路径与解约义务实测。
+> **什么时候看**：新增附庸类型、要调吞并或忠诚，或核对各触发器 root 作用域时翻这篇。
+> **体量**：482 行 · 约 22 分钟通读
+
+## 目录
+
+- [触发类字段（作用域各异，重点核对）](#触发类字段作用域各异重点核对)
+- [数值/枚举字段](#数值枚举字段)
+- [审查要点](#审查要点)
+- [subject_pays 实现（属国每月付宗主，2026-09 实测）](#subject_pays-实现属国每月付宗主2026-09-实测)
+- [四种"殖民 / 海外"附属国（2026-09 实测）](#四种殖民--海外附属国2026-09-实测)
+- [实查补缺（2026-09，readme 未写但实测确认）](#实查补缺2026-09readme-未写但实测确认)
+  - [`annexation_speed` 可以是动态的（2026-09 实测，含"越久越难吞"的做法）](#annexation_speed-可以是动态的2026-09-实测含越久越难吞的做法)
+  - [❌ `subject_territory_connectivity` 不可脚本读（2026-09 实测）](#-subject_territory_connectivity-不可脚本读2026-09-实测)
+  - [附庸吞并的完整机制与反制（2026-09 实测）](#附庸吞并的完整机制与反制2026-09-实测)
+  - [脚本值里可读的"附庸状态"（2026-09 实测）](#脚本值里可读的附庸状态2026-09-实测)
+  - [三个"谈判成本"字段的实测校准（2026-09；含一处 KB 更正）](#三个谈判成本字段的实测校准2026-09含一处-kb-更正)
+- [义务轴：`vassal`（紧极）↔ `tributary`（松极）](#义务轴vassal紧极-tributary松极)
+- [解约路径：引擎白送的 CB（**不要自建**）](#解约路径引擎白送的-cb不要自建)
+  - [解约动作带来的 loc 义务](#解约动作带来的-loc-义务)
+- [忠诚：`subject_modifier` 里的 `loyalty_to_overlord`](#忠诚subject_modifier-里的-loyalty_to_overlord)
+  - [⚠️ 别和 `subject_loyalty` 搞混（两个键都是 `category=country`，写错不报错）](#️-别和-subject_loyalty-搞混两个键都是-categorycountry写错不报错)
+  - [忠诚是**算出来的**，没有"初始值"这个库存](#忠诚是算出来的没有初始值这个库存)
+  - [集权／分权轴：一个 `subject_loyalty` 的 ±大坑](#集权分权轴一个-subject_loyalty-的-大坑)
+  - [本体镜像范例：`fiefdom` 就是"漂移 + 补忠诚"的完整写法](#本体镜像范例fiefdom-就是漂移--补忠诚的完整写法)
+- [74 字段全景：别只写 readme 上那十几个](#74-字段全景别只写-readme-上那十几个)
+  - [⚠️ 事实上的必填：20/20 全用的 15 个](#️-事实上的必填2020-全用的-15-个)
+  - [紧↔松轴上的字段实测（`vassal` 紧极 vs `tributary` 松极）](#紧松轴上的字段实测vassal-紧极-vs-tributary-松极)
+  - [⚠️ "只写过 `yes`"的字段：省略 = 否](#️-只写过-yes的字段省略--否)
+  - [`color`：类型自己的字段，指向命名色](#color类型自己的字段指向命名色)
+  - [其他易漏项](#其他易漏项)
+  - [可复现脚本（pwsh，非递归，单目录）](#可复现脚本pwsh非递归单目录)
+
 来源：`in_game\common\subject_types\readme.txt`
 
 ## 触发类字段（作用域各异，重点核对）
@@ -73,7 +106,7 @@
 | 政体 | republic | — | — | republic |
 
 - **`colonial_nation` 的关键标记是 `is_colonial_subject = yes`**——殖民地联邦 IO、殖民革命局势、`merge_colonies`、`send_people_to_the_colonies` 全都用它来识别"殖民附属国"；写自定义殖民附属国类型时**必须带上这个字段**。
-- 殖民领另有：宗主兼任统治者 = no、`will_join_independence_wars = yes`、`shares_exploration_with_overlord = yes`、`merchants_to_overlord_fraction = 0.33`（商人力量上交）、`can_change_heir_selection = no`；`subject_creation_enabled` / `release_country_enabled` 都要求目标省份 `is_overseas_for_owner = yes`。
+- 殖民领另有：宗主兼任统治者 = no、`will_join_independence_wars = yes`、`shares_exploration_with_overlord = yes`、`merchants_to_overlord_fraction = 0.33`（贸易优势上交）、`can_change_heir_selection = no`；`subject_creation_enabled` / `release_country_enabled` 都要求目标省份 `is_overseas_for_owner = yes`。
 - 机制全貌见 `vanilla\vanilla-colonization-and-exploration.md` §6。
 
 ## 实查补缺（2026-09，readme 未写但实测确认）
@@ -206,7 +239,7 @@ on_annexation_start = {
 **注册的 `annex` 修正键共 8 个**（`00_modifier_types.txt`）：
 `diplomatic_annexation_efficiency`(3816, good/percent) · `hostile_diplomatic_annexation_efficiency`(3824, percent) · `annexation_speed_base`(5919) · `annexation_speed_modifier`(5925, percent) · `ai_force_annexation_modifier`(12551, ai) · `rtr_demand_annexation_price_cost_modifier`(13120, bad) · `years_to_annex_members`(15436, **IO 类目**) · `enable_annexation_of_members`(15444, **IO 类目, boolean**)
 
-> ⚠️ **`annexation_speed_modifier` 不是"按类型"的旋钮。** 它 `category=country`、**宗主全域**，而且经 `overlord_modifier` 施加时**按该类型附庸的数量叠加**（`overlord_modifier` 每个附庸关系发一份——本体 `hanseatic_member` 每个成员 +2.5% 商人容量、`appanage` 每个 −0.025 征召规模、`vassal` 每个推 0.025 分权，都是这个用法）。**结果是"这类附庸越多，宗主吞并*所有*附庸都越快"，做不到"就这个类型更难吞"。** 要按类型定向，只能用 `annexation_speed` 字段本身。
+> ⚠️ **`annexation_speed_modifier` 不是"按类型"的旋钮。** 它 `category=country`、**宗主全域**，而且经 `overlord_modifier` 施加时**按该类型附庸的数量叠加**（`overlord_modifier` 每个附庸关系发一份——本体 `hanseatic_member` 每个成员 +2.5% 贸易容量、`appanage` 每个 −0.025 征召规模、`vassal` 每个推 0.025 分权，都是这个用法）。**结果是"这类附庸越多，宗主吞并*所有*附庸都越快"，做不到"就这个类型更难吞"。** 要按类型定向，只能用 `annexation_speed` 字段本身。
 
 > ⚠️ **附庸侧的反制键是另外两个**：`frustrate_annexation` 内阁行动给 `hostile_diplomatic_annexation_efficiency = -0.2`（`cabinet_actions\frustrate_annexation.txt:27`），`sow_disloyalty` 给 `loyalty_to_overlord = -10`（`sow_disloyalty.txt:16-18`）。**附庸侧永远不用 `annexation_speed_modifier`。**
 
@@ -472,6 +505,3 @@ Get-ChildItem $d -File -Filter *.txt | Where-Object { $_.Name -ne 'readme.txt' }
 }
 $f.GetEnumerator() | Sort-Object Value -Descending | ForEach-Object { "{0,3}  {1}" -f $_.Value, $_.Key }
 ```
-
-
-

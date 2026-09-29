@@ -1,5 +1,44 @@
 # 原版解析：国际组织 IO（vanilla international organizations）
 
+> **一句话**：拆解 36 个 IO 的定义与字段，含 21 个决议的投票、特殊地位、定期付款、土地规则、IO 议会与常量，并以天朝 IO 作案例深挖。
+> **什么时候看**：写新 IO、改成员加入退出与领袖变更、做决议投票或定期付款，或接 IO 的脚本钩子时翻这篇。
+> **体量**：356 行 · 约 17 分钟通读
+
+## 目录
+
+- [术语对照（中文译名与内部名）](#术语对照中文译名与内部名)
+- [一、总览：IO 是一台"可脚本化的多国容器"](#一总览io-是一台可脚本化的多国容器)
+- [二、顶层字段全表（readme 24.4 KB 分类归纳）](#二顶层字段全表readme-244-kb-分类归纳)
+  - [2.1 身份与目标](#21-身份与目标)
+  - [2.2 领袖：**三种触发 × 五种方法**](#22-领袖三种触发--五种方法)
+  - [2.3 成员进出](#23-成员进出)
+  - [2.4 修正（5 类）与变量系统](#24-修正5-类与变量系统)
+  - [2.5 议会与决议](#25-议会与决议)
+  - [2.6 战争与军事](#26-战争与军事)
+  - [2.7 外交倾向与吞并](#27-外交倾向与吞并)
+  - [2.8 三作用域脚本清单（readme 138–201 行）](#28-三作用域脚本清单readme-138201-行)
+- [三、36 个 IO 一览（实测字段对照）](#三36-个-io-一览实测字段对照)
+- [四、IO 议会与决议引擎](#四io-议会与决议引擎)
+  - [4.1 议会（`generic_actions\io_parliament.txt` + `io_parliament_bribes.txt`）](#41-议会generic_actionsio_parliamenttxt--io_parliament_bribestxt)
+  - [4.2 决议字段（`resolutions\readme.txt` 权威）](#42-决议字段resolutionsreadmetxt-权威)
+  - [4.3 实例：HRE 皇帝选举（`resolutions\hre_election.txt`，13 KB）](#43-实例hre-皇帝选举resolutionshre_electiontxt13-kb)
+- [五、三个子类目](#五三个子类目)
+  - [5.1 `international_organization_special_statuses\`（11 文件）](#51-international_organization_special_statuses11-文件)
+  - [5.2 `international_organization_payments\`（7 文件）](#52-international_organization_payments7-文件)
+  - [5.3 `international_organization_land_ownership_rules\`（9 文件）](#53-international_organization_land_ownership_rules9-文件)
+- [六、案例深挖：天朝 IO（`middle_kingdom.txt`，7.7 KB）](#六案例深挖天朝-iomiddle_kingdomtxt77-kb)
+  - [6.1 身份与领袖](#61-身份与领袖)
+  - [6.2 修正：成员被"汉化"](#62-修正成员被汉化)
+  - [6.3 加入 / 离开](#63-加入--离开)
+  - [6.4 变量：天威与总督数](#64-变量天威与总督数)
+  - [6.5 付款：**皇帝付钱给朝贡国**](#65-付款皇帝付钱给朝贡国)
+  - [6.6 特殊地位：天朝总督（`celestial_governor`）](#66-特殊地位天朝总督celestial_governor)
+  - [6.7 天朝与外部系统的接口](#67-天朝与外部系统的接口)
+- [七、其余大 IO 速览](#七其余大-io-速览)
+- [八、耦合表（跨系统接口）](#八耦合表跨系统接口)
+- [九、Mod 改造建议（可改 vs 硬编码）](#九mod-改造建议可改-vs-硬编码)
+- [十、中文检索键](#十中文检索键)
+
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
 | 类目 | 规模 | 权威 |

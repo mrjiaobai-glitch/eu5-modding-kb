@@ -1,5 +1,9 @@
 # common/international_organizations（国际组织系列）
 
+> **一句话**：国际组织系列的压缩字段表：组织本体、土地所有权规则、付款与特殊地位四档，另附国际组织专用的触发器、效果与链接清单。
+> **什么时候看**：做国际组织内容、查国际组织脚本接口，或核对唯一类型链接限制时看。
+> **体量**：108 行 · 约 5 分钟通读
+
 覆盖 readme：`in_game\common\international_organizations\readme.txt`、`international_organization_land_ownership_rules\readme.txt`、`international_organization_payments\readme.txt`、`international_organization_special_statuses\readme.txt`
 
 ## international_organizations 字段（压缩表）

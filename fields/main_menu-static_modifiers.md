@@ -1,5 +1,9 @@
 # main_menu/common/static_modifiers（静态修正）
 
+> **一句话**：静态修正的 game_data 字段：十种作用域类别、衰减开关与随宗教文化自动移除的选项。
+> **什么时候看**：写静态修正、要核对作用域类别枚举或本地化键格式时翻这篇。
+> **体量**：27 行 · 约 2 分钟通读
+
 来源：`main_menu\common\static_modifiers\readme.txt`（注意：位于 main_menu，不在 in_game）
 
 ## 字段

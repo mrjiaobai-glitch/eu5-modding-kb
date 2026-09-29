@@ -1,5 +1,9 @@
 # in_game/common/biases（观感来源注册表）
 
+> **一句话**：观感来源注册表：观感变化的原因标签在此登记，共八个档一千余条，含数值、上下限与时限字段及硬编码档提示。
+> **什么时候看**：新增观感原因标签，或审查是否删改了硬编码档时翻这篇。
+> **体量**：51 行 · 约 3 分钟通读
+
 来源：**无 readme**——8 个档实查（`00_opinion_hardcoded.txt` 5,380 B / `01_opinion_scripted_diplomacy.txt` 9,438 B / `02_opinion_subject_types.txt` 967 B / `03_opinion_from_events.txt` 48,855 B / …），合计 **1,140 个条目**。
 
 ## 它是什么

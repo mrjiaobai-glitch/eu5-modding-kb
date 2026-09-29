@@ -1,5 +1,9 @@
 # common/town_rights（城镇特权）+ common/town_setups（城镇建筑模板）
 
+> **一句话**：城镇特权与城镇建筑模板两组字段：地点修正、征服后保留开关，以及建筑名等于等级的模板写法。
+> **什么时候看**：写城镇特权、调征服后保留行为，或改城镇自带建筑模板时翻这篇。
+> **体量**：73 行 · 约 4 分钟通读
+
 来源：`in_game\common\town_rights\readme.txt`（5 行）+ 9 个数据文件 **50 项特权**；`town_setups\00_default.txt` **117 个模板**（无 readme）
 
 ## town_rights 字段

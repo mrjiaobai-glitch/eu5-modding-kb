@@ -1,5 +1,9 @@
 # common/genes（外貌基因）+ common/ethnicities（族群）
 
+> **一句话**：外貌基因与族群两档：基因的六种顶层容器与继承、年龄曲线写法，族群按权重给基因分配取值区间并继承基模板。
+> **什么时候看**：做外貌与族群内容，或核对模板引号与权重为零的语义时看。
+> **体量**：112 行 · 约 6 分钟通读
+
 来源：`in_game\common\genes\_genes.info`（1 050 B，**自称 "very incomplete"**）+ 10 个 genes 数据文件（418 KB）+ 54 个 ethnicities 文件（629 KB，**无 readme**）
 
 > 用途分工：**genes = 外貌特征的定义与继承规则**；**ethnicities = 每个族群给这些基因分配的权重表**。`_genes.info` 开头一句就是 "Genes connect to the /ethnicities"。
