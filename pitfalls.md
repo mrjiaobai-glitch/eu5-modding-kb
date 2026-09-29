@@ -48,7 +48,7 @@
 - **注意区分**：技能库自身的 `.md`（`~\.dsh\skills\`）**不带 BOM**（已实测 5 个文件全无）。BOM 要求只针对 mod 目录下的文件。
 - yml 键必须在语言头（`l_simp_chinese:`）下且缩进；顶格键会毁文件。
 - 事件选项 name 写裸中文 → raw key；必须 `<ns>.<id>.a` 形式。
-- 镜像：main_menu 与 in_game 两侧同键冲突时以加载顺序后者为准（eu5-mod-review 记为"加载 main_menu 侧为主"——**实测以版本为准，键尽量不重复定义**）。
+- 本地化**不需要双镜像**：`main_menu\localization\<lang>\` 与 `in_game\localization\<lang>\` 两处都会被加载，但实测 36 个 mod 里 22 个只放 main_menu、7 个只放 in_game、7 个两者都用（且无同路径镜像文件）——**"两侧键必须一致"是旧文档的误记**。同键冲突以加载顺序后者为准，键尽量不重复定义。
 
 ## 六、AI 生态坑（观察者模式 160 年 0 触发教训）
 

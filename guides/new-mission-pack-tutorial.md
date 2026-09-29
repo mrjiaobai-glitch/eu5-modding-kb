@@ -98,7 +98,7 @@ select_trigger = {
  my_chain_no_markets: "No valid markets"
 ```
 
-- 文件要 **UTF-8 BOM**；键顶格写在 `l_<lang>:` 之下。
+- 文件要 **UTF-8 BOM**；语言头放第 1 行，键**缩进一个空格**写在 `l_<lang>:` 之下（顶格会毁文件，见 `guides\localization.md`）。
 - 任务 loc **不在** `main_menu\localization\<lang>\` 顶层，而在 `missions\` 子目录里（`tools\loc-keys.md` 判缺键第 3 条）。
 
 ## 第 4 步：图标（可后补）

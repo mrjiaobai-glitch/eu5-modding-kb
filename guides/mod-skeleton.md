@@ -46,7 +46,7 @@ mod\<mod名>\
 1. **只放要改的文件**：同路径同名 = 覆盖/合并原版（见 `merging.md`）；不存在的路径 = 新增。原版没有的类目子目录直接新建即可。
 2. **加载顺序 = 文件名**：`00_` 前缀最先加载，数字越小越先；同数字按文件名序。原版惯例：`00_default.txt` / `0_xxx.txt` / `1_xxx.txt` / `2_xxx.txt` / `3_xxx.txt`（如 unit_types：0_tribal → 1_uniques_for_age_x → 2_unlocked_through_tech → 3_special）。mod 文件建议用大数字或 `zzz_` 前缀保证后加载（后加载的普通条目可覆盖先加载的同名条目；INJECT 语义见 merging.md）。
 3. **本地化文件命名**：`<主题>_l_<lang>.yml`，主题建议用 mod 名前缀（真实 mod 用 `zzz_blades_and_thrones_l_english.yml`）。
-4. **语言目录**：mod 可放 `in_game\localization\<lang>\` 或 `main_menu\localization\<lang>\`（真实 mod 两者都有用；原版主语言文件在 main_menu，**同键时加载顺序后者胜出，注意镜像规则见 `localization.md`**）。
+4. **语言目录**：mod 可放 `in_game\localization\<lang>\` 或 `main_menu\localization\<lang>\`——**两处都会加载，但不必互为镜像**（43 个真实 mod 实测：22 个只放 main_menu、7 个只放 in_game、7 个两者都用且无同路径同名文件；详见 `localization.md`）。同键时加载顺序后者胜出，键尽量不重复定义。
 5. **编码**：yml 必须 UTF-8 **BOM**；txt 建议 BOM。
 6. **改名/删除原版文件不可取**：用合并前缀或整体覆盖。
 

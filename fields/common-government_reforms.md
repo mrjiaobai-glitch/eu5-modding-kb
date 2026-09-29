@@ -2,7 +2,7 @@
 
 > **一句话**：政府改革字段：三档修正块与实施时长、出现条件，以及全局互斥标记、槽位来自革新、实施不花钱三条原版事实。
 > **什么时候看**：写政体改革、判断互斥标记是否挤掉原有路线，或核对社会价值门槛时看。
-> **体量**：84 行 · 约 4 分钟通读
+> **体量**：146 行 · 约 7 分钟通读
 
 来源：`in_game\common\government_reforms\readme.txt`（22 行）+ 6 个数据文件 **328 项改革** 的实际用法
 
@@ -81,3 +81,65 @@
 - `societal_values` 填的是 **focus 标签**（纯本地化键，本体无定义块）；写错不报错，只是永远不满足条件。
 - `age` / `government` / `potential` 写错 → 改革在界面里**根本不出现**。
 - 未在 readme 中说明：本地化键格式（`<id>` 同名 + `_desc`）、`content_priority` 语义、槽位来自革新、以及"实施改革不花钱"这一事实。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\government_reforms\` 全量 **6 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **口径**：字段 = 顶层块内的 ``key =``；已排除 readme 以 ``<模式>`` 声明的键、以及本体修正注册表（``modifier_type_definitions``，2,437 键）内的修正名。
+
+### 一、原版在用、readme 未声明的字段
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `content_priority` | 40 | 2 | 800（6）、400（6）、600（5）、100（4）、900（4） |
+| `icon` | 3 | 1 | soyurghal_governor_reform（2）、tawantinsuyu_monarchy（1） |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`years`**（7 种）：2（262）、1（29）、0（3）、3（2）、4（2）、10（1）、0.25（1）
+- **`age`**（6 种）：age_1_traditions（59）、age_3_discovery（27）、age_4_reformation（26）、age_2_renaissance（20）、age_6_revolutions（15）、age_5_absolutism（13）
+- **`unique`**（1 种）：yes（129）
+- **`government`**（5 种）：monarchy（49）、republic（26）、theocracy（5）、tribe（1）、steppe_horde（1）
+- **`major`**（1 种）：yes（58）
+- **`content_priority`**（11 种）：800（6）、400（6）、600（5）、100（4）、900（4）、300（4）、1100（3）、200（3）、1000（2）、700（2）、500（1）
+- **`icon`**（2 种）：soyurghal_governor_reform（2）、tawantinsuyu_monarchy（1）
+- **`block_for_rebel`**（1 种）：yes（3）
+- **`months`**（2 种）：6（2）、3（1）
+
+### 三、readme 声明、但本类目内原版 0 使用
+
+> ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
+
+| 字段 | 本类目 | 全库其它类目 |
+| --- | --- | --- |
+| `days` | 0 次（6 档） | **有**（写在别的类目） |
+| `female_regnal_names` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
+| `on_fully_activated` | 0 次（6 档） | **有**（写在别的类目） |
+| `province_modifier` | 0 次（6 档） | **有**（写在别的类目） |
+| `weeks` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
+
+### 四、深度 1 的块（子条目：政策／变体／子类型等）
+
+| 块名 | 次数 | 文件数 |
+| --- | --- | --- |
+| `societal_values` | 51 | 2 |
+
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `has_or_had_tag` | 147 | potential、OR、allow、AND |
+| `OR` | 89 | culture、capital、custom_tooltip、potential |
+| `NOT` | 85 | custom_tooltip、french_ducal_vassal_reform、locked、any_child |
+| `government_reform_slots` | 81 | country_modifier |
+| `has_unlocked_government_reform_trigger` | 71 | potential、allow |
+| `has_variable` | 59 | NOT、custom_tooltip、NOR、locked |
+| `culture` | 59 | potential、locked、allow、OR |
+| `type` | 56 | has_unlocked_government_reform_trigger、is_locked_mechanic |
+| `global_crown_estate_power` | 46 | country_modifier |
+| `has_reform` | 41 | potential、NOR、allow、NOT |
+| `mechanic` | 41 | is_locked_mechanic |
+| `is_locked_mechanic` | 41 | locked、custom_tooltip |
+| `nobles_estate_target_satisfaction` | 27 | country_modifier |
+| `country_cabinet_efficiency` | 26 | country_modifier |
+| `global_nobles_estate_power` | 25 | country_modifier |

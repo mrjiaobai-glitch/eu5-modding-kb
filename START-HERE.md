@@ -33,7 +33,7 @@
 | 审查自己的 mod | `tools\review-checklist.md` → `tools\error-log-decoder.md` → `pitfalls.md` | 按"错误 / 警告 / 建议 / 存疑"分级出报告；引用类 ID 逐个核对存在性见 `tools\audit-ids.md` |
 | 排错（崩溃 / 报错 / 中文乱码） | `tools\error-log-decoder.md` → `guides\testing.md` | 先判断报错归属（原版还是自己），`error.log` 里带 `Script location:` 的那行才是定位 |
 | 搞清某机制能不能改 | `vanilla\` 对应篇（23 篇，篇末都标了"可改 vs 硬编码"）→ `guides\defines.md` | 例：天气的风暴实际效果是硬编码，只能改生成与挂钩点 |
-| 改本地化 / 修乱码 | `guides\localization.md` → `tools\loc-keys.md` | BOM 是 EU5 特有的硬要求；两处镜像的键必须完全一致 |
+| 改本地化 / 修乱码 | `guides\localization.md` → `tools\loc-keys.md` | BOM 是 EU5 特有的硬要求；键必须缩进在语言头下；放 `main_menu\` 或 `in_game\` 都行（**不必互为镜像**） |
 
 ## 三、按你的角色
 
