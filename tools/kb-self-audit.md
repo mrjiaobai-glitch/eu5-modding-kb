@@ -142,3 +142,5 @@
 - `mod-lint.ps1` —— mod **静态自检**：骨架 metadata、花括号配对、本地化（BOM／语言头／顶格／重复键）、事件（namespace／ID 唯一／loc 键存在性），输出按错误/警告/建议/存疑分级。
 
 **教训（写在这里防止再犯）**：本库出的知识错误几乎都源于**"凭印象写规则、没有量本体"**。凡是要写成铁律的断言，必须先给出本体或大规模实测的**计数**；给不出计数的，一律降级为"待核实"。
+
+**发布后核对的口径（2026-09 踩过）**：`raw.githubusercontent.com` 有 CDN 缓存，**刚推完拉 raw 可能仍是旧内容**（实测：推完立即拉 `fields/common-unit_types.md` 得 45 行旧版，而 API/网页已是 142 行新版；加 `?v=` 参数也绕不过）。**核对一律走 API**：`GET /repos/{owner}/{repo}/contents/<path>?ref=main`（返回 base64 正文 + sha）或 `GET /repos/{owner}/{repo}/git/trees/main?recursive=1` 比对 blob sha；两者与本地发布副本的 git-blob 哈希一致才算推成功。
