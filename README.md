@@ -1,5 +1,9 @@
 # EU5 Modding 知识库（eu5-modding）
 
+> 🧪 **本分支 = EU5 1.4 open beta 适配**（本体 2026-10-01 起为测试版）；行号/defines/计数已按 beta 重校，见 `tools\kb-self-audit.md` 第十轮。
+> ⚠️ 正文里那句「**EU5 1.3.x**」**已过时**，以本条为准。**正式版（1.3.x）请用 `main` 或 tag `1.3.x-stable`。**
+
+
 > **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——19.5 万字、156 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
 >
 > **怎么用**：
