@@ -2,7 +2,7 @@
 
 > **一句话**：实测 8 种 POP 类型与阶层结构，给出增长、晋升、迁移、同化改宗与满意度叛乱阈值的原版常量，多在 `NPop`／`NCharacter` 段。
 > **什么时候看**：要改 POP 类型、晋升／满意度／叛乱数值、阶层权力税收，或排查人口与就业问题时翻这篇。
-> **体量**：136 行 · 约 7 分钟通读
+> **体量**：135 行 · 约 7 分钟通读
 
 版本基准：EU5 1.3.x。核心文件：`common\pop_types\00_default.txt`（240 行）、`common\estates\00_default.txt`（1275 行）、`common\employment_systems\`、`loading_screen\common\defines\00_defines.txt` 的 `NPop`（1591–1637）与 `NCharacter`（同化修正 1487–1506）。
 

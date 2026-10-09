@@ -2,7 +2,7 @@
 
 > **一句话**：政府改革字段：三档修正块与实施时长、出现条件，以及全局互斥标记、槽位来自革新、实施不花钱三条原版事实。
 > **什么时候看**：写政体改革、判断互斥标记是否挤掉原有路线，或核对社会价值门槛时看。
-> **体量**：146 行 · 约 7 分钟通读
+> **体量**：158 行 · 约 8 分钟通读
 
 来源：`in_game\common\government_reforms\readme.txt`（22 行）+ 6 个数据文件 **328 项改革** 的实际用法
 
@@ -91,55 +91,68 @@
 
 | 字段 | 次数 | 文件数 | 常见取值（前 5） |
 | --- | --- | --- | --- |
-| `content_priority` | 40 | 2 | 800（6）、400（6）、600（5）、100（4）、900（4） |
-| `icon` | 3 | 1 | soyurghal_governor_reform（2）、tawantinsuyu_monarchy（1） |
+| `graphical_cultures` | 2 | 2 |  |
 
 ### 二、取值白名单（本体出现过的值 + 次数）
 
-- **`years`**（7 种）：2（262）、1（29）、0（3）、3（2）、4（2）、10（1）、0.25（1）
-- **`age`**（6 种）：age_1_traditions（59）、age_3_discovery（27）、age_4_reformation（26）、age_2_renaissance（20）、age_6_revolutions（15）、age_5_absolutism（13）
-- **`unique`**（1 种）：yes（129）
-- **`government`**（5 种）：monarchy（49）、republic（26）、theocracy（5）、tribe（1）、steppe_horde（1）
-- **`major`**（1 种）：yes（58）
-- **`content_priority`**（11 种）：800（6）、400（6）、600（5）、100（4）、900（4）、300（4）、1100（3）、200（3）、1000（2）、700（2）、500（1）
+- **`years`**（7 种）：2（289）、1（30）、0（3）、4（2）、3（2）、10（1）、0.25（1）
+- **`age`**（6 种）：age_1_traditions（71）、age_3_discovery（53）、age_2_renaissance（49）、age_4_reformation（41）、age_5_absolutism（35）、age_6_revolutions（22）
+- **`unique`**（1 种）：yes（134）
+- **`government`**（5 种）：monarchy（53）、republic（27）、theocracy（5）、steppe_horde（1）、tribe（1）
+- **`major`**（1 种）：yes（62）
+- **`content_priority`**（11 种）：400（6）、800（6）、100（5）、600（5）、900（4）、300（4）、1100（3）、200（3）、700（2）、1000（2）、500（1）
 - **`icon`**（2 种）：soyurghal_governor_reform（2）、tawantinsuyu_monarchy（1）
 - **`block_for_rebel`**（1 种）：yes（3）
 - **`months`**（2 种）：6（2）、3（1）
 
-### 三、readme 声明、但本类目内原版 0 使用
+### 三、该用哪些修正（本体在这个类目里实际用过，前 2）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `content_priority` | 41 | 9 |
+| `icon` | 3 | 9 |
+
+### 四、readme 声明、但本类目内原版 0 使用
 
 > ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
 
 | 字段 | 本类目 | 全库其它类目 |
 | --- | --- | --- |
-| `days` | 0 次（6 档） | **有**（写在别的类目） |
+| `days` | 0 次（6 档） | **有**（出现在 11 个类目） |
 | `female_regnal_names` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
-| `on_fully_activated` | 0 次（6 档） | **有**（写在别的类目） |
-| `province_modifier` | 0 次（6 档） | **有**（写在别的类目） |
+| `on_fully_activated` | 0 次（6 档） | **有**（出现在 3 个类目） |
+| `province_modifier` | 0 次（6 档） | **有**（出现在 1 个类目） |
 | `weeks` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
 
-### 四、深度 1 的块（子条目：政策／变体／子类型等）
+### 五、深度 1 的块（子条目：政策／变体／子类型等）
 
 | 块名 | 次数 | 文件数 |
 | --- | --- | --- |
-| `societal_values` | 51 | 2 |
+| `societal_values` | 64 | 2 |
 
-### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+### 六、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
 
 | 块内键 | 次数 | 出现于哪些父块 |
 | --- | --- | --- |
-| `has_or_had_tag` | 147 | potential、OR、allow、AND |
-| `OR` | 89 | culture、capital、custom_tooltip、potential |
-| `NOT` | 85 | custom_tooltip、french_ducal_vassal_reform、locked、any_child |
-| `government_reform_slots` | 81 | country_modifier |
-| `has_unlocked_government_reform_trigger` | 71 | potential、allow |
-| `has_variable` | 59 | NOT、custom_tooltip、NOR、locked |
-| `culture` | 59 | potential、locked、allow、OR |
-| `type` | 56 | has_unlocked_government_reform_trigger、is_locked_mechanic |
-| `global_crown_estate_power` | 46 | country_modifier |
-| `has_reform` | 41 | potential、NOR、allow、NOT |
+| `has_or_had_tag` | 153 | potential、allow、OR、AND |
+| `OR` | 94 | allow、capital、potential_trigger、locked |
+| `NOT` | 93 | limit、locked、any_child、potential |
+| `government_reform_slots` | 87 | country_modifier |
+| `has_unlocked_government_reform_trigger` | 76 | potential、allow |
+| `culture` | 64 | allow、locked、potential、AND |
+| `has_variable` | 61 | allow、locked、potential、AND |
+| `type` | 58 | has_unlocked_government_reform_trigger、is_locked_mechanic |
+| `has_reform` | 48 | allow、locked、potential、AND |
+| `global_crown_estate_power` | 47 | country_modifier |
 | `mechanic` | 41 | is_locked_mechanic |
 | `is_locked_mechanic` | 41 | locked、custom_tooltip |
-| `nobles_estate_target_satisfaction` | 27 | country_modifier |
-| `country_cabinet_efficiency` | 26 | country_modifier |
-| `global_nobles_estate_power` | 25 | country_modifier |
+| `nobles_estate_target_satisfaction` | 28 | country_modifier |
+| `monthly_legitimacy` | 26 | country_modifier |
+| `global_nobles_estate_power` | 26 | country_modifier |
+
+### 七、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `content_priority` | 41 | 9 |
+| `icon` | 3 | 9 |

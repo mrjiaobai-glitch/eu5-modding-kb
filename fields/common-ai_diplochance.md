@@ -2,7 +2,7 @@
 
 > **一句话**：AI 外交接受度的权重表：16 张交互表与 91 个评估项，并说明正负数倾向与千级硬否决的量级差异。
 > **什么时候看**：调 AI 对外交行动的接受度、或核对与外交行动同名的评估项时看。
-> **体量**：51 行 · 约 3 分钟通读
+> **体量**：50 行 · 约 3 分钟通读
 
 来源：**无有效 readme**。目录里只有两个文件：数据文件 `00_ai_diplochance.txt`（5 224 B）与被**放错位置**的 `ai_diplochance.info`（808 B）——后者其实是 `customizable_localization` 的格式文档（内容讲 scope 类型表、`text = { trigger/localization_key/fallback }`、`random_valid`、`parent`/`suffix` 继承），与本类目无关。字段语义由数据反推 + 对照 `country_interactions` 的接受度字段。
 

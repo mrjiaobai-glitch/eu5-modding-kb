@@ -2,7 +2,7 @@
 
 > **一句话**：本库数字体检：可复跑的核对方法三条铁律、各轮修掉的数字漂移表、复核通过的类目计数与穷尽审计方法。
 > **什么时候看**：怀疑本库某个引用数字有问题时，按本文的方法回原版复跑核对，别照着旧数字用。
-> **体量**：145 行 · 约 7 分钟通读
+> **体量**：162 行 · 约 8 分钟通读
 
 > **为什么需要它**：本库到处引用"N 档 / N KB / N 行 / 第 X 行 / N 个定义"。版本一更新、或当初数错一次，这些数字就会**安静地骗人**。本档给**可复跑的核对清单**，并记录各轮体检结果。**每一轮改动后请追加一行"轮次"记录。**
 
@@ -144,3 +144,19 @@
 **教训（写在这里防止再犯）**：本库出的知识错误几乎都源于**"凭印象写规则、没有量本体"**。凡是要写成铁律的断言，必须先给出本体或大规模实测的**计数**；给不出计数的，一律降级为"待核实"。
 
 **发布后核对的口径（2026-09 踩过）**：`raw.githubusercontent.com` 有 CDN 缓存，**刚推完拉 raw 可能仍是旧内容**（实测：推完立即拉 `fields/common-unit_types.md` 得 45 行旧版，而 API/网页已是 142 行新版；加 `?v=` 参数也绕不过）。**核对一律走 API**：`GET /repos/{owner}/{repo}/contents/<path>?ref=main`（返回 base64 正文 + sha）或 `GET /repos/{owner}/{repo}/git/trees/main?recursive=1` 比对 blob sha；两者与本地发布副本的 git-blob 哈希一致才算推成功。
+
+## 十、第五轮（2026-10）——本体进入测试版后的行号漂移修复
+
+**背景**：本体于 **2026-10-01** 整体更新为测试版（当日重排 **4,942 个文件**），知识库基于旧正式版。本轮做的是**行号引用回校**，不是内容重写。
+
+**扫描口径**：全库 154 篇中，带 `文件:行号` 形式引用共 **263 处**（分布在 37 篇）。逐条回本体核对，信号取两种：① **越界**（引用的行号 > 文件当前行数）；② **落在空行/孤立括号**（行号在范围内但原内容已位移）。
+
+**关键教训（差点误判）**：初版脚本按 **leaf 文件名**索引本体，导致同名文件错配——例如 155 行的 `subject_types\readme.txt` 被匹配到 28 行的 `casus_belli\readme.txt`，于是"越界 338 处"这种**全崩的假信号**差点触发批量替换。**改为按文档给出的完整相对路径匹配 + 逐条语义核对后**，真失效面是 **~40 处**（16 越界 + 24 空行错位），**且其中还要扣除同名错配的假阳性**。
+
+**已修（均为高置信、命中数=1 才替换，共 30 处）**：`fields\common-subject_types.md`(13)、`common-missions.md`(3)、`vanilla-hazards-and-environment.md`(3)、`vanilla-ai.md`(3)、`vanilla-dlc-and-assets.md`(2)、`new-mission-pack-tutorial.md`/`common-cabinet_actions.md`/`common-regencies.md`/`common-traits.md`/`pitfalls.md`/`vanilla-diplomacy.md`/`vanilla-events-and-missions.md`/`vanilla-map-and-geography.md`(各 1)。
+
+**`guides\defines.md` 单独重算**：所有 N 块起始行位移，按 grep 全量重测——`NCountry 125 / NCombat 445 / NAI 562 / NCharacter 1661 / NDiplomacy 2208 / NWar 2640 / NColony 2746 / NWeather 2788`；文件总行数 **2609 → 2836**；`NAI` 常量 **746 → 约 839**；去重块数 **30 → 31**（测试版新增 `NPortraitAssetShowcase` L1742，并把 `NInternationalOrganization` 分成 L2776 / L2830 两处）。
+
+**`NColony` 专例（殖民篇 + defines 篇共 6 处）**：块从 `2524–2550` 整段下移到 **`2746–2774`**（行号仍在旧文件长度范围内，属于"范围内但指错块"，光靠越界/空行两种信号扫不出来，靠逐条语义核对才发现）。
+
+**仍存疑、未擅改（需人工带原文复核，宁缺勿错）**：巨型重排文件（`00_modifier_types.txt`、静态修正 `country.txt`、本地化大 yml）里的行号，多数仍在范围内但无法从行号本身证明语义仍对；本轮只改了能靠**字段名精确回查**锁定的。**结论沿用 §一 铁律：定稿前一律以 grep 定位为准，别信行号。**

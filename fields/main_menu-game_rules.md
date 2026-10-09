@@ -2,7 +2,7 @@
 
 > **一句话**：游戏规则的字段与 flag 清单，附脚本化列表的 base 与 conditions 写法及本地化三件套。
 > **什么时候看**：加游戏规则选项、要用 flag 禁成就或锁生产方式时翻这篇。
-> **体量**：72 行 · 约 4 分钟通读
+> **体量**：71 行 · 约 4 分钟通读
 
 来源：`main_menu\common\game_rules\_game_rules.info`（**1,373 B**）+ `00_game_rules.txt`（487 行 / **30 条规则**）；`main_menu\common\scripted_lists\scripted_lists.info`（549 B）
 

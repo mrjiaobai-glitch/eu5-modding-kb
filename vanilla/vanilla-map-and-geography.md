@@ -2,7 +2,7 @@
 
 > **一句话**：讲五级静态层级树（大陆／次大陆／区域／地区／预设省份／地点）、运行时省份与预设省份的区别，以及地点键、位图色与寻路数据的实查结论。
 > **什么时候看**：加地点或改地图层级、核对 location id 与位图色、写 scripted_geography 地理包，或需要区分 province 与 province_definition 时翻这篇。
-> **体量**：269 行 · 约 13 分钟通读
+> **体量**：268 行 · 约 13 分钟通读
 
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
@@ -197,7 +197,7 @@ borneo_geography = {
 - **地区级**：`any/every_area_in_region`(5/45)、`every_area_in_scripted_geography`(1)
 
 **其它地点级触发器**（`trigger_localization\location_triggers.txt`）：`topography`（:7）、`vegetation`（:1）、`climate`（:451）、`is_coastal`（:80）、`is_land`（:390）、`is_port`（:43）、`is_ownable`（:92）、`is_adjacent_to_lake`（:518）、`has_river`（:500）、`num_roads`（:671）、`distance_to`（:620）、`is_in_scripted_geography`（:812）。
-国家侧：`has_presence_in`（`country_triggers.txt:2806`）。
+国家侧：`has_presence_in`（`country_triggers.txt:2882`）。
 
 **地图模式**（`main_menu\gfx\interface\icons\map_modes\`，130+ 个 `.dds`）与地理直接相关的：`continent` / `sub_continent` / `region` / `area` / `provinces` / `locations`、`topography` / `vegetation` / `climate` / `winter` / `weather` / `terrain` / `rivers` / `roads` / `disease` / `harbor_capacity` / `natural_harbor_suitability`、以及 `culture` / `culture_group` / `language` / `dialect` / `religion`（文化与宗教篇）、`raw_material` / `market` / `market_access` / `development` / `prosperity` / `proximity` / `control`（生产·贸易·POP 篇）。
 

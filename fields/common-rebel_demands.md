@@ -2,7 +2,7 @@
 
 > **一句话**：叛乱诉求的三个字段与文件加载顺序：000_–998_ 前缀决定优先级，让步效果必须含 pacify_rebel_pops。
 > **什么时候看**：写国别或阶层专属叛乱诉求、要安排文件前缀与让步效果时翻这篇。
-> **体量**：74 行 · 约 4 分钟通读
+> **体量**：73 行 · 约 4 分钟通读
 
 来源：**本体无 readme**——`in_game\common\rebel_demands\` 2 个数据文件的注释与实测反推（`999_default_rebel_demands.txt` 5 835 B + `900_country_specific_from_startup_or_events.txt` 301 B）
 

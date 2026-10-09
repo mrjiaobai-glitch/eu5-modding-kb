@@ -1,8 +1,8 @@
 # common/subject_types（附庸类型）
 
-> **一句话**：附庸类型的 74 字段全景与作用域表，含纳贡、吞并速度、忠诚、解约路径与解约义务实测。
-> **什么时候看**：新增附庸类型、要调吞并或忠诚，或核对各触发器 root 作用域时翻这篇。
-> **体量**：508 行 · 约 24 分钟通读
+> **一句话**：**21 个**附庸类型的 **73** 字段全景与作用域表，含纳贡、吞并速度、忠诚、解约路径、解约义务与逐类型规则矩阵（宗主权限/参战档位/同化门）实测。
+> **什么时候看**：新增附庸类型、要调吞并或忠诚，或核对各触发器 root 作用域与各类型差异时翻这篇。
+> **体量**：766 行 · 约 35 分钟通读
 
 ## 目录
 
@@ -25,13 +25,27 @@
   - [忠诚是**算出来的**，没有"初始值"这个库存](#忠诚是算出来的没有初始值这个库存)
   - [集权／分权轴：一个 `subject_loyalty` 的 ±大坑](#集权分权轴一个-subject_loyalty-的-大坑)
   - [本体镜像范例：`fiefdom` 就是"漂移 + 补忠诚"的完整写法](#本体镜像范例fiefdom-就是漂移--补忠诚的完整写法)
-- [74 字段全景：别只写 readme 上那十几个](#74-字段全景别只写-readme-上那十几个)
-  - [⚠️ 事实上的必填：20/20 全用的 15 个](#️-事实上的必填2020-全用的-15-个)
+- [73 字段全景：别只写 readme 上那十几个](#73-字段全景别只写-readme-上那十几个)
+  - [⚠️ 事实上的必填：21/21 全用的 14 个](#️-事实上的必填2121-全用的-14-个)
   - [紧↔松轴上的字段实测（`vassal` 紧极 vs `tributary` 松极）](#紧松轴上的字段实测vassal-紧极-vs-tributary-松极)
   - [⚠️ "只写过 `yes`"的字段：省略 = 否](#️-只写过-yes的字段省略--否)
   - [`color`：类型自己的字段，指向命名色](#color类型自己的字段指向命名色)
   - [其他易漏项](#其他易漏项)
   - [可复现脚本（pwsh，非递归，单目录）](#可复现脚本pwsh非递归单目录)
+- [21 个类型总表（2026-10 实查 · 1.4 后）](#21-个类型总表2026-10-实查--14-后)
+  - [`familial_governor`（家族总督）：1.4 后新增、旧稿未成档的类型](#familial_governor家族总督14-后新增旧稿未成档的类型)
+- [规则矩阵（2026-10 实查）](#规则矩阵2026-10-实查)
+  - [① 吞并五件套](#-吞并五件套)
+  - [② 宗主在属国境内的权限（七项）](#-宗主在属国境内的权限七项)
+  - [③ 参战与外交门](#-参战与外交门)
+  - [④ 同化 / 地图 / 法律](#-同化--地图--法律)
+- [本体实测补缺（2026-09 普查）](#本体实测补缺2026-09-普查)
+  - [一、原版在用、readme 未声明的字段](#一原版在用readme-未声明的字段)
+  - [二、取值白名单（本体出现过的值 + 次数）](#二取值白名单本体出现过的值--次数)
+  - [三、该用哪些修正（本体在这个类目里实际用过，前 4）](#三该用哪些修正本体在这个类目里实际用过前-4)
+  - [四、readme 声明、但本类目内原版 0 使用](#四readme-声明但本类目内原版-0-使用)
+  - [五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）](#五块内键最常见的前-15modifier--trigger--effect-里实际写的)
+  - [六、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）](#六引擎脚本命令通用键出现在-5-个类目不是本类目的字段-schema)
 
 来源：`in_game\common\subject_types\readme.txt`
 
@@ -119,19 +133,19 @@
 - 值 = `societal_value_tiny_monthly_move` = **0.025**／每个附庸
 - **mod 新增类型不会自动继承**——不写该键就没有；原版 `march` / `colonial_nation` / `trade_company` 的 `overlord_modifier` 为空，就是 opt-out 的先例
 - **全局 auto_modifier 假设已排除**：`auto_modifiers\` 全目录 grep `decentraliz` = **0 命中**；`defines\` 无 CENTRALIZ / DECENTRALIZ 常量；`societal_values\00_default.txt` 无按附庸数量缩放的逻辑
-- 20 个定义的 `overlord_modifier` 其余内容：多数是 `monthly_prestige = 0.01` 或空 `{ }`；`appanage` 给 stability_decay + legitimacy + 阶层力量；`hanseatic_member` 给 merchant capacity；`state_bank` 给 bank_interest + bonds；`tusi` 给 prestige + legislative_efficiency + subject_income
+- 21 个定义的 `overlord_modifier`（**21/21 都写这个键**，但 `march`/`colonial_nation`/`trade_company` 是空 `{ }`）其余内容：多数是 `monthly_prestige = 0.01` 或空 `{ }`；`appanage` 给 stability_decay + legitimacy + 阶层力量；`hanseatic_member` 给 merchant capacity；`state_bank` 给 bank_interest + bonds；`tusi` 给 prestige + legislative_efficiency + subject_income
 
 > **grep 陷阱**：对 `subject_types\` grep `monthly_towards` 会得到 6 处命中，但**不是同一回事**——`vassal`/`fiefdom`/`uc_bey`/`pronoia` 在 `overlord_modifier` 内推**宗主**分权 ✅；`samanta.txt:266` 虽在 `overlord_modifier` 内但推的是**和解轴**；`tusi.txt:102` 在 **`subject_modifier`** 内，推的是**附庸自己**的汉化轴，与宗主无关。
 
-> 想按"附庸数量"推某条社会价值轴，原版**唯一**的模板在 DLC 的 `auto_modifiers\byzantium.txt:554-582`：`potential_trigger` 里 `any_subject` + `scales_with = <计数脚本值>` + `monthly_towards_<轴>`，计数用 `script_values\byz_values.txt:79-105` 的 `every_subject { root = { add = 1 } }`。**不是**用 define，也不缩放分权轴。
+> 想按"附庸数量"推某条社会价值轴，原版**唯一**的模板在 DLC 的 `auto_modifiers\byzantium.txt:558-582`：`potential_trigger` 里 `any_subject` + `scales_with = <计数脚本值>` + `monthly_towards_<轴>`，计数用 `script_values\byz_values.txt:79-105` 的 `every_subject { root = { add = 1 } }`。**不是**用 define，也不缩放分权轴。
 
 **`monthly_towards_centralization` 与 `_decentralization` 是一条轴的两个键**（轴内部名 `centralization_vs_decentralization`），两者都 `min = 0` → **不能写负值**，反向推必须换用另一侧的键。全库共 **34 个 `monthly_towards_*` 键 = 17 轴 × 2 端**，全部 `category = country`（行号连续 15452–15749）。
 
 **readme 未文档化但原版在用的字段恰好 9 个**（与 101 档字段库口径一致）：`strength_vs_overlord`、`is_colonial_subject`、`shares_exploration_with_overlord`、`merchants_to_overlord_fraction`、`allow_subjects`、`content_priority`、`overlord_inherit_if_no_heir`、`maritime_path_tolerance`、`color`。
 
-**`color` 是可选字段**：20 个定义里 2 个不写（`secessionists`、`uc_bey`），图标另有 `main_menu\gfx\interface\icons\subject_types\_default.dds` 兜底。写了 `color = subject_X` 才需要在 `main_menu\common\named_colors\02_map.txt`（`#SUBJECT TYPES` 段，4201–4219 行）加对应色值。
+**`color` 是可选字段**：21 个定义里 2 个不写（`secessionists`、`uc_bey`），图标另有 `main_menu\gfx\interface\icons\subject_types\_default.dds` 兜底。写了 `color = subject_X` 才需要在 `main_menu\common\named_colors\02_map.txt`（`#SUBJECT TYPES` 段，4201–4219 行）加对应色值。
 
-**readme 有文档但 20 个定义一个都没用**的字段 10 个：`can_marry`、`on_monthly`、`on_overlord_becomes_a_subject`、`annulled_by_peace_treaty`、`base_antagonism`、`monthly_favor_gain`、`ai_wants_to_be_subject`、`join_offensive_wars_auto_call`、`join_defensive_wars_auto_call`（+ 拼错的 `..._scape`）。**用这些字段等于没有原版校准数据可参照。**
+**readme 有文档、但 21 个类型里只有 1 个用**的字段：`can_marry`（唯一使用者是 1.4 新增的 `familial_governor`）。**21 个类型全都没用**的 8 个：`on_monthly`、`on_overlord_becomes_a_subject`、`annulled_by_peace_treaty`、`base_antagonism`、`monthly_favor_gain`、`ai_wants_to_be_subject`、`join_offensive_wars_auto_call`、`join_defensive_wars_auto_call`。（readme 另有一处**拼错**的 `diplomatic_capacity_cost_scape`，真实字段名是 `diplomatic_capacity_cost_scale`，**21/21 都在用**。）**用这些字段等于没有原版校准数据可参照。**
 ### `annexation_speed` 可以是动态的（2026-09 实测，含"越久越难吞"的做法）
 
 **`annexation_speed` 接受 `<float script value>`**（`subject_types\readme.txt:26`）。这不是套话——readme 对**非**脚本值字段会显式标注，见 `:43` 的 `diplomatic_capacity_cost_scape = <float> ... (not a scriptvalue due to checked so much)`。**但本体 10 处用法全是裸字面量，命名脚本值零先例。**
@@ -160,7 +174,7 @@ dependency_length_days = {
 - **root = 附庸国，`target = ` 宗主国**；**数值比较（天数）**
 - 本体活用法：`country_interactions\enforce_culture.txt:37-40` 与 `enforce_religion.txt:37`（两处交互都是 `type = subject`、目标取 `every_subject`，root/target 约定由用法反证）
 - 阈值本体用脚本值：`common\script_values\define_values.txt:37` → `MIN_DAYS_AS_SUBJECT_FOR_ENFORCEMENT = 3650`（10 年）
-- 君合版姊妹键：`union_length_days`（`country_triggers.txt:1698-1703`；本体用法 `subject_types\dominion.txt:121`）
+- 君合版姊妹键：`union_length_days`（`country_triggers.txt:1733`；本体用法 `subject_types\dominion.txt:136`）
 
 ⇒ **"当了 N 年附庸"原生可读**，不需要 dated-flag 阶梯，也不需要 `on_monthly`。
 
@@ -172,7 +186,7 @@ dependency_length_days = {
 - `script_values\economy_satisfaction_target.txt:5` → `limit = { exists = var:nobles_estate_target }`
 - 作用域切换与具名 scope：`hre_action_values.txt:92-99`、`io_policy.txt:111-114`
 - 语法权威：`script_values\_script_values.info:36-48`（`if`/`else_if`/`else` + `limit`）；`:14` = **每次求值都重算，不缓存**
-- ⚠️ `annexation_speed` 的 root 是**吞并方**，要读附庸侧必须 `scope:target = { … }`。同款写法本体见 `samanta.txt:126`（在 `enabled_through_diplomacy` 里用 `scope:target = { NOT = { has_variable = … } }`）
+- ⚠️ `annexation_speed` 的 root 是**吞并方**，要读附庸侧必须 `scope:target = { … }`。同款写法本体见 `samanta.txt:125`（在 `enabled_through_diplomacy` 里用 `scope:target = { NOT = { has_variable = … } }`）
 
 **两个未验证的运行时风险**（做动态值前应实机确认）：
 1. 引擎是**每月重算** `annexation_speed` 的脚本值，还是**在吞并开始时快照一次**？`readme.txt:26`「per month」与 `on_annexing_subject_monthly_pulse` 的存在都指向每月，但调用点在引擎侧。**若快照，动态值会被冻住。**
@@ -192,7 +206,7 @@ dependency_length_days = {
 - 唯一的数据结构是同名 **static modifier**（`main_menu\common\static_modifiers\country.txt:215-221`），body 是 `loyalty_to_overlord = 20`，且**未注册**进 `modifier_type_definitions`（属隐藏修正）
 - **它唯一的作用就是那 +20 忠诚**；而忠诚经 `SUBJECT_LOYALTY_ANNEXATION_SPEED_FACTOR = 0.2`（`define_values` 隔壁的 `NDiplomacy`）**让吞并更快**
 - ⇒ **本体里"高连通 = 快吞"**。任何"高连通 → 难吞"的设计都是在**反接**引擎已有的耦合，且会与连通性面板上的说明文字（"Higher connectivity increases its subject_loyalty"）**在 UI 上直接矛盾**
-- 唯一相关的逐类型旋钮是 `maritime_path_tolerance`（**字面量 float，非脚本值**；20 个类型里只有 6 个设了它：`vassal`/`march` −0.25、`fiefdom`/`dominion` −0.2、`tributary` +0.25、`colonial_nation` +0.5），它调的是**海上路径容忍距离**，不是分数
+- 唯一相关的逐类型旋钮是 `maritime_path_tolerance`（**字面量 float，非脚本值**；21 个类型里只有 6 个设了它：`vassal`/`march` −0.25、`fiefdom`/`dominion` −0.2、`tributary` +0.25、`colonial_nation` +0.5），它调的是**海上路径容忍距离**，不是分数
 - **没有任何修正键能改连通性**（`modifier_type_definitions` 里 grep `connect` = 0 命中）
 
 **可近似替代（连通性的输入本身可读）**：`average_control`（国级）、`average_control_in_home_region`（国级）、`proximity`（**地点级**，到首都距离）、`location_maritime_presence_power = { target = <国> value >= X }`（地点级）。**只能重新推导，不能直接读。**
@@ -223,7 +237,7 @@ on_annexation_start = {
 
 | 项 | 值／来源 |
 |---|---|
-| `annexation_speed_base` | **0.5**，所有国家自动（`auto_modifiers\country.txt:51`，`country_base_values` 块）；另有 `diplomatic_maintenance_mod` 再给 +0.5（`static_modifiers\country.txt:400`） |
+| `annexation_speed_base` | **0.5**，所有国家自动（`auto_modifiers\country.txt:51`，`country_base_values` 块）；另有 `diplomatic_maintenance_mod` 再给 +0.5（`static_modifiers\country.txt:445`） |
 | **`annexation_speed`** | **subject type 的字面量**（默认 1）——**这就是"按类型调吞并速度"的唯一旋钮** |
 | `annexation_speed_modifier` | 百分比，**宗主全域**（见下） |
 | `SUBJECT_LOYALTY_ANNEXATION_SPEED_FACTOR` | **0.2** × 忠诚（`defines:2018`） |
@@ -256,7 +270,7 @@ on_annexation_start = {
 | `country_tax_base` / `country_total_development` / `country_average_control` | 触发器 | 国 | 数值 | `exploration_triggers.txt:6`；`triggers_l_english.yml:3689`、`:7221` |
 | `opinion = { target = X value >= N }` | 触发器 | 国 vs target | 数值 | `subject_interaction_events.txt:1004` |
 | `is_being_annexed` / `is_annexing` / `is_disloyal_subject` | 触发器 | 国 | 布尔 | `frustrate_annexation.txt:7/12/15`；`country_triggers.txt:2048/2056` |
-| ⚠️ `subject_opinions` | **只是修正键，不是触发器**（`00_modifier_types.txt:6192`，`bias_type="opinion"`） | — | — | 要读用 `opinion = { target = … }` |
+| ⚠️ `subject_opinions` | **只是修正键，不是触发器**（`00_modifier_types.txt:6513`，`bias_type="opinion"`） | — | — | 要读用 `opinion = { target = … }` |
 | ⚠️ `strength_vs_overlord` / `great_power_score_transfer` | **只是 subject type 的数值字段**，**不可读**（无触发器/脚本值证据） | — | — | — |
 | ⚠️ `tax_base` | 歧义：在 `subject_types` 里是 **`diplo_chance` 权重键**（`vassal.txt:131`），**不是**触发器；国家税基比较本体一律写 **`country_tax_base`** | — | — | — |
 | ⚠️ `development` / `average_control` | root 是 **location / province**；国家级等价物是 `country_total_development` / `country_average_control` | — | — | — |
@@ -266,7 +280,7 @@ on_annexation_start = {
 
 #### ⚠️ 更正：`base_antagonism` 不是附庸类型的字段，是**和约**的
 
-- `subject_types\readme.txt:71` 确实写了 `base_antagonism`，但 **20 个本体类型里 0 个使用**（DLC 里也没有；唯一 DLC 类型 `pronoia` 不设）
+- `subject_types\readme.txt:71` 确实写了 `base_antagonism`，但 **21 个本体类型里 0 个使用**（DLC 里也没有；唯一 DLC 类型 `pronoia` 不设）
 - **真正的挂点在和约**：`peace_treaties\readme.txt:54` `base_antagonism = script value for the max amount of antagonism gained, will be adjusted by various factors per country`；`:55` `antagonism_type = key of a bias type for the antagonism that will be added`
 - 本 KB 的 `vanilla\vanilla-diplomacy.md:184` 与本文档早前的表把 `base_antagonism` 归到了 subject type 名下——**readme 为真、本体为空**，实战应在和约里写
 
@@ -293,7 +307,7 @@ on_annexation_start = {
 
 `subject_types\readme.txt:70`：`war_score_cost = <script_value> how much will this subject cost to establish in wars, **modifies the base war score cost calculation**`。
 
-**20 个类型里只有 4 个写了它**：`fiefdom` **0.5**、`dominion` **0.5**、`samanta` **0.25**、`maha_samanta` **0.5**。**`vassal` / `march` / `tributary` / `appanage` 等 16 个全都不写** ⇒ **vassal 基线 = 省略该字段 = 引擎默认（恒等 = 1.0）**。**不要在文件里找 "vassal = 1"，它不存在**；"比附庸便宜"就是**任何 < 1.0 的字面量**，本体的便宜档是 0.25~0.5。
+**21 个类型里只有 4 个写了它**：`dominion` **0.5**、`fiefdom` **0.5**、`pradhana_maha_samanta` **0.5**、`maha_samanta` **0.25**（⚠️ **旧稿把 0.25 记在 `samanta` 名下，是错的——`samanta` 自己不写这个字段**）。**`vassal` / `march` / `tributary` / `appanage` 等 17 个全都不写** ⇒ **vassal 基线 = 省略该字段 = 引擎默认（恒等 = 1.0）**。**不要在文件里找 "vassal = 1"，它不存在**；"比附庸便宜"就是**任何 < 1.0 的字面量**，本体的便宜档是 0.25~0.5。
 
 **注意还有两层乘子**（不是同一个字段）：
 - **wargoal**：`wargoals\readme.txt:23/:33` `subjugate_cost = <float> # factor applied to warscore cost when making the target a subject`（本体约 95 处；通用臣服 wargoal `:163` = **0.25**，`take_country` = 0.5，`conquer_province` = 0.75，`demand_military_access` = 20.0）
@@ -304,7 +318,7 @@ on_annexation_start = {
 
 readme `:73-74`：`diplo_chance_accept_subject = <list of tag = values>`——"multiplier for various values … that lead to the overall acceptance"，例 `border_distance = -0.1`。**`base` 是每个块都有的锚点**（本体 44 处 `base =` 全在这些列表里）；其余键是**对引擎默认值的覆盖**（`country_interactions\readme.txt:6` "overrides of default acceptance values"），省略即保持默认。
 
-**本体 20 个类型的 `base` 全表**：
+**本体 21 个类型的 `base` 全表**：
 
 | 类型 | `accept_subject.base` | `accept_overlord.base` |
 |---|---|---|
@@ -316,6 +330,7 @@ readme `:73-74`：`diplo_chance_accept_subject = <list of tag = values>`——"m
 | `samanta` / `maha_samanta` | −92 | +8 |
 | `pradhana_maha_samanta` | **−12**（本体最容易） | +8 |
 | `pronoia` | −90 | −50 |
+| `familial_governor` | −90 | −50 |
 | `tusi` | −92 | **+18** |
 | `uc_bey` | −92 | **+18** |
 | `state_bank` | −50 | +20 |
@@ -340,10 +355,10 @@ readme `:73-74`：`diplo_chance_accept_subject = <list of tag = values>`——"m
 |---|---|---|---|
 | `join_offensive_wars_always` | 条件块（默认自动加入，少数特例豁免）`:41` | **整条不写** | ⚠️ **是 trigger 不是布尔**，写 `= yes` 会静默失败 |
 | `join_defensive_wars_always` | 条件块（自动加入）`:53` | 条件块（自动加入）`:60` | 松极也保留防御义务 |
-| `subject_can_cancel` | 不写 | **yes** `:86` | 本体 20 个类型 13 个写 `no`；写 `yes` 的只有 `tributary:86` 和 `samanta:33` |
-| `overlord_can_cancel` | **yes** `:72` | **yes** `:87` | 只有这两个类型写；放人权是两极共有的 |
-| `will_join_independence_wars` | **yes** `:67` | **yes** `:78` | **12 个类型全是 yes**（含 `march:43`、`hre:19`、`appanage:53`）。设 `no` 是反本体的少数派 |
-| `overlord_protects_external` | 不写（readme：默认 yes） | **no** `:80` | 松极 = 不给外部保护 |
+| `subject_can_cancel` | 不写 | **yes** `:86` | 本体 21 个类型 **15 个写 `no`**；写 `yes` 的只有 `tributary:86` 和 `samanta:33`；其余 4 个（`march` / `tusi` / `uc_bey` / `vassal`）不写 |
+| `overlord_can_cancel` | **yes** `:72` | **yes** `:87` | **21/21 都写了这个键**（旧稿"只有这两个类型写"是错的）：写 `yes` 的 **12 个**，写 `no` 的 9 个（`appanage` / `conquistador` / `pronoia` / `colonial_nation` / `familial_governor` / `imperial_free_city` / `direct_imperial_free_city` / `secessionists` / `uc_bey`） |
+| `will_join_independence_wars` | **yes** `:67` | **yes** `:78` | **13 个类型写 `yes`、0 个写 `no`**、8 个不写（含 `march:43`、`hre:19`（`imperial_free_city`）、`hre:65`（`direct_imperial_free_city`——旧稿记成 12 个是把 `hre.txt` 的两个类型并成了一个）、`appanage:53`）。设 `no` 是反本体的少数派 |
+| ~~`overlord_protects_external`~~ | — | — | ❌ **这个字段不存在**：readme 里没有、21 个类型也没人写；`tributary.txt:76-90` 那处只有注释 `#join vs external threats…` 与 `join_defensive_wars_always` 的条件块（旧稿此行是把**注释**当成了字段名） |
 | `has_limited_diplomacy` | **yes** `:78` | **no** `:100` | |
 | `can_change_rank` | **no** `:91` | **yes** `:89` | |
 | `allow_declaring_wars` | 限制性条件块 `:80`（普通附庸不能宣战） | **`{ always = yes }`** `:88` | `appanage:62`、`hre:30` 同 |
@@ -357,11 +372,11 @@ readme `:73-74`：`diplo_chance_accept_subject = <list of tag = values>`——"m
 3. **`subject_can_cancel` 的默认值 readme 没写**（`readme.txt:44` 只登记字段不写默认；`overlord_protects_external` 反倒写了 "defaults to yes"）。13/20 显式写 `no`、只有 2 个写 `yes`、`vassal` 干脆不写 ⇒ **不要赌默认值，需要的级一律显式写**。
 4. `will_join_independence_wars` 是**自由度不是义务**，本体倾向 `yes`。想做"永不脱离"只能靠别的机制；靠这个字段设 `no` 是反本体的。
 5. 反过来，**"升级链"的方向决定这些字段往哪走**：`samanta` 链是**升级=更紧**（`subject_can_cancel` 从 `yes:33` 变 `no:145/:252`，`strength_vs_overlord` 从 −0.25 变 −0.5）；如果设计意图是"升级=更自治"，这些字段必须**反向**走。
-6. ⚠️ **`visible` 里本体自己有一道常被漏掉的「相对等级门」**：`country_rank_level >= scope:target.country_rank_level`，出现在 `vassal.txt:9`、`march.txt:9`、`tributary.txt:11`、`fiefdom.txt:80`、`dominion.txt:73`、`D008_pronoia.txt:7,40`。本体注释写在 `vassal.txt:7`：*"# High Kingship members can subjugate each other regardless of rank"*。作用 = **防止低等级国家把高等级国家收成附庸**。自建主体类型忘了写它，就会出现"伯爵把皇帝收成附庸"。
+6. ⚠️ **`visible` 里本体自己有一道常被漏掉的「相对等级门」**：`country_rank_level >= scope:target.country_rank_level`，出现在 `vassal.txt:9`、`march.txt:9`、`tributary.txt:11`、`fiefdom.txt:79`、`dominion.txt:72`、`D008_pronoia.txt:7,40`。本体注释写在 `vassal.txt:7`：*"# High Kingship members can subjugate each other regardless of rank"*。作用 = **防止低等级国家把高等级国家收成附庸**。自建主体类型忘了写它，就会出现"伯爵把皇帝收成附庸"。
 7. **等级相关触发器与枚举**：`country_rank`（`trigger_localization\country_triggers.txt:1056`，有 `none`/`global`/`first`/`third` 变体）、`country_rank_level`（`:1063`）、`country_rank_level_less_or_equal`（`:1070`）；等级枚举 `rank_empire` / `rank_kingdom` / `rank_duchy` / `rank_county`（`country_ranks\00_default.txt:1 / :52 / :95 / :140`）。⚠️ **`country_rank_level` 的数值映射（各等级 = 几）未证**，且本体在 `dominion.txt:70-71` 里先写 `exists = country_rank_level` 才比较，暗示它可能为空 ⇒ **想设"XX 级以上"的绝对地板，必须先实机确认数值**；相对门则不需要任何魔数（这是它的好处）。
 8. **等级决定 `cultures_capacity` 基线**：`rank_county` 无（=0）／`rank_duchy = 0.5`／`rank_kingdom = 1`／`rank_empire = 2`（`country_ranks\00_default.txt:104 / :65 / :15`）。所以拿等级当主体类型的门，与"文化容量"这条线天然自洽。
-9. **`diplo_chance` 里本体每个类型都写 `rank_difference = -5`**（`vassal.txt:115`、`march.txt:95`、`samanta.txt:64`、`tributary.txt:119`…）。自建类型漏掉它 = 接受度算子里少一项本体的标准权重。
-10. **别拿 societal value 当主体类型的门**。本体 20 个类型的结构性门清一色是 `government_type`（`tributary.txt:52-58`）、`government = monarchy`（`uc_bey.txt:24`）、等级、`is_overseas_for_owner`（殖民领）这类**看得见、能主动改变**的条件；价值观滑块玩家几乎无法操控，做成门就是"不知道该干什么才能解锁"。
+9. **`diplo_chance` 里本体每个类型都写 `rank_difference = -5`**（`vassal.txt:119`、`march.txt:101`、`samanta.txt:64`、`tributary.txt:136`…）。自建类型漏掉它 = 接受度算子里少一项本体的标准权重。
+10. **别拿 societal value 当主体类型的门**。本体 21 个类型的结构性门清一色是 `government_type`（`tributary.txt:52-58`）、`government = monarchy`（`uc_bey.txt:24`）、等级、`is_overseas_for_owner`（殖民领）这类**看得见、能主动改变**的条件；价值观滑块玩家几乎无法操控，做成门就是"不知道该干什么才能解锁"。
 
 ---
 
@@ -381,13 +396,13 @@ readme `:73-74`：`diplo_chance_accept_subject = <list of tag = values>`——"m
 2. **"破停战 = 稳定 50" 属实，且它是 price 不是 define**：`prices\00_hardcoded.txt:107-110` `war_breaking_truce = { stability = 50  war_exhaustion = 1 }`；另有 `war_no_cb = { stability = 15 }`（`:128`）、`declaring_war = { karma = 10 }`（`:99`）、`war_on_subject = { stability = 40 righteousness = 40 }`（`:135`）。
 3. **想换成"打回附庸"的 CB，用 `cb_subjugation`**：`casus_belli\01_event_triggered.txt:103-112` = `years = 15`、`ai_subjugation_desire = 1000`、`ai_cede_location_desire = -1000`、`war_goal_type = take_capital_subjugation`，**loc 已有、不用新造**。挂载点优先用**类型自己的 `on_disable`**（`subject_types\readme.txt:22`：*"what happens when the subject type is broken. root = subject, former_overlord = overlord"*）——它天然只对本类型触发，比 `on_becoming_free` 干净。⚠️ `on_disable` 在**升级**（`change_subject_type`）时可能也触发 → 必须包 `if = { limit = { is_subject = no } }`。
 4. **`on_becoming_free` 抓不到转移**：转移有独立钩子 `on_transfer_subject`（`_hardcoded.txt:5630-5631`，`root = subject, scope:overlord = new overlord, scope:former_overlord = old overlord`）；吞并、释放成国家、类型变更各自也都有独立钩子（`on_annexation_start` / `on_released_country` / `on_subject_type_changed`）。且 `_hardcoded.txt` 里约 110 个钩子**没有一个用 `trigger = {`** ⇒ 若要门控，写在 `effect = { if = { limit = { … } } }` 里，别加 `trigger`。
-5. **前缀不对称（会静默出错）**：`is_subject_type = <键>` **不带**前缀（`trigger_localization\country_triggers.txt:676-680`），但 `change_subject_type = subject_type:<键>` **带**（`_hardcoded.txt:5642`）。相关：`is_subject`（`country_triggers.txt:566`）、`is_subject_of`（`:830`）、`is_subject_or_below_of`（`:837`）、`overlord = <国>`（`casus_belli\disloyal_subject.txt:10`）、`subject_loyalty`（`:16`）、`make_subject_of`（`country_interactions\samanta_upgrades.txt:51`）。
+5. **前缀不对称（会静默出错）**：`is_subject_type = <键>` **不带**前缀（`trigger_localization\country_triggers.txt:697`），但 `change_subject_type = subject_type:<键>` **带**（`_hardcoded.txt:6257`）。相关：`is_subject`（`country_triggers.txt:566`）、`is_subject_of`（`:830`）、`is_subject_or_below_of`（`:837`）、`overlord = <国>`（`casus_belli\disloyal_subject.txt:10`）、`subject_loyalty`（`:16`）、`make_subject_of`（`country_interactions\samanta_upgrades.txt:51`）。
 
 ### 解约动作带来的 loc 义务
 
 引擎按类型生成 `CANCEL_<键>` / `BREAK_<键>` 两个交互，读标准 **17 键**族（CANCEL 9 + BREAK 8：`TOOLTIP_HEADER` / `_TOOLTIP_HEADER_NO_TARGET` / `TITLE` / `FLAVOR` / `CATEGORY` / `NEWDESC` / `DESC` / `REQDESC` / `NOT_IN_TRUCE`；BREAK 无 `FLAVOR`）。模板见 `diplomacy_l_english.yml:1603-1646`（`vassal` 一整块）。
 
-- 本体 20 个类型里 **16 个有**；没有的 4 个（`conquistador` / `colonial_nation` / `trade_company` / `secessionists`）正是**没有解约动作**的类型。
+- 本体 21 个类型里 **16 个 CANCEL+BREAK 两族齐全**；**只有 `CANCEL_<id>_*`** 的 2 个（`conquistador`、`trade_company`——即**只能宗主解约、属国不能**）；**两族全无**的 3 个（`colonial_nation`、`familial_governor`、`secessionists`）。（旧稿写"没有的 4 个含 `conquistador`/`trade_company`"——那两个其实有 `CANCEL_` 族，实测见上。）
 - ⚠️ **键是按"有没有这个动作"写的，不按 flag**：`BREAK_uc_bey_*`（`:3144-3145`）存在，但 `uc_bey.txt` 并没写 `subject_can_cancel`。
 - ⚠️ **是否必需仍未证**：`diplomacy_l_english.yml:1697-1698` 有通用键 `CANCEL_SUBJECT_STATUS` / `BREAK_SUBJECT_STATUS`（用 `[SUBJECT_TYPE.GetNameWithNoTooltip]`），**看起来**正是给新类型准备的兜底，但没找到引用它的 GUI/交互文件，无法定论。**判定法：一个键都不写，进游戏点按钮——缺键会原样显示 `BREAK_<键>_NEWDESC`，一眼可见。**
 - 附庸类类型**另有** `OFFER_<键>` / `REQUEST_<键>` 外交行动族（与上面的 CANCEL/BREAK 族是两套）。
@@ -444,15 +459,17 @@ subject_modifier = {
 
 ---
 
-## 74 字段全景：别只写 readme 上那十几个
+## 73 字段全景：别只写 readme 上那十几个
 
-**做法**（可复现）：对 `in_game\common\subject_types\*.txt`（排除 `readme.txt`）逐文件取**顶层字段**——正则 `^\t([a-z_0-9]+)\s*=`（**恰好一个 Tab**；两个 Tab 是嵌套，不会误捕）——再计数。本体 20 个类型合计 **74 个顶层字段**。
+**做法**（可复现）：对 `in_game\common\subject_types\*.txt`（排除 `readme.txt`）逐文件取**顶层字段**——正则 `^\t([a-z_0-9]+)\s*=`（**恰好一个 Tab**；两个 Tab 是嵌套，不会误捕）——再计数。**2026-10 按 1.4 后重算：本体 21 个类型合计 73 个顶层字段**（"恰好一个 Tab"与"按类型块解析"两种独立方法都得 73）。旧稿写 74（当时的类型数是 20，且按文件聚合，`hre.txt` 的 2 个类型和 `samanta.txt` 的 3 个类型会被并成 1 个）——差的那 1 个无法在现文件集里复原，按 73 用。
 
-### ⚠️ 事实上的必填：20/20 全用的 15 个
+### ⚠️ 事实上的必填：21/21 全用的 14 个
 
-`can_change_rank`、**`has_overlords_ruler`**、`institution_spread_to_overlord`、`level`、`subject_pays`、`subject_modifier`、`overlord_can_cancel`、**`great_power_score_transfer`**、`institution_spread_to_subject`、`overlord_modifier`、`has_limited_diplomacy`、`join_defensive_wars_always`、`diplomatic_capacity_cost_scale`、`strength_vs_overlord`、`can_change_heir_selection`
+`can_change_rank`、**`has_overlords_ruler`**、`institution_spread_to_overlord`、`level`、`subject_pays`、`overlord_can_cancel`、**`great_power_score_transfer`**、`institution_spread_to_subject`、`overlord_modifier`、`has_limited_diplomacy`、`join_defensive_wars_always`、`diplomatic_capacity_cost_scale`、`strength_vs_overlord`、`can_change_heir_selection`
 
-⇒ **20 个类型无一例外都写了这 15 个**。自建类型漏掉其中任何一个，都是在裸奔吃默认值——而 readme 大多没写默认。这一条比 readme 重要：**readme 是"有哪些字段"，频次表是"哪些字段不写会出事"。**
+⇒ **21 个类型无一例外都写了这 14 个**。自建类型漏掉其中任何一个，都是在裸奔吃默认值——而 readme 大多没写默认。这一条比 readme 重要：**readme 是"有哪些字段"，频次表是"哪些字段不写会出事"。**
+
+**差一个就全用的两个**（旧稿把它们算进"必填"了）：`subject_modifier` **20/21**（唯一不写的是 `familial_governor`）、`creation_visible` **20/21**（唯一不写的是 `march`）。
 
 ### 紧↔松轴上的字段实测（`vassal` 紧极 vs `tributary` 松极）
 
@@ -505,3 +522,245 @@ Get-ChildItem $d -File -Filter *.txt | Where-Object { $_.Name -ne 'readme.txt' }
 }
 $f.GetEnumerator() | Sort-Object Value -Descending | ForEach-Object { "{0,3}  {1}" -f $_.Value, $_.Key }
 ```
+
+## 21 个类型总表（2026-10 实查 · 1.4 后）
+
+**18 个文件定义 21 个类型**（`hre.txt` 定义 2 个、`samanta.txt` 定义 3 个——旧的"20 个"就是按文件聚合数漏的）。中文名取自本体本地化；`level` 语义按 readme 原话：**低等级自治更多，`level 3` 是待吞并的属国，`level 0` 只是名义上的属国**。
+
+| 中文名 | 内部名 | `level` | 形式 | 门槛与特点 |
+|---|---|---|---|---|
+| 朝贡国 | `tributary` | **0** | 国家 | `government_type` 门；地图既不用宗主名也不用宗主色；双方可解约 |
+| 殖民领 | `colonial_nation` | 1 | 国家 | **不可吞并**；共享宗主探索；海外路径 |
+| 征服者 | `conquistador` | 1 | 国家 | **21 个里唯一 `use_overlord_laws = yes`**；只能宗主解约 |
+| 帝国自由市 | `imperial_free_city` | 1 | **地块** | 地图**不**用宗主色；宗主可强制和平；不可被和约强制拆散 |
+| 马奇 | `march` | 1 | 国家 | **`strength_vs_overlord = −1`（对宗主最强）**；`accept_overlord.base = +16` |
+| 萨曼塔 | `samanta` | 1 | 地块 | 印度系；**双方都能解约**（21 个里只有它和朝贡国） |
+| 般达那‑摩诃三曼多 | `pradhana_maha_samanta` | 1 | 地块 | **最好谈**（`accept_subject.base = −12`）；`war_score_cost = 0.5` |
+| 贸易公司 | `trade_company` | 1 | **建筑** | 不可吞并；只能宗主解约 |
+| 土司 | `tusi` | 1 | 国家 | 同**宫廷语言**门；宗主可强制和平 |
+| 汉萨同盟成员 | `hanseatic_member` | 2 | 国家 | 宗主可在境内**建团建船**；贡金走 `hanseatic_member_cost` |
+| 直属帝国自由市 | `direct_imperial_free_city` | 2 | 地块 | 吞并最快档（速度 **2** / 10 年）；地图与宗主同色 |
+| 摩诃三曼多 | `maha_samanta` | 2 | 地块 | 吞并条件最松（速度 **2** / 10 年 / 好感 **125**/100） |
+| 国属银行 | `state_bank` | 2 | **建筑** | 用宗主统治者；`overlord_modifier` 给银行利息与债券 |
+| 乌奇贝伊 | `uc_bey` | 2 | 地块 | **同文化 + 同宫廷语言**双门；`government = monarchy` |
+| 附庸 | `vassal` | 2 | 国家 | 基准类型；10 年 / 好感 150 |
+| 封邑 | `appanage` | 3 | 国家 | 吞并门槛最高：**15 年 + 好感 190/175** |
+| 普罗尼亚 | `pronoia` | 3 | 国家 | **DLC 类型**；吞并速度 **0.5**（最慢） |
+| 自治领 | `dominion` | 3 | 国家 | **吞并要 50 年**；同文化或亲缘文化 + 同宫廷语言；用宗主统治者与宗教 |
+| **家族总督** | **`familial_governor`** | 3 | 国家 | 见下节：突尼斯改革专属、**不可吞并、双方都不能解约** |
+| 采邑 | `fiefdom` | 3 | 国家 | `war_score_cost = 0.5`；用宗主统治者与宗教；无嗣宗主继承 |
+| 归并国 | `secessionists` | 3 | 国家 | 分裂产物：吞并速度 **5**、**0 年门槛**、无好感要求（最快回收） |
+
+> `subject_pays` 的**脚本值定义共 22 个**：12 个实际被类型引用（`vassal` 被 10 个类型共用）+ 10 个 `*_cost_modifier` 伴生值。
+
+### `familial_governor`（家族总督）：1.4 后新增、旧稿未成档的类型
+
+旧稿只在 `subject_pays` 清单里列过它的名字。完整定义在 `in_game\common\subject_types\familial_governor.txt`（1,948 B）：
+
+| 项 | 实测值 |
+|---|---|
+| 出现门 | `visible = { has_reform = government_reform:tun_strong_familial_governors }` —— **突尼斯专属改革**；`visible_through_diplomacy` / `visible_through_treaty` / `creation_visible` / `release_country_enabled` **全部 `always = no`**（**玩家无法外交创建**，只能由改革/事件产生） |
+| `level` / `content_priority` | **3** / 300 |
+| 吞并 | **`can_be_annexed = no`** ——**永久属国**（连 `annexation_*` 全家都不写） |
+| 解约 | `subject_can_cancel = no` **且** `overlord_can_cancel = no` ——双方都甩不掉；本地化里**也没有** `CANCEL_`/`BREAK_` 键 |
+| 继承 | `overlord_inherit_if_no_heir = yes`（无嗣时宗主继承） |
+| 战力 | `strength_vs_overlord = **−0.5**`（与 `vassal` 同档） |
+| 宗主代价 | `overlord_modifier = { monthly_towards_decentralization = societal_value_tiny_monthly_move }` ——**每个家族总督每月把宗主往分权推 0.025** |
+| 接受度 | `accept_subject.base = −90`、`accept_overlord.base = −50`、`ai_wants_to_be_overlord = { value = **−100** }`（AI 完全不想当它的宗主） |
+| 宗主权利 | 筑路 / 建筑 / RGO / 舰队基地 / 粮食 **5 项**；**不给**建团建船 |
+| 特殊 | `can_marry = { always = yes }` ——**21 个类型里唯一使用 `can_marry` 的**（旧稿把它列进"没人用的字段"）；`diplomatic_capacity_cost_scale = 0.75`；`great_power_score_transfer = 0.25`；`institution_spread_*` 双向 `_mild` |
+| 未写 | `subject_modifier`（**21 个里唯一不写**）、`will_join_independence_wars`、`can_change_rank`… |
+
+**设计读法**：这是"地方家族架空宗主"的机制化——**换不掉、吞不下、也甩不掉**，宗主换来的只是持续向分权漂移。
+
+## 规则矩阵（2026-10 实查）
+
+### ① 吞并五件套
+
+| 内部名 | `annexation_speed` | 最少关系年 | 最低好感 | 停滞线 |
+|---|---|---|---|---|
+| `secessionists` | **5** | **0** | 150 | 125 |
+| `direct_imperial_free_city` / `maha_samanta` | **2** | 10 | 150 / **125** | 125 / **100** |
+| `vassal` / `fiefdom` | 1 | 10 | 150 | 125 |
+| `appanage` | 1 | **15** | **190** | **175** |
+| `conquistador` / `dominion` | 1 | 20 / **50** | 150 | 125 |
+| `uc_bey` | 1 | 不写 | 不写 | 不写 |
+| `pronoia` | **0.5** | 20 | **190** | **175** |
+
+- **`can_be_annexed = no` 的 11 个**（永久属国）：`colonial_nation`、`familial_governor`、`hanseatic_member`、`imperial_free_city`、`march`、`samanta`、`pradhana_maha_samanta`、`state_bank`、`trade_company`、`tributary`、`tusi`。
+- 其余类型不写 `annexation_*` = 吃引擎默认（速度 1、无年限与好感门）。
+
+### ② 宗主在属国境内的权限（七项）
+
+| 内部名 | 建团 | 建船 | 筑路 | 建筑 | RGO | 舰队基地 | 粮食 |
+|---|---|---|---|---|---|---|---|
+| `uc_bey` / `tusi` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `march` | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | — |
+| `hanseatic_member` | ✓ | ✓ | — | — | — | ✓ | ✓ |
+| `imperial_free_city` / `direct_imperial_free_city` | ✓ | ✓ | — | — | — | — | ✓ |
+| `appanage` / `pronoia` / `familial_governor` / `fiefdom` / `vassal` | — | — | ✓ | ✓ | ✓ | ✓ | ✓ |
+| `colonial_nation` | — | — | — | — | ✓ | ✓ | ✓ |
+| `dominion` / `samanta` / `maha_samanta` / `pradhana_maha_samanta` | — | — | — | — | — | ✓ | ✓ |
+| `state_bank` / `trade_company` | — | — | — | — | — | — / ✓ | ✓ / — |
+| `conquistador` / `secessionists` / `tributary` | — | — | — | — | — | — | — |
+
+### ③ 参战与外交门
+
+- **`allow_declaring_wars = { always = yes }`（能自己宣战）8 个**：`appanage`、`colonial_nation`、`conquistador`、`dominion`、`familial_governor`、`imperial_free_city`、`tributary`、`vassal`。
+- **`join_offensive_wars_can_call`（允许被召唤打进攻战）7 个**：`colonial_nation`、`conquistador`、`pronoia`、`dominion`、`familial_governor`、`fiefdom`、`vassal`（旧稿写 6/20）。
+- **`join_defensive_wars_can_call` 21 个类型无人写**（readme 有、本体 0 用）——`join_defensive_wars_always` 才是防御侧的常规写法（21/21 全写）。
+- **`overlord_can_enforce_peace_on_subject`（宗主可逼属国退出战争）2 个**：`imperial_free_city`、`tusi`。
+- `can_be_force_broken_in_peace_treaty` 只有 2 个帝国自由市写（且都是 `no`）。
+
+### ④ 同化 / 地图 / 法律
+
+- **用宗主的统治者**（`has_overlords_ruler = yes`）3 个：`dominion`、`fiefdom`、`state_bank`（readme 注明会**脱离联合并进入摄政**）。
+- **用宗主的宗教**（`has_overlords_religion = yes`）2 个：`dominion`、`fiefdom`。
+- **文化 / 语言门**：`uc_bey`（同文化 `only_overlord_culture` **+** 同宫廷语言）、`dominion`（同文化或亲缘文化 **+** 同宫廷语言）、`tusi`（仅宫廷语言）。
+- **地图表现**：`direct_imperial_free_city` `use_overlord_map_color = yes`；`imperial_free_city` 与 `tributary` 明确写 `no`；`tributary` 连 `use_overlord_map_name` 也是 `no`。
+- **`use_overlord_laws = yes`** 仅 `conquistador` 1 个（旧稿未提）。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\subject_types\` 全量 **18 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **口径**：字段 = 顶层块内的 ``key =``；已排除 readme 以 ``<模式>`` 声明的键、以及本体修正注册表（``modifier_type_definitions``，2,437 键）内的修正名。
+
+### 一、原版在用、readme 未声明的字段
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `diplomatic_capacity_cost_scale` | 21 | 18 | 1（4）、0.5（3）、0（3）、1.0（3）、0.25（2） |
+| `strength_vs_overlord` | 21 | 18 | -0.5（7）、-0.1（5）、-0.25（4）、-0.2（1）、-0.05（1） |
+| `maritime_path_tolerance` | 6 | 6 | -0.2（2）、-0.25（2）、0.25（1）、0.5（1） |
+| `overlord_inherit_if_no_heir` | 3 | 3 | yes（3） |
+| `merchants_to_overlord_fraction` | 1 | 1 | 0.33（1） |
+| `shares_exploration_with_overlord` | 1 | 1 | yes（1） |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`strength_vs_overlord`**（8 种）：-0.5（7）、-0.1（5）、-0.25（4）、-0.2（1）、-0.05（1）、-0.40（1）、-1（1）、-0.33（1）
+- **`can_change_heir_selection`**（2 种）：yes（14）、no（7）
+- **`has_limited_diplomacy`**（2 种）：yes（17）、no（4）
+- **`can_change_rank`**（2 种）：no（18）、yes（3）
+- **`overlord_can_cancel`**（2 种）：yes（12）、no（9）
+- **`subject_pays`**（12 种）：subject_pays_vassal（10）、hanseatic_member_cost（1）、subject_pays_trade_company（1）、uc_bey_pays（1）、subject_pays_tributary（1）、subject_pays_colonial（1）、subject_pays_pradhana_maha_samanta（1）、subject_pays_pronoia（1）、subject_pays_march（1）、subject_pays_maha_samanta（1）、subject_pays_familial_governor（1）、subject_pays_samanta（1）
+- **`great_power_score_transfer`**（5 种）：0.25（10）、0.5（5）、0.75（3）、0.1（2）、0.10（1）
+- **`diplomatic_capacity_cost_scale`**（10 种）：1（4）、0.5（3）、0（3）、1.0（3）、0.25（2）、0.75（2）、0.1（1）、0.05（1）、0.2（1）、1.25（1）
+- **`institution_spread_to_overlord`**（4 种）：monthly_institution_spread_severe（10）、monthly_institution_spread_mild（8）、monthly_institution_spread_weak（2）、monthly_institution_spread_moderate（1）
+- **`has_overlords_ruler`**（2 种）：no（18）、yes（3）
+- **`institution_spread_to_subject`**（4 种）：monthly_institution_spread_severe（10）、monthly_institution_spread_mild（8）、monthly_institution_spread_weak（2）、monthly_institution_spread_moderate（1）
+- **`level`**（4 种）：1（8）、2（6）、3（6）、0（1）
+- **`subject_can_cancel`**（2 种）：no（15）、yes（2）
+- **`annullment_favours_required`**（4 种）：10（7）、20（5）、30（4）、5（1）
+- **`minimum_opinion_for_offer`**（4 种）：150（11）、100（4）、175（1）、200（1）
+- **`food_access`**（1 种）：yes（16）
+- **`fleet_basing_rights`**（1 种）：yes（15）
+- **`will_join_independence_wars`**（1 种）：yes（13）
+- **`can_be_annexed`**（1 种）：no（11）
+- **`annexation_speed`**（4 种）：1（6）、2（2）、0.5（1）、5（1）
+- …另有 28 个枚举字段，见完整普查报告
+
+### 三、该用哪些修正（本体在这个类目里实际用过，前 4）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `allow_subjects` | 2 | 2 | no（2） |
+| `color` | 19 | 23 |
+| `content_priority` | 2 | 9 |
+| `is_colonial_subject` | 1 | 9 |
+
+### 四、readme 声明、但本类目内原版 0 使用
+
+> ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
+
+| 字段 | 本类目 | 全库其它类目 |
+| --- | --- | --- |
+| `advance_type` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `ai_wants_to_be_subject` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `annulled_by_peace_treaty` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `antagonism` | 0 次（18 档） | **有**（出现在 4 个类目） |
+| `army_size` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `army_tradition` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `base_antagonism` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `building_type` | 0 次（18 档） | **有**（出现在 13 个类目） |
+| `cabinet_action` | 0 次（18 档） | **有**（出现在 6 个类目） |
+| `character_interaction` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `colonize` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `conquer` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `country_interaction` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `diplomatic_capacity` | 0 次（18 档） | **有**（出现在 10 个类目） |
+| `diplomatic_capacity_cost_scape` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `doom` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `estate_privilege` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `explore` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `favors` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `generic_action` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `gold` | 0 次（18 档） | **有**（出现在 5 个类目） |
+| `goods` | 0 次（18 档） | **有**（出现在 7 个类目） |
+| `government_power` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `government_reform` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `government_type` | 0 次（18 档） | **有**（出现在 31 个类目） |
+| `harmony` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `heir_selection` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `honor` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `inflation` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `international_organization` | 0 次（18 档） | **有**（出现在 18 个类目） |
+| `international_organization_type` | 0 次（18 档） | **有**（出现在 21 个类目） |
+| `join_defensive_wars_auto_call` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `join_defensive_wars_can_call` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `join_offensive_wars_auto_call` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `karma` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `language` | 0 次（18 档） | **有**（出现在 11 个类目） |
+| `literacy` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `manpower` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `maritime_presence` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `market` | 0 次（18 档） | **有**（出现在 9 个类目） |
+| `merchant_capacity` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `monthly_favor_gain` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `navy_size` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `navy_tradition` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `on_monthly` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `on_overlord_becomes_a_subject` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `opinion` | 0 次（18 档） | **有**（出现在 13 个类目） |
+| `parliament_agenda` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `parliament_issue` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `policy` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `political_influence` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `population` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `prestige` | 0 次（18 档） | **有**（出现在 3 个类目） |
+| `purity` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `relation` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| `religious_influence` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `righteousness` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `rite_power` | 0 次（18 档） | **有**（出现在 1 个类目） |
+| `sailors` | 0 次（18 档） | **有**（出现在 2 个类目） |
+| `self_control` | 0 次（18 档） | 全库也没有 → 疑似废弃字段 |
+| … | 另有 10 个 | |
+
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `always` | 47 | visible_through_diplomacy、join_defensive_wars_always、trigger_else、release_country_enabled |
+| `NOT` | 41 | uc_bey、can_rival、?、custom_tooltip |
+| `scope:target` | 36 | trigger_if、custom_tooltip、enabled_through_diplomacy、OR |
+| `base` | 33 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `negative_opinion` | 26 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `positive_opinion` | 26 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `OR` | 25 | visible_through_diplomacy、scope:target_province、custom_tooltip、visible |
+| `same_common_language` | 25 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `different_culture` | 25 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `type` | 24 | has_special_status_in_international_organization、goods、building_type、town_rights_type |
+| `actor_at_war` | 24 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `different_government_type` | 24 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `same_court_language` | 24 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `competing_power` | 24 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+| `trust_in_actor` | 23 | diplo_chance_accept_subject、diplo_chance_accept_overlord |
+
+### 六、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `color` | 19 | 23 |
+| `content_priority` | 2 | 9 |
+| `is_colonial_subject` | 1 | 9 |

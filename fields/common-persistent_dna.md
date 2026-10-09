@@ -2,7 +2,7 @@
 
 > **一句话**：给指定角色固定外貌的 DNA 档：priority、tags、genes 三字段与禁止用 DNA 强制穿戴附件的警告。
 > **什么时候看**：改历史人物长相、要核对 tags 与 genes 是否生效，或想知道穿戴该走哪时翻这篇。
-> **体量**：52 行 · 约 3 分钟通读
+> **体量**：104 行 · 约 5 分钟通读
 
 来源：**无 readme**——`custom_characters.txt`（**676,826 B / 12,344 行 / 105 个条目**）实查；**文件头注释即官方警告**。
 
@@ -49,3 +49,56 @@ magnus_eriksson = {
 - **不要照抄"用 DNA 定穿戴"的写法**：那是文件头明确禁止的；照抄会做出"随机换装"或异常外观。
 - 12,344 行 / 105 条 → 平均百余行一条，说明原版条目里 `genes` 块很长；改单条人物只动对应 key。
 - 未在 readme 中说明：本类目**没有 readme**；`priority` 冲突时的取舍、`portrait_modifiers` 的完整字段（在 `gfx\` 侧）均未文档化。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\persistent_dna\` 全量 **1 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **注意**：本类目**本体没有 readme.txt**——下面全部是实测结果，不存在"漏写"一说。
+
+### 一、本体实际在用的字段（无 readme，纯实测）
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `tags` | 119 | 1 |  |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`priority`**（1 种）：1（119）
+
+### 三、该用哪些修正（本体在这个类目里实际用过，前 1）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `priority` | 119 | 6 |
+
+### 四、深度 1 的块（子条目：政策／变体／子类型等）
+
+| 块名 | 次数 | 文件数 |
+| --- | --- | --- |
+| `portrait_info` | 119 | 1 |
+
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `gene_ear_out` | 119 | genes |
+| `gene_nose_tip_angle` | 119 | genes |
+| `gene_jaw_angle` | 119 | genes |
+| `gene_nose_ridge_def` | 119 | genes |
+| `gene_mouth_philtrum_width` | 119 | genes |
+| `gene_eyelashes` | 119 | genes |
+| `gene_eye_height` | 119 | genes |
+| `gene_jaw_forward` | 119 | genes |
+| `gene_nose_height` | 119 | genes |
+| `gene_mouth_lower_lip_size` | 119 | genes |
+| `gene_nose_root_def` | 119 | genes |
+| `gene_eye_socket_color` | 119 | genes |
+| `gene_mouth_lip_def` | 119 | genes |
+| `gene_aging_mouth` | 119 | genes |
+| `gene_chin_length` | 119 | genes |
+
+### 六、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `priority` | 119 | 6 |

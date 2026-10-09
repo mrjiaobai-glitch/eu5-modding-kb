@@ -2,7 +2,7 @@
 
 > **一句话**：把 AI 拆成性格、权重、节拍、常量与脚本钩子五层，含 `NAI` 段 746 个常量、16 张外交接受度表与难度攻击性，并标注可改点。
 > **什么时候看**：改 AI 性格与接受度权重、调难度或攻击性、排查 AI 为何不打不签不建，或接 AI 脚本钩子时翻这篇。
-> **体量**：411 行 · 约 19 分钟通读
+> **体量**：410 行 · 约 19 分钟通读
 
 ## 目录
 
@@ -104,7 +104,7 @@
 
 **分配规则**（`main_menu\common\game_rules\00_game_rules.txt:467`）：`ai_personalities` 规则，默认 `ai_personalities_historical`；可选 `ai_personalities_random`、`..._random_per_age`、`..._random_per_ruler`（后者 = 每换一任统治者重掷性格）。除 `ai_balanced` 外都带 `flag = flavour_rule`。
 
-概念词条原文佐证（`game_concepts_l_simp_chinese.yml:2097`）：「国家性格反映了该国的基本特性和治理方略，无论它倾向于征服、谨慎、外交还是孤立。**性格在游戏开局时设置，只能通过事件或游戏规则进行更改。**」——即性格**不是**每局随机，mod 想改只能走游戏规则或事件效果。
+概念词条原文佐证（`game_concepts_l_simp_chinese.yml:2178`）：「国家性格反映了该国的基本特性和治理方略，无论它倾向于征服、谨慎、外交还是孤立。**性格在游戏开局时设置，只能通过事件或游戏规则进行更改。**」——即性格**不是**每局随机，mod 想改只能走游戏规则或事件效果。
 
 **性格是修正，不是硬编码**：8 种性格合计使用 **35 个修正类型**（全部定义在 `modifier_type_definitions\00_modifier_types.txt`），且与**特质、社会价值观的 AI 修正叠加**（文件头原文："These stack additively with trait and societal value modifiers"）。所以同一个性格在不同政体/价值下表现不同。
 
@@ -397,11 +397,11 @@ AI 不是全知的，这一层决定了它的"失误"是否符合预期：
 
 ## 十、中文检索键
 
-**概念**（`game_concepts_l_simp_chinese.yml`）：`game_concept_ai_personality` **国家性格**（:2097，alias 含 `country_personality`；`_upper_desc` :2099 原文见 §二）、`game_concept_ai_disposition` **国家态度**（:2105，alias `country_disposition`；另有 `game_concept_ai_dispositions` 复数键 :2106，desc 用 `[ShowValues('ai_disposition')]` 列出全部态度）；`00_game_concepts.txt:3386` / :3391 为两者的概念定义（各带 `texture = map_modes/country_personalities_bg` / `country_dispositions_bg`）。
+**概念**（`game_concepts_l_simp_chinese.yml`）：`game_concept_ai_personality` **国家性格**（:2178，alias 含 `country_personality`；`_upper_desc` :2180 原文见 §二）、`game_concept_ai_disposition` **国家态度**（:2186，alias `country_disposition`；另有 `game_concept_ai_dispositions` 复数键 :2106，desc 用 `[ShowValues('ai_disposition')]` 列出全部态度）；`00_game_concepts.txt:3547` / :3391 为两者的概念定义（各带 `texture = map_modes/country_personalities_bg` / `country_dispositions_bg`）。
 
 **界面**（`main_menu\localization\simp_chinese\ai_personalities_l_simp_chinese.yml`，**169 行**）：8 个性格键 `ai_balanced` 平衡 / `ai_aggressive` 侵略 / `ai_expansionist` 扩张 / `ai_defensive` 防御 / `ai_cautious` 谨慎 / `ai_opportunistic` 投机 / `ai_isolationist` 孤立 / `ai_friendly` 友善（各带 `_desc`，:3–19）；`AI_PERSONALITY_MODIFIERS` 行为修正（:23）；`ai_personality_mapmode` **国家性格**地图模式（:166，按性格给国家上色）；筛选器 `CUSTOM_SEARCH_FILTER_AI_PERSONALITY_CATEGORY_NAME` 国家性格（:21）。外交侧的 `INTEL_FOG_AI_PERSONALITY_UNKNOWN` 在 `diplomacy_l_simp_chinese.yml:2946`。
 
-**trigger 词条**：`ai_will_do` 可作为 trigger 读取（`trigger_localization\common_triggers.txt:123`，键 `AI_WILL_DO_TRIGGER`）。
+**trigger 词条**：`ai_will_do` 可作为 trigger 读取（`trigger_localization\common_triggers.txt:130`，键 `AI_WILL_DO_TRIGGER`）。
 
 **关联字段档**：`fields\common-ai_personalities.md`、`fields\common-ai_diplochance.md`、`fields\common-ai_scripted_expansion.md`、`fields\common-scripted_diplomatic_objectives.md`、`fields\common-rival_criteria.md`、`fields\common-join_war_rules.md`、`fields\common-generic_action_ai_lists.md`；常量索引见 `guides\defines.md`，权重键分布见 `guides\systems-map.md`。
 

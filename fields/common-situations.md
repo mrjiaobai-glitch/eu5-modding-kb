@@ -2,7 +2,7 @@
 
 > **一句话**：局势的字段：生成概率、关联 IO 与决议、起止条件、各类钩子效果，以及地图颜色与提示。
 > **什么时候看**：写新局势、要挂国际组织决议或配置地图配色与 tooltip 时翻这篇。
-> **体量**：82 行 · 约 4 分钟通读
+> **体量**：100 行 · 约 5 分钟通读
 
 来源：`in_game\common\situations\readme.txt`
 
@@ -41,41 +41,60 @@
 
 | 字段 | 次数 | 文件数 | 常见取值（前 5） |
 | --- | --- | --- | --- |
-| `hint_tag` | 22 | 22 | hint_war_of_religions（1）、hint_red_turban_rebellions（1）、hint_treaty_of_tordesillas（1）、hint_black_death（1）、hint_colonial_revolution（1） |
+| `hint_tag` | 22 | 22 | hint_red_turban_rebellions（1）、hint_nanbokuchou（1）、hint_little_ice_age（1）、hint_western_schism（1）、hint_golden_age_of_piracy（1） |
 | `is_data_map` | 2 | 2 | yes（2） |
 
 ### 二、取值白名单（本体出现过的值 + 次数）
 
-- **`monthly_spawn_chance`**（7 种）：monthly_spawn_chance_unique（14）、monthly_spawn_chance_ultimate_high（2）、monthly_spawn_chance_ultimate（2）、monthly_spawn_chance_low（1）、monthly_spawn_chance_high（1）、monthly_spawn_chance_very_low（1）、0（1）
-- **`voters`**（4 种）：nanbokuchou_voters（1）、guelphs_and_ghibellines_voters（1）、fall_of_delhi_voters（1）、council_of_trent_voters（1）
-- **`resolution`**（3 种）："fall_of_delhi_resolution"（1）、"western_schism_resolution"（1）、"nanbokuchou_resolution"（1）
+- **`monthly_spawn_chance`**（7 种）：monthly_spawn_chance_unique（14）、monthly_spawn_chance_ultimate_high（2）、monthly_spawn_chance_ultimate（2）、0（1）、monthly_spawn_chance_low（1）、monthly_spawn_chance_high（1）、monthly_spawn_chance_very_low（1）
+- **`voters`**（4 种）：fall_of_delhi_voters（1）、council_of_trent_voters（1）、nanbokuchou_voters（1）、guelphs_and_ghibellines_voters（1）
+- **`resolution`**（3 种）："fall_of_delhi_resolution"（1）、"nanbokuchou_resolution"（1）、"western_schism_resolution"（1）
 - **`international_organization_type`**（1 种）：catholic_church（2）
 - **`is_data_map`**（1 种）：yes（2）
 - **`custom_description`**（1 种）：GetTreatyOfToredesillasDesc（1）
 
-### 三、深度 1 的块（子条目：政策／变体／子类型等）
+### 三、readme 声明、但本类目内原版 0 使用
+
+> ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
+
+| 字段 | 本类目 | 全库其它类目 |
+| --- | --- | --- |
+| `can_end` | 0 次（22 档） | **有**（出现在 2 个类目） |
+| `change_format` | 0 次（22 档） | **有**（出现在 1 个类目） |
+| `format` | 0 次（22 档） | **有**（出现在 3 个类目） |
+| `hidden` | 0 次（22 档） | **有**（出现在 2 个类目） |
+| `max` | 0 次（22 档） | **有**（出现在 25 个类目） |
+| `min` | 0 次（22 档） | **有**（出现在 19 个类目） |
+| `monthly_change` | 0 次（22 档） | **有**（出现在 1 个类目） |
+| `monthly_change_hidden` | 0 次（22 档） | **有**（出现在 1 个类目） |
+| `start` | 0 次（22 档） | **有**（出现在 1 个类目） |
+| `variables` | 0 次（22 档） | **有**（出现在 1 个类目） |
+| `warning_string_key` | 0 次（22 档） | 全库也没有 → 疑似废弃字段 |
+
+### 四、深度 1 的块（子条目：政策／变体／子类型等）
 
 | 块名 | 次数 | 文件数 |
 | --- | --- | --- |
 | `legend_key` | 79 | 21 |
+| `outcome` | 60 | 22 |
 | `content_trigger` | 1 | 1 |
 
-### 四、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
 
 | 块内键 | 次数 | 出现于哪些父块 |
 | --- | --- | --- |
-| `limit` | 530 | every_owned_non_rural_location、random_in_global_list、legend_key、random_location_in_continent |
-| `if` | 269 | map_color、?、every_war_participant、order_by |
-| `value` | 223 | map_color、else_if、if、else |
-| `else_if` | 185 | on_ended、every_current_policy_in_international_organization、?、every_international_organization_member |
-| `OR` | 157 | ?、c:CHI、any_location_in_region、NOT |
-| `trigger_event_non_silently` | 152 | random_in_global_list、?、c:FRA、random_in_list |
-| `NOT` | 129 | can_start、custom_tooltip、var:war_of_religion_current_war、can_end |
-| `custom_tooltip` | 122 | any_country_with_capital_in_geography、?、can_end、if |
-| `has_owner` | 116 | if、any_ownable_location_in_area、limit、else_if |
-| `set_variable` | 97 | every_country_in_religion、c:PAP、situation:rise_of_the_ottomans、situation:treaty_of_tordesillas.var:var_east_country |
-| `name` | 85 | sort_global_variable_list、change_local_variable、remove_list_global_variable、change_variable |
-| `desc` | 80 | add_country_modifier、legend_key、? |
+| `limit` | 531 | ordered_international_organization_member、every_pop、if、every_market_in_world |
+| `if` | 271 | on_ended、international_organization:japanese_shogunate.leader_country、if、location:wittenberg |
+| `value` | 223 | add、if、supporters、order |
+| `else_if` | 182 | if、the_revolution、secondary_map_color、outcome |
+| `OR` | 162 | OR、NOT、hidden_trigger、any_current_war |
+| `trigger_event_non_silently` | 155 | on_ended、c:ENG、if、immediate |
+| `NOT` | 151 | any_neighbor_country、custom_tooltip、international_organization:hre.leader_country、any_owned_location |
+| `custom_tooltip` | 150 | if、NOT、the_revolution、trigger |
+| `name` | 145 | remove_list_global_variable、change_local_variable、set_local_variable、is_target_in_global_variable_list |
+| `has_owner` | 116 | if、any_ownable_location_in_area、legend_key、else_if |
+| `desc` | 114 | add_country_modifier、legend_key、outcome、? |
+| `set_variable` | 105 | if、every_country_in_religion、c:DLH、situation:treaty_of_tordesillas.var:var_east_country |
+| `trigger` | 87 | switch、international_organization:japanese_shogunate、?、outcome |
+| `AND` | 80 | AND、any_foreign_building_countries_in_location、NOT、trigger_if |
 | `color` | 79 | legend_key、? |
-| `AND` | 72 | custom_tooltip、OR、any_foreign_building_countries_in_location、AND |
-| `random_list` | 67 | every_country_in_religion、custom_tooltip、every_present_country、? |

@@ -2,7 +2,7 @@
 
 > **一句话**：摄政的五个字段与原版 15 种摄政实测，含兜底空位期与四组与继承法配套的选举摄政。
 > **什么时候看**：新增摄政、写新继承法要配选举期摄政，或要查兜底空位期逻辑时翻这篇。
-> **体量**：57 行 · 约 3 分钟通读
+> **体量**：56 行 · 约 3 分钟通读
 
 来源：`in_game\common\regencies\readme.txt`（172 B，5 字段）+ 15 个数据文件 **15 种摄政**
 
@@ -52,5 +52,5 @@
 - `internally_assigned = yes` 的 4 个都是"由体系内部指派摄政者"的场合（配偶/宗主/附属国/内阁首脑）；改这几个要连带考虑由谁任命。
 - `zz_default.txt` 的 `interregnum` 是**兜底**：新增摄政若不覆盖某种局面，玩家会掉进空位期，所以 `start_effect` 里必须有兜底造人逻辑（原版就靠 `create_character`）。
 - 摄政与继承法成对出现（`fratricide_succesion` / `judicial_election` / `mamluk_succesion` / `papal_election` 四对同名）——写新继承法时通常要配一个摄政，否则选举期无人执政。
-- 相关 trigger：`is_regent`（`trigger_localization\character_triggers.txt:340`）、`can_become_a_regent`。
+- 相关 trigger：`is_regent`（`trigger_localization\character_triggers.txt:375`）、`can_become_a_regent`。
 - 未在 readme 中说明：本地化键格式、trigger/effect 作用域。

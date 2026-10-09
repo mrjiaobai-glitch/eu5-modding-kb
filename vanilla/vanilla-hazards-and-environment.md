@@ -2,7 +2,7 @@
 
 > **一句话**：覆盖 8 类气候、22 类地形、7 类植被与动态天气、火山地震、7 种疾病及应对行动，说明它们如何互相调用并进入战斗、生产与人口公式。
 > **什么时候看**：改地形气候数值、做天气或疫病内容、调人口容量与损耗，或查 `NWeather`／`NDisease` 常量时翻这篇。
-> **体量**：432 行 · 约 20 分钟通读
+> **体量**：431 行 · 约 20 分钟通读
 
 ## 目录
 
@@ -228,7 +228,7 @@ start_weather_system = { width = <pixels> length = <pixels> strength = [0..1]
 | 钩子 | 位置 | 说明 |
 |---|---|---|
 | `on_storm_reached_location` | `on_action\_hardcoded.txt:5493-5497` | `root = location`；`scope:weather_system`；**原版 effect 为空** —— 风暴的实际效果由引擎硬编码，脚本只能在此扩展 |
-| `has_weather_system` 警报 | `alert_descriptions\00_default.txt:560`（橙色优先级），显示逻辑 `gui\alertmanager.gui:2363-2380` | — |
+| `has_weather_system` 警报 | `alert_descriptions\00_default.txt:569`（橙色优先级），显示逻辑 `gui\alertmanager.gui:2363-2380` | — |
 | 天气地图模式 | `gfx\interface\icons\map_modes\weather.dds` | — |
 | 天气 tooltip | `gui\shared\location_tooltips.gui:5984`（`WeatherSystem_tooltip`） | 用 `[WeatherSystem.GetNameWithNoTooltip]`、`[WeatherSystem.GetTooltip]` |
 | 天气美术/粒子 | `gfx\models\mapitems\weather\`（desert/sea/snow/volcano 各含 `_*_weather_entities.asset`） | — |
@@ -341,7 +341,7 @@ is_endemic_typhus_location = { 同植被条件 + 索马里/埃塞俄比亚/几�
 | `black_death` 黑死病 | `situations\black_death.txt` + 事件 `events\situations\black_death.txt`（**51KB**） | `can_start = disease_is_active = disease:bubonic_plague`；`can_end = NOT { disease_outbreak_is_active = var:original_outbreak }`（用**首个爆发**当锚点）；`visible` 里列出 10 个应对修正 | **18 个**（`generic_actions\black_death.txt`，9 组各带 stop_ 反向）：`hide_from_black_death` / `isolate_cities_black_death` / `control_the_food_market` / `close_the_borders` / `procure_remedies` / `segregate_the_infected` / `strict_quarantines` / `sponsor_sin_forgiveness` / `blame_the_minorities` |
 | `great_pestilence` 大瘟疫 | `situations\great_pestilence.txt`（12KB）+ 事件文件 12KB | `can_start = disease_is_active = disease:great_pestilence`；`can_end` 要求 **加勒比/中美洲/安第斯三个区域变量都被感染过**，且美洲"已定居国家 ≤30 且都已历过" | **10 个**（`generic_actions\great_pestilence.txt`）：`great_pestilence_procure_remedies`（仅殖民者）/ `..._segregate_the_infected` / `..._blame_the_minorities`（仅殖民者）/ `sponsor_spiritual_protection` / `no_contact_with_outsiders`，各带 stop_ |
 
-应对产生的国家修正定义在 `main_menu\common\static_modifiers\country.txt:3949` 起（`hiding_from_black_death`、`control_the_food_market`、`close_the_borders`、`segregate_the_infected`、`strict_quarantines`、`procure_remedies`、`sponsor_sin_forgiveness`、`blame_the_minorities`…）。
+应对产生的国家修正定义在 `main_menu\common\static_modifiers\country.txt:4119` 起（`hiding_from_black_death`、`control_the_food_market`、`close_the_borders`、`segregate_the_infected`、`strict_quarantines`、`procure_remedies`、`sponsor_sin_forgiveness`、`blame_the_minorities`…）。
 通用事件：`events\situations\diseases.txt` 的 `diseases.1`（对任一疾病触发，掉繁荣度）。
 
 ### 5.6 游戏规则（3 个）

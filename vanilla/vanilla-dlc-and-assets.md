@@ -2,7 +2,7 @@
 
 > **一句话**：讲 DLC 描述符与三区镜像的装载方式，以及图片/模型不靠 `.gfx` 注册、按路径直取时的引用规则与资产规模。
 > **什么时候看**：加事件插图或任务图标、给单位换外观，或研究 DLC 挂载与资产路径怎么引用时翻这篇。
-> **体量**：321 行 · 约 15 分钟通读
+> **体量**：320 行 · 约 15 分钟通读
 
 ## 目录
 
@@ -60,7 +60,7 @@ potential = {
 age = age_1_traditions
 ```
 
-词条文本：`has_dlc_trigger: "Has DLC: $DLC$"` / `NOT_has_dlc_trigger`（`triggers_l_english.yml:1753-1754`）。实例分布：`advances\country_byz.txt:35`、`bureaucracies\byz.txt:11`、`disasters\D008_fate_of_the_phoenix.txt:10`、`child_educations\D008_orthodox_education.txt:6`、`building_types\unique_buildings.txt:5188`、`formable_countries\00_formable_countries.txt:1903` 等。
+词条文本：`has_dlc_trigger: "Has DLC: $DLC$"` / `NOT_has_dlc_trigger`（`triggers_l_english.yml:1753-1754`）。实例分布：`advances\country_byz.txt:66`、`bureaucracies\byz.txt:11`、`disasters\D008_fate_of_the_phoenix.txt:10`、`child_educations\D008_orthodox_education.txt:6`、`building_types\unique_buildings.txt:5188`、`formable_countries\00_formable_countries.txt:2203` 等。
 
 ### cosmetic 包（D015 / D017）：**纯资产，脚本侧没有门控**
 

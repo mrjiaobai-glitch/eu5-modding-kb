@@ -2,7 +2,7 @@
 
 > **一句话**：修正键注册表：显示层字段、必填的 game_data 与十种作用域类别，以及两条本地化键。
 > **什么时候看**：写任何修正键、要查它归哪类对象或补名称与说明时翻这篇。
-> **体量**：79 行 · 约 4 分钟通读
+> **体量**：94 行 · 约 5 分钟通读
 
 来源：**本类目没有 readme、也没有 info**——3 个档实查（`00_modifier_types.txt` **212,995 B / 2,393 键**、`01_byz.txt` 29 键、`02_generic_bureaucracies.txt` 14 键）。
 
@@ -76,3 +76,19 @@ MODIFIER_TYPE_DESC_<键>     # 说明（英文 loc 2,477 条）
 - **跨类目引用**（法律/改革/建筑/阶层特权/事件选项里的 `modifier` 字段）只认**已注册的键**；审查 mod 时必须把所有出现的修正键回本表比对（这是 `tools\review-checklist.md` 第二节列的第一条）。
 - **新键要同时给 loc 三件套**（`MODIFIER_TYPE_NAME_` / `_DESC_`，以及用它的对象的 loc）。
 - 未在 readme 中说明：本类目**没有任何官方文档**；`color` 的合法取值清单、`boolean` 与 `percent` 的界面渲染细节、`ai = yes` 具体影响哪些 AI 决策，均由引擎决定（`ai = yes` 的清单可反查 `vanilla\vanilla-ai.md`）。
+
+## 移速键作用域速查（2026-10 实查）
+
+完整机制见 `vanilla\vanilla-army-movement.md`。注册表里与军队移动直接相关的键，`category` 分三类：
+
+| 键 | 行 | `category` | 备注 |
+| --- | --- | --- | --- |
+| `army_movement_speed` | L4697 | `unit` | `percent=yes`，陆军移速主旋钮 |
+| `navy_movement_speed` | L4711 | `unit` | 海军 |
+| `army_disembark_speed` | L4704 | `unit` | 卸载/登陆 |
+| `movement_speed_if_no_road` | L4718 | `unit` | 无道路减免 |
+| `movement_speed_when_attached_to_another_unit` | L6107 | `unit` | 附属他军时 |
+| `land_morale_movement_cost` / `naval_morale_movement_cost` | L4620 / L4628 | `unit` | 移动耗士气速率 |
+| `movement_cost` / `hostile_movement_cost` / `friendly_movement_cost` | L4673 / L4681 / L4689 | `location` | 成本，与速度成反 |
+| `capital_movement_cost_modifier` | L2916 | `country` | 首都距离成本 |
+| `movement_blocked` | L5941 | `location`（`boolean`） | 完全断路 |

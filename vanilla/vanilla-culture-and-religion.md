@@ -2,7 +2,7 @@
 
 > **一句话**：实查 2087 个文化、528 种语言、293 个宗教及其组／信条／学派／圣地／神祇／运动，给出地位容量、统一度、好感与同化改宗速率修正链。
 > **什么时候看**：加文化或宗教、改地位与容量、做运动传播或改宗内容，或需要宗教字段表（无官方 readme）时翻这篇。
-> **体量**：463 行 · 约 22 分钟通读
+> **体量**：507 行 · 约 24 分钟通读
 
 ## 目录
 
@@ -11,6 +11,7 @@
 - [二、文化（culture）](#二文化culture)
   - [2.1 定义层](#21-定义层)
   - [2.2 三层地位 + 容量](#22-三层地位--容量)
+  - [2.2b 脚本判定"某文化的档位"（含"某地优势文化在本国的接纳程度"，2026-10 实查）](#22b-脚本判定某文化的档位含某地优势文化在本国的接纳程度2026-10-实查)
   - [2.3 文化统一度](#23-文化统一度)
   - [2.4 文化好感（五档）](#24-文化好感五档)
   - [2.5 文化战争：传统 = 防御，影响 = 攻击](#25-文化战争传统--防御影响--攻击)
@@ -165,6 +166,48 @@ my_culture = {
 
 - 相关效果：`add_accepted_culture` / `demote_accepted_culture` / `add_tolerated_culture` / `remove_tolerated_culture` / `change_culture` / `change_language` / `add_cultural_tradition` / `add_cultural_influence` / `set_cultural_view` / `change_cultural_view`（`effect_localization\culture_effects.txt`）。
 - 触发器（`trigger_localization\culture_triggers.txt`，20 条）：`cultural_tradition`、`cultural_tradition_power`、`cultural_influence`、`cultural_influence_power`、`cultural_view` / `reverse_cultural_view`、`is_accepted_in`、`is_primary_or_accepted_in`、`is_tolerated_in`、`has_culture_group`、`any_culture_group`、`has_shared_culture_group`、`has_graphical_culture`、`culture_opinion_impact`、`is_active`、`is_already_merged`、`is_merged_culture_group(_of)`、`merged_culture_group_contains_culture`、`has_any_culture_group`。
+
+### 2.2b 脚本判定"某文化的档位"（含"某地优势文化在本国的接纳程度"，2026-10 实查）
+
+档位是**离散四态**（主流 > 已接纳 > 相容 > 受歧视），**不是百分比**。本体用两套**方向相反**的触发器判定，都在 `trigger_localization\`。
+
+**方向 A · 国家作用域**（`country_triggers.txt`，root = 国家）——问"本国接不接受某文化"：
+
+| 触发器 | 行 | 语义 |
+| --- | --- | --- |
+| `has_primary_or_accepted_culture = <文化>` | L2743 | 主流或已接纳 |
+| `has_primary_or_accepted_or_tolerated_culture = <文化>` | L2754 | 主流/已接纳/相容（＝非受歧视） |
+| `has_accepted_culture = <文化>` | L2765 | 已接纳（不含主流） |
+| `has_tolerated_culture = <文化>` | L2776 | 相容 |
+
+**方向 B · 文化作用域**（`culture_triggers.txt`，root = 一个文化）——问"这文化在某国是什么档"：
+
+| 触发器 | 行 |
+| --- | --- |
+| `is_primary_or_accepted_in = <国家>` | L51 |
+| `is_accepted_in = <国家>` | L45 |
+| `is_tolerated_in = <国家>` | L57 |
+| `is_discriminated_in = <国家>` | ⚠️ 原版在用（见下 `promote_culture.txt:192`），但其 trigger_localization 注册行没在本次扫到的锚点里——**用前先 grep 复核** |
+
+**"某地点的优势文化在本国的接纳程度"的正解**：`.dominant_culture` 取该地**规模最大**的文化（优势文化，**与四档正交**，见 §术语对照），再喂给判定。本体最地道的是**方向 B**——把文化取成作用域再问（`cabinet_actions\promote_culture.txt:181`、`assimilate_area.txt:189`）：
+
+```
+scope:target_1.dominant_culture = { is_tolerated_in = scope:actor }
+dominant_culture = { is_primary_or_accepted_in = scope:actor }
+```
+
+方向 A 也等价（root 已是国家时）：
+
+```
+has_accepted_culture = location:fatehabad.dominant_culture
+```
+
+- `.dominant_culture` 可挂在（实测计数）：`scope:target_location`(×11)、`location`/`location:xxx`(×13)、`root`(×4)、`owner`(×2)、`capital`(×2)；另有 `secondary_culture`（`promote_culture.txt:94`）。
+- 判"完全不被接受"用三连（`promote_culture.txt:192`）：`NOT = { is_primary_or_accepted_in = … }` + `NOT = { is_tolerated_in = … }` + `is_discriminated_in = …`。
+
+**切换档位的脚本动作**（`effect_localization\country_effects.txt`）：`add_accepted_culture`(L1766) / `remove_accepted_culture`(L1793) / `demote_accepted_culture`(L1811，降一档) / `add_tolerated_culture`(L1802) / `remove_tolerated_culture`(L1820) / `add_discriminated_culture`(L1829) / `remove_discriminated_culture`(L1838)。**主流文化不能用这些键设**——改主流走通用行动 `change_primary_culture`（见 §2.2 表）。
+
+**未在文本证实（别当已证）**：① `is_discriminated_in` 的注册行；② `.dominant_culture` 在一地多文化时取"绝对多数"还是"任一最高档"（引擎侧）；③ **没有连续的"数值接纳度"**——本库找不到 `culture_acceptance` 类修正键，"程度"只有上述离散四态 + §2.2 的满意度/成本数值。
 
 ### 2.3 文化统一度
 
@@ -454,6 +497,8 @@ modifier = { tolerance_heretic = -2 }
 ## 八、中文检索键
 
 概念（`game_concepts_l_simp_chinese.yml`）：`game_concept_culture`（文化）、`primary_culture`（主流文化）、`accepted_culture`（已接纳文化）、`tolerated_culture`（相容文化）、`dominant_culture`（优势文化）、`cultural_unity`（文化统一度）、`cultural_tradition`（文化传统）、`cultural_influence`（文化影响）、`culture_war` / `culture_war_power`（文化战争 / 文化战争力量）、`assimilation`（同化）、`religion`（宗教）、`religious_unity`（宗教统一度）、`tolerance`（容忍度）、`heretic` / `heresy`（异端）、`heathen`（异教）、`conversion`（皈依）、`reform_desire`（改革呼声）、`religious_influence`（宗教影响力）、`religious_head`（宗教领袖）、`cardinal`（枢机）、`patriarch`（牧首）、`canonization` / `saint`（封圣 / 圣人）、`religious_aspect`（宗教信条）、`religious_school`（宗教学派）、`sect`（宗派）、`religious_figure`（宗教人士）、`god` / `omen`（神 / 神谕）、`holy_site`（圣地）、`tithe`（什一税）、`movement`（运动）。
+
+档位判定与切换（脚本侧，详见 §2.2b）：**判定**——`has_accepted_culture` / `has_tolerated_culture` / `has_primary_or_accepted_culture` / `has_primary_or_accepted_or_tolerated_culture`（国家作用域）、`is_accepted_in` / `is_tolerated_in` / `is_primary_or_accepted_in` / `is_discriminated_in`（文化作用域）；**取某地文化**——`dominant_culture`（优势文化）/ `secondary_culture`；**切换**——`add_`/`remove_`/`demote_accepted_culture`、`add_`/`remove_tolerated_culture`、`add_`/`remove_discriminated_culture`、`change_primary_culture`。  
 
 好感档位（`general_tooltips_l_simp_chinese.yml:144–149 / 213–218`）：`culture_opinion_enemy/negative/neutral/positive/kindred` = 敌视 / 厌恶 / 中立 / 友好 / 亲密（`same` = 主流）；宗教同五档，另有 `CULTURE_OPINION_TOOLTIP` / `RELIGION_OPINION_TOOLTIP` 详解。
 

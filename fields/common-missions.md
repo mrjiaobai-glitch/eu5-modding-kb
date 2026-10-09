@@ -2,7 +2,7 @@
 
 > **一句话**：任务链与任务节点的字段权威：链级与节点级字段、select_trigger 目标选择器、六个 on_action 钩子与本地化键。
 > **什么时候看**：写或审查任务包、要核对 select_trigger、duration、final 与任务奖励开关时翻这篇。
-> **体量**：141 行 · 约 7 分钟通读
+> **体量**：214 行 · 约 10 分钟通读
 
 来源：`in_game\common\missions\____Info.txt`（**61 行；本目录没有 readme.txt，该 .info 就是字段权威**）+ 11 个任务包实查（142 KB / **11 条任务链 / 108 个任务节点**）
 
@@ -91,11 +91,11 @@ select_trigger = {
 
 | 机制 | 位置 | 内容 |
 |---|---|---|
-| 候选数量 | `loading_screen\common\defines\00_defines.txt:168` | `POTENTIAL_MISSION_COUNT = 10` |
+| 候选数量 | `loading_screen\common\defines\00_defines.txt:180` | `POTENTIAL_MISSION_COUNT = 10` |
 | 任务包总开关 | `main_menu\common\game_rules\00_game_rules.txt:155-168` | `mission_packs_enabled_rule`，**默认 `mission_packs_disabled`**；disabled 选项带 `proficiency_expert` 旗标 |
 | 奖励规则 | 同上 `:170-183` | `mission_rewards` 默认 `only_end_mission_rewards`，该选项带 `flag = task_rewards_disabled` |
 | 脚本侧开关 | `in_game\common\scripted_triggers\game_triggers.txt:37-52` | `game_has_missions_enabled`（= `NOT = { has_game_rule = mission_packs_disabled }`）、`game_has_mission_rewards_enabled`、`game_has_mission_task_rewards_enabled` |
-| 屏蔽单条链 | `scripted_triggers\country_triggers.txt:504` | `has_enabled_mission_trigger` = `NOT = { has_variable = disabled_mission_$type$ }` → **设变量 `disabled_mission_<链名>` 即屏蔽该链** |
+| 屏蔽单条链 | `scripted_triggers\country_triggers.txt:513` | `has_enabled_mission_trigger` = `NOT = { has_variable = disabled_mission_$type$ }` → **设变量 `disabled_mission_<链名>` 即屏蔽该链** |
 | 解锁单条链 | 同上 `:512` | `has_unlocked_mission_task_trigger` = `has_variable = unlocked_mission_task_$type$` |
 | 上述两个触发器的 tooltip | `common\trigger_localization\scripted_triggers.txt:187/193` | `has_enabled_mission_trigger_text` / `has_unlocked_mission_task_trigger_text`，各含 none / first / global / third 四种人称 |
 | 六个 on_action 钩子 | `common\on_action\_hardcoded.txt:5471-5491` | `on_mission_start` / `on_mission_completion` / `on_mission_abort`（原版自带 `add_stability = stability_mild_penalty`）/ `on_mission_task_start` / `on_mission_task_completion` / `on_mission_task_bypass`（root = country） |
@@ -114,7 +114,7 @@ select_trigger = {
 <节点名>_tt                     # 节点自定义提示（custom_tooltip 用）
 ```
 
-实例：`main_menu\localization\english\missions\generic_colonize_explore_l_english.yml:4-8`（链 5 键）、`:11-22`（节点名 + `_desc`）、`:32-33`（`_tt`）。loc 里引用任务实体写 `[MISSION.GetName]`（`scripted_triggers_l_english.yml:214`）。
+实例：`main_menu\localization\english\missions\generic_colonize_explore_l_english.yml:4-8`（链 5 键）、`:11-22`（节点名 + `_desc`）、`:32-33`（`_tt`）。loc 里引用任务实体写 `[MISSION.GetName]`（`scripted_triggers_l_english.yml:215`）。
 
 ## 原版实测（11 链 / 108 节点）
 
@@ -138,3 +138,77 @@ select_trigger = {
 - 原版有**双扩展名档** `generic_infrastructure_mission_pack.txt.txt`（13,169 B，全库仅两处此类，另一处是 `gfx\map\map_objects\decal_rock_clusters_01_a.txt.txt`）。它是链 `development_of_infrastructure`（英文名 "Infrastructure Efforts"）与节点 `a_great_capital`（`:194`）的**唯一定义处**，loc 5 键 11 语言齐全，`events\debug\000_johan_debug.txt:1614/1615` 以引擎实体形式引用这两个实体。**结论：文件名手滑，但内容是生效的**——引擎按 `.txt` 后缀通配加载（`x.txt.txt` 仍以 `.txt` 结尾，而 `x.txt.bak` 才会被忽略）；外部佐证是 SteamDB 的补丁 diff 一直在改这个文件的内容（1.0.5 −1 B、1.0.10 +2 B〔同批补丁说明含任务 "control around the capital" 的修正〕、1.2.4 +36 B，见 [1.0.5](https://steamdb.info/patchnotes/20828878/) / [1.0.10](https://steamdb.info/patchnotes/21194479/) / [1.2.4](https://steamdb.info/patchnotes/23310399/)），且粉丝数据库 [EU5DB](https://eu5db.com/mission/development_of_infrastructure) 收录该链时把来源标为这个 `.txt.txt` 档。**自己写档一律用单个 `.txt`**，也别用"改扩展名"的方式停用原版文件（`.txt.txt` 无效，须改成 `.bak` 之类）。
 
 未在 `____Info.txt` 中说明：`select_trigger` 全部字段与用法、`player_playstyle`、`POTENTIAL_MISSION_COUNT` 的调度方式、任务级 `on_persistent_*` 与游戏规则旗标的对应关系、`has_enabled_mission_trigger` / `has_unlocked_mission_task_trigger` 两个门槛触发器、六个 `on_mission_*` on_action 钩子、本地化键全集。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\missions\` 全量 **12 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **注意**：本类目**本体没有 readme.txt**——下面全部是实测结果，不存在"漏写"一说。
+
+### 一、本体实际在用的字段（无 readme，纯实测）
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `repeatable` | 11 | 11 | yes（11） |
+| `player_playstyle` | 11 | 11 | diplomatic（4）、administrative（4）、military（3） |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`repeatable`**（1 种）：yes（11）
+- **`icon`**（11 种）：generic_traditional_economy（1）、generic_progress_and_literacy（1）、generic_colonize_explore（1）、generic_estate_cooperation（1）、generic_humiliate_rival_mission_pack（1）、generic_capital_economy（1）、generic_conquer_province（1）、generic_infrastructure（1）、generic_capable_cabinet（1）、generic_trade（1）、generic_vassal_ties（1）
+- **`player_playstyle`**（3 种）：diplomatic（4）、administrative（4）、military（3）
+- **`chance`**（1 种）：3600（11）
+
+### 三、该用哪些修正（本体在这个类目里实际用过，前 2）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `icon` | 11 | 9 |
+| `chance` | 11 | 9 |
+
+### 四、深度 1 的块（子条目：政策／变体／子类型等）
+
+| 块名 | 次数 | 文件数 |
+| --- | --- | --- |
+| `on_completion` | 11 | 11 |
+| `on_abort` | 11 | 11 |
+| `visible` | 11 | 11 |
+| `on_start` | 10 | 10 |
+| `enabled` | 5 | 5 |
+| `abort` | 4 | 4 |
+| `select_trigger` | 3 | 3 |
+| `mission_capital_province_control` | 1 | 1 |
+| `mission_promote_cabinet_head` | 1 | 1 |
+| `mission_improve_relations_with_vassal` | 1 | 1 |
+| `mission_fishing_villages` | 1 | 1 |
+| `mission_export_produced_goods` | 1 | 1 |
+| `mission_insult_rival` | 1 | 1 |
+| `mission_light_ships` | 1 | 1 |
+| `mission_base_of_power` | 1 | 1 |
+| … | 另有 25 种 | |
+
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `limit` | 263 | trigger_else_if、random_institutions_embraced、every_subject、every_neighbor_location |
+| `value` | 194 | size、change_societal_value、value、limit |
+| `add` | 167 | if、multiply、order_by、else |
+| `remove_variable` | 144 | on_persistent_completion、on_abort、if、on_completion |
+| `if` | 140 | on_persistent_start、custom_tooltip、order_by、on_abort |
+| `name` | 121 | select_trigger、set_variable、round_variable、change_variable |
+| `set_variable` | 114 | on_persistent_start、custom_tooltip、if、scope:mission_target_location |
+| `icon` | 108 | mission_grant_burghers_privileges、mission_embrace_capital_economy、mission_connect_location_to_capital、mission_marketplace_of_capital |
+| `enabled` | 104 | mission_grant_burghers_privileges、mission_connect_location_to_capital、mission_marketplace_of_capital、mission_create_profit |
+| `duration` | 98 | mission_embrace_capital_economy、mission_cloth_makers、mission_estate_privileges、mission_increase_workforce |
+| `requires` | 97 | mission_grant_burghers_privileges、mission_embrace_capital_economy、mission_connect_location_to_capital、mission_marketplace_of_capital |
+| `on_completion` | 95 | mission_cloth_makers、mission_create_profit、mission_increase_workforce、mission_get_into_profitable_import |
+| `years` | 81 | add_location_modifier、add_merchant_power、add_province_modifier、add_country_modifier |
+| `multiply` | 80 | meritocratic_approach、if、change_development、scope:mission_target_estate |
+| `custom_tooltip` | 72 | mission_home_region_control、if、any_rival、mission_peasants_estate_satisfaction |
+
+### 六、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `icon` | 11 | 9 |
+| `chance` | 11 | 9 |

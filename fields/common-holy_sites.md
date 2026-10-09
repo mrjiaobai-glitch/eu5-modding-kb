@@ -2,7 +2,7 @@
 
 > **一句话**：圣地两档：圣地类型的三个作用域修正与缩放规则，圣地本体的地点、类型、重要度、宗教列表及可选的神祇化身关联。
 > **什么时候看**：加圣地，或核对类型、神祇、化身等引用与重要度取值时看。
-> **体量**：49 行 · 约 3 分钟通读
+> **体量**：48 行 · 约 3 分钟通读
 
 覆盖 readme：`in_game\common\holy_site_types\readme.txt`、`in_game\common\holy_sites\readme.txt`
 
@@ -43,6 +43,6 @@
 
 ### 一、取值白名单（本体出现过的值 + 次数）
 
-- **`importance`**（5 种）：2（61）、3（57）、4（46）、1（39）、5（38）
-- **`type`**（10 种）：temple（133）、mountain（23）、shrine（21）、city（15）、episcopal_see（10）、orthodox_church_holy_site（10）、islam_holy_site（10）、christian_holy_site（8）、mayan_holy_site（7）、inti_holy_site（4）
-- **`god`**（13 种）：vishnu_god（53）、shakti_god（31）、shiva_god（10）、surya_god（7）、ganesha_god（7）、inti_god（2）、urpihuachac_god（1）、quetzalcoatl_god（1）、illapa_god（1）、pachamama（1）、viracocha（1）、mama_cocha（1）、mamaquilla（1）
+- **`type`**（10 种）：temple（133）、mountain（23）、shrine（21）、islam_holy_site（19）、city（15）、christian_holy_site（15）、orthodox_church_holy_site（10）、episcopal_see（10）、mayan_holy_site（7）、inti_holy_site（4）
+- **`importance`**（5 种）：2（66）、3（58）、1（49）、4（46）、5（38）
+- **`god`**（13 种）：vishnu_god（53）、shakti_god（31）、shiva_god（10）、surya_god（7）、ganesha_god（7）、inti_god（2）、urpihuachac_god（1）、viracocha（1）、illapa_god（1）、quetzalcoatl_god（1）、pachamama（1）、mamaquilla（1）、mama_cocha（1）

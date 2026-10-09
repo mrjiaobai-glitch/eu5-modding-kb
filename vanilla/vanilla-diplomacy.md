@@ -2,7 +2,7 @@
 
 > **一句话**：梳理 138 个国家交互、34 种条约关系与 20 个附属国定义，含外交官／容量／范围、敌意、`ai_disposition` 态度机与常量。
 > **什么时候看**：加国家交互或条约关系、改附属国与忠诚独立倾向、调敌意与外交范围，或做 AI 外交内容时翻这篇。
-> **体量**：297 行 · 约 14 分钟通读
+> **体量**：296 行 · 约 14 分钟通读
 
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
@@ -73,7 +73,7 @@
 > "与所有人结盟就是不与任何人结盟。**维持比外交容量更多关系的国家将受到外交声誉和威望惩罚**。特定附属国类型也会占用**外交维持费**，这也会削弱可用的外交行动。成为某些国际组织的成员会占用外交容量，**你盟友的实力决定了该同盟占用的外交容量**。"
 
 - 容量来源：**国家等级**（上表）+ **革新**（`diplomatic_capacity = 1` / `diplomatic_capacity_modifier = 0.1~0.2`，散落在 `advances\` 数十处）。
-- 范围扩展：`diplomatic_range_modifier`（如 `0_age_of_discovery.txt:228` +0.25、`0_age_of_absolutism.txt:263` +0.33）。
+- 范围扩展：`diplomatic_range_modifier`（如 `0_age_of_discovery.txt:239` +0.25、`0_age_of_absolutism.txt:263` +0.33）。
 - **外交官要跑路**：交互/条约的 `use_enroute = yes/no` + `TRAVEL_DAYS = 30`；`skip_diplomat_for_cancel` 让取消免跑。修正 `send_diplomat_cost_modifier`、`allow_cabinet_diplomatic_corps`（内阁"外交使团"）、`bias_for_diplomat_policies`。
 - 维护成本：`diplomatic_upkeep_efficiency`、`diplomatic_spending_cost`、`diplomatic_annexation_efficiency`。
 

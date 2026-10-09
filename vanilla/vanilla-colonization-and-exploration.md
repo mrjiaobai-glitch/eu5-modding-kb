@@ -2,7 +2,7 @@
 
 > **一句话**：梳理探索三动作、特许殖民地与迁徙执行器、征服者、殖民领附属国与殖民地联邦 IO，并给出 `NColony` 常量与区域偏好、CB 清单。
 > **什么时候看**：做殖民或探索内容、改迁徙与殖民领规则、加殖民 CB 或调探索偏好与成本时翻这篇。
-> **体量**：342 行 · 约 16 分钟通读
+> **体量**：341 行 · 约 16 分钟通读
 
 ## 目录
 
@@ -17,7 +17,7 @@
 - [三、特许殖民地（colonial charter）](#三特许殖民地colonial-charter)
   - [3.1 创建与放弃](#31-创建与放弃)
   - [3.2 目标选择与引擎候选](#32-目标选择与引擎候选)
-  - [3.3 成本常量（`NColony`，defines 2524–2550）](#33-成本常量ncolonydefines-25242550)
+  - [3.3 成本常量（`NColony`，defines 2746–2774）](#33-成本常量ncolonydefines-27462774)
 - [四、迁徙（migration）——真正的执行器](#四迁徙migration真正的执行器)
   - [4.1 引擎效果](#41-引擎效果)
   - [4.2 三个来源（原版全部用法）](#42-三个来源原版全部用法)
@@ -53,7 +53,7 @@
 | `common\casus_belli\` | **5 个殖民/探索 CB** | `casus_belli\readme.txt` |
 | `common\country_interactions\` | **4 个**（`merge_colonies` / `start_war_in_colony` / `take_colony_for_debt` / `invite_settlers`） | `country_interactions\readme.txt` |
 | `common\peace_treaties\` | **2 个**（`abandon_colonies` / `abandon_colonial_claim`） | `peace_treaties\readme.txt` |
-| `loading_screen\common\defines\00_defines.txt` | **`NColony`（2524–2550）** + 散布在 NCountry/NAI 的相关常量 | 逐条英文注释 |
+| `loading_screen\common\defines\00_defines.txt` | **`NColony`（2746–2774）** + 散布在 NCountry/NAI 的相关常量 | 逐条英文注释 |
 | `common\advances\` | `colonial_nations.txt`（**10 条殖民领专属革新**）+ discovery 时代探索链 | `advances\readme.txt` |
 
 ## 术语对照（中文译名与内部名）
@@ -154,7 +154,7 @@
 - 预筛排序：`pre_evaluation_sort_value = { value = "scope:actor.colonial_charter_distance(root)"  multiply = -1 }`（**越近分越高**），`pre_evaluation_number_to_evaluate_fully = 10`（前 10 个全量评估）
 - 引擎提供的效用触发器（写在 `ai_will_do` 里）：`colonial_charter_utility(target)`、`colonial_charter_distance`；AI 只对"税基 > 100 / 本身是 `colonial_nation` 附属国 / SWE·POR·KUR"这类国家给正分，其余 `-1000`
 
-### 3.3 成本常量（`NColony`，defines 2524–2550）
+### 3.3 成本常量（`NColony`，defines 2746–2774）
 
 | 常量 | 值 | 含义 |
 |---|---|---|

@@ -2,7 +2,7 @@
 
 > **一句话**：教程链、课与步骤三件套的字段，含存档总开关、两类转移的差别与特殊按钮 id 及配套界面文件。
 > **什么时候看**：写教程课与步骤、要暂停游戏或跑效果，或要给步骤挂界面标签时翻这篇。
-> **体量**：91 行 · 约 5 分钟通读
+> **体量**：90 行 · 约 5 分钟通读
 
 来源：`tutorial_lesson_chains\_tutorial_lesson_chains.info`、`tutorial_lessons\_tutorial_lesson.info`（**两份 info 合计约 6 KB，字段齐全**）
 

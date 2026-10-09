@@ -2,7 +2,7 @@
 
 > **一句话**：界面文件格式总纲：五个核心构造、属性词表、表达式位与数据函数，以及 mod 覆盖的四条规则。
 > **什么时候看**：写或覆盖任何 .gui 文件、要查属性名与表达式该放哪里时翻这篇。
-> **体量**：114 行 · 约 6 分钟通读
+> **体量**：113 行 · 约 6 分钟通读
 
 来源：**本体没有 GUI 格式 readme**——官方与 GUI 相关的文档只有 4 份（`gui\filters\readme.txt` 2,212 B、`gui\panels\{disaster,situation}\readme.txt` 463/540 B、`main_menu\gui\scripted_widgets\_scripted_widgets.info` 554 B）；本档由 **387 个 `.gui` 文件全量实查**归纳（统计口径见下）。
 
