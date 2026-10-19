@@ -4,14 +4,14 @@
 > ⚠️ 正文里那句「**EU5 1.3.x**」**已过时**，以本条为准。**正式版（1.3.x）请用 `main` 或 tag `1.3.x-stable`。**
 
 
-> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——19.5 万字、156 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
+> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——22.7 万字、163 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
 >
 > **怎么用**：
 > - **有 AI agent**（Claude Code / DSH / Codex…）：`git clone https://github.com/mrjiaobai-glitch/eu5-modding-kb.git` → 把 `skills\eu5-mod-review\` 复制进技能目录 → 直接说"按这个库给我写 / 审 EU5 mod"（技能自动定位本库，见 `skills\README.md`）
 > - **查资料**：从下方「目录结构」进对应部分——`fields\` 字段库（本体 74 份 readme 逐条提炼）/ `vanilla\` 原版机制解析（哪些能改、哪些引擎硬编码）/ `guides\` 制作指南 / `pitfalls.md` 实战坑速查
 > - **不用 AI**：`fields\` 103 档本身就是本体 readme 的中文逐条提炼，可直接当速查手册
 >
-> **规模**：156 篇 · 1,694 KB · 22,387 行 · 194,746 汉字 · 7,407 行表格 · 320 个代码块 · MIT
+> **规模**：163 篇 · 1,913 KB · 24,843 行 · 227,034 汉字 · 7,971 行表格 · 354 个代码块 · MIT
 
 > **定位**：Europa Universalis V（jomini 引擎）模组制作与审查的**知识总库**——独立于任何技能，可被技能、对话或其他知识库引用。
 > **本仓库**：本仓库即该知识库本身；配套 agent 技能随库附带于 `skills\eu5-mod-review\`（安装见 `skills\README.md`）。
@@ -27,10 +27,10 @@ eu5-modding-kb\
 ├── glossary.md        术语总表（中英对照 + 常见误译）
 ├── INDEX.md           全量索引（全部文档的逐档映射表）
 ├── fields\            字段库：74 份 readme 提炼 + 实查补缺的类目字段权威（103 档）
-├── guides\            制作指南：骨架/合并/事件/脚本/法律/本地化/测试 + **E2E 教程（新国家 / 新任务链）**（12 档）
-├── vanilla\           原版机制解析：天灾人祸与自然环境/地图地理/外交/战斗与战争/POP/天命/科技时代/贸易市场/生产建筑/文化与宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC与美术资源/纹章与旗帜/音频与字体/开局数据/界面GUI（24 档）
+├── guides\            制作指南：骨架/合并/事件/脚本/法律/本地化/测试 + **E2E 教程（新国家 / 新任务链）** + 建筑席位/经济链（14 档）
+├── vanilla\           原版机制解析：天灾人祸与自然环境/地图地理/外交/战斗与战争/POP/天命/科技时代/贸易市场/生产建筑/文化与宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC与美术资源/纹章与旗帜/音频与字体/开局数据/界面GUI/**领土整合与核心**/**部落民与部落阶层**（27 档）
 ├── cases\             实战案例：真实 mod 的实测记录（4 档）
-├── tools\             查表工具：ID 族总表 / loc 键前缀全表 / 审查清单 / error.log 解码表 / 本库数字体检（5 档）
+├── tools\             查表工具：ID 族总表 / loc 键前缀全表 / 审查清单 / error.log 解码表 / 本库数字体检 / 存档只读解码 / **区域地区速查**（7 档）
 ├── pitfalls.md        实战坑速查（EU4→EU5 语法对照等，最高频查阅）
 └── skills\            附带技能：eu5-mod-review（SKILL.md + references\README.md）
 ```
@@ -46,7 +46,8 @@ eu5-modding-kb\
 | 做新国家 / 新任务链 | `guides\new-country-tutorial.md` / `guides\new-mission-pack-tutorial.md` | 两篇端到端教程，从零到进游戏 |
 | 改地图 / 开局数据 | `vanilla\vanilla-map-and-geography.md`、`vanilla\vanilla-setup-data.md` | 三层开局数据（国家定义 / 模板 / start） |
 | 审查或修自己的 mod | `tools\review-checklist.md` → `tools\error-log-decoder.md` → `pitfalls.md` | 清单化自检 + 报错归属判断 |
-| 某机制到底能不能改 | `vanilla\`（23 篇机制解析，篇末都标了可改点与硬编码边界） | 例如天气风暴实际效果是硬编码 |
+| **验证"某机制在本版本到底生不生效"** | `tools\save-decoding.md`（只读解档，不等游戏年份）→ 对应 `vanilla\*.md` | debug 模式存档是纯文本，走最短路径；正式档要解 ZIP |
+| 某机制到底能不能改 | `vanilla\`（27 篇机制解析，篇末都标了可改点与硬编码边界） | 例如天气风暴实际效果是硬编码 |
 | 查某个脚本类目的字段 | `guides\systems-map.md` → `fields\` 对应档 | 类目地图先定位入口文件与 readme |
 
 > 更细的路线（零基础按顺序读哪几篇、每步耗时、常见坑）见 **`START-HERE.md`**；术语与常见误译见 **`glossary.md`**。

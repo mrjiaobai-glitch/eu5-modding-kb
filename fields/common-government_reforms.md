@@ -2,7 +2,7 @@
 
 > **一句话**：政府改革字段：三档修正块与实施时长、出现条件，以及全局互斥标记、槽位来自革新、实施不花钱三条原版事实。
 > **什么时候看**：写政体改革、判断互斥标记是否挤掉原有路线，或核对社会价值门槛时看。
-> **体量**：158 行 · 约 8 分钟通读
+> **体量**：163 行 · 约 8 分钟通读
 
 来源：`in_game\common\government_reforms\readme.txt`（22 行）+ 6 个数据文件 **328 项改革** 的实际用法
 
@@ -122,7 +122,12 @@
 | `female_regnal_names` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
 | `on_fully_activated` | 0 次（6 档） | **有**（出现在 3 个类目） |
 | `province_modifier` | 0 次（6 档） | **有**（出现在 1 个类目） |
-| `weeks` | 0 次（6 档） | 全库也没有 → 疑似废弃字段 |
+| `weeks` | 0 次（6 档） | **全游戏 0 处**（2026-10-17 复扫）⇒ schema 合法但无人用，见下注 |
+
+> **`weeks` 补测（2026-10-17，EU5 1.4.1）**：`^\s*weeks\s*=` 在 `in_game\common\*`、`in_game\events`、`in_game\gui`、`in_game\common\on_action`、`main_menu\gui` **全部 0 命中**；同位 `days =` 在 `in_game\common\` 有 **46 处**（`_hardcoded.txt` 6 / `country_effects.txt` 4 / `parliament.txt` 3 …）⇒ 不是扫描漏了，是这个字段真的没人写。
+> 两种读法都能解释证据，**尚未定案**：①（偏可信）这些 `readme.txt` 是引擎 schema 反射输出，`years`/`months`/`weeks`/`days` 四个时长字段都合法，`weeks` 只是没人用；② `weeks` 未被解析，写了等于没写。
+> **实务建议**：实现时长只用 `years`（本类 **328** 处）或 `months`（**3** 处：`republic.txt:121/223/245`）；非要"一周"就写 `days = 7`（`days` 在别类目 46 处实证，本类目 0 处）。
+> ⚠️ 写错**不报错**——6 份 `error*.log` 里 `weeks` 0 命中 ⇒ **不能靠 error.log 判断它有没有生效**，只能游戏内看实施进度条。
 
 ### 五、深度 1 的块（子条目：政策／变体／子类型等）
 

@@ -2,15 +2,22 @@
 
 > **一句话**：上篇讲怎么打赢（单位、`NCombat` 常数、地形、围城、战争目标），下篇讲战争本身（102 个 CB、战争分数热情、64 个和约条款、土地承诺）。
 > **什么时候看**：调战斗与围城数值、写 CB 或和约条款、改战争分数与战争热情权重，或查宣战代价时翻这篇。
-> **体量**：382 行 · 约 18 分钟通读
+> **体量**：463 行 · 约 22 分钟通读
 
 ## 目录
 
 - [一、部队组织](#一部队组织)
 - [二、单位体系](#二单位体系)
   - [陆军 6 类（`common\unit_categories\`）](#陆军-6-类commonunit_categories)
+  - [海军 4 类（`common\unit_categories\`，1.4.1 重写）](#海军-4-类commonunit_categories141-重写)
   - [兵种模板与升级（`common\unit_types\`）](#兵种模板与升级commonunit_types)
-- [三、战斗常数（`NCombat`）](#三战斗常数ncombat)
+- [三、战斗常数（`NCombat` 447–562，共 83 条；1.4.x 改为「日 tick」结算）](#三战斗常数ncombat-447562共-83-条14x-改为日-tick结算)
+  - [3.1 时序骨架](#31-时序骨架)
+  - [3.2 接敌（主动性）](#32-接敌主动性)
+  - [3.3 伤害通道（新增一批）](#33-伤害通道新增一批)
+  - [3.4 超限击溃（overrun，新增）](#34-超限击溃overrun新增)
+  - [3.5 海战专属（1.4.x 重做）](#35-海战专属14x-重做)
+  - [3.6 未变 / 其他](#36-未变--其他)
 - [四、地形修正](#四地形修正)
 - [五、围城（`NCombat` 后半段）](#五围城ncombat-后半段)
 - [六、战争目标（`common\wargoals\`，readme 权威）](#六战争目标commonwargoalsreadme-权威)
@@ -32,8 +39,9 @@
 - [十一、脚本钩子与 AI 常量](#十一脚本钩子与-ai-常量)
 - [十二、Mod 改造建议](#十二mod-改造建议)
 - [十三、中文检索键](#十三中文检索键)
+- [十四、1.4.x 兼容坑（改名与失效）](#十四14x-兼容坑改名与失效)
 
-版本基准：EU5 1.3.x。核心文件：`loading_screen\common\defines\00_defines.txt`（`NUnit` 325–399、`NCombat` 402–513、**`NWar` 2419–2479**、`NDiplomacy` 1992–2417 的战争段）、`common\unit_categories\`、`common\unit_types\`、`common\topography\`、`common\vegetation\`、`common\wargoals\`（readme 权威）、**`common\casus_belli\`（67 数据档 / 102 个 CB 定义 + 40 行 readme）**、**`common\peace_treaties\`（53 数据档 / 64 个条款定义 + readme）**、**`common\prices\00_hardcoded.txt`（宣战价格 8 条）**、`common\ai_diplochance\00_ai_diplochance.txt`（强制和平/威胁宣战/请求和平的权重表）。
+版本基准：**EU5 1.4.x**（含 **1.4.1 补丁 2026-10-13**：重写海军类目/海军兵种模板与 `NCombat` 结算；**安装目录无官方 changelog，1.4.0 与 1.4.1 的改动无法严格分账**，本文按"1.3.x → 1.4.x 累加差"记录）。核心文件：`loading_screen\common\defines\00_defines.txt`（`NUnit` 363–444、`NCombat` **447–562**、**`NWar` 2656–2717**、`NDiplomacy` 2223–2654 的战争段、`NLocation` 1905–1968）、`common\unit_categories\`、`common\unit_types\`、`common\topography\`、`common\vegetation\`、`common\wargoals\`（readme 权威）、**`common\casus_belli\`（67 数据档 / 102 个 CB 定义 + 40 行 readme）**、**`common\peace_treaties\`（53 数据档 / 64 个条款定义 + readme）**、**`common\prices\00_hardcoded.txt`（宣战价格 8 条）**、`common\ai_diplochance\00_ai_diplochance.txt`（强制和平/威胁宣战/请求和平的权重表）。
 
 > **本篇的分工**：§一–§六 = **怎么打赢**（部队、战斗、围城、战争目标）；**§七–§十 = 战争本身**（宣战 → 战争分数与热情 → 和约 → 战后）；§十一–§十三 = 钩子、Mod、检索键。
 > 外交关系（好感/信任/条约/附庸/召唤参战的条约侧）见 `vanilla\vanilla-diplomacy.md`；地形与损耗见 `vanilla\vanilla-hazards-and-environment.md`。
@@ -43,7 +51,7 @@
 - 团（regiment）= `REGIMENT_SIZE = 1000` 人；每团有 **strength（兵力）** 与 **morale（士气）** 两条
 - 基础士气 `LAND_MORALE = 3.0` / `NAVAL_MORALE = 3.0`
 - 补充 `MONTHLY_REINFORCE = 0.25`（陆）/ `MONTHLY_REPAIR = 0.1`（海）
-- 移动 `ARMY_MOVEMENT_SPEED = 0.13` / `NAVY_MOVEMENT_SPEED = 0.5`；规模影响移动（`SIZE_IMPACT_ON_MOVEMENT_SCALE = -0.02`，封顶 `-0.5`）
+- 移动 `ARMY_MOVEMENT_SPEED = 0.9` / `NAVY_MOVEMENT_SPEED = 3.525`（**1.4.x 实测**；1.3.x 为 0.13 / 0.5，旧值已失效）；规模影响移动（`SIZE_IMPACT_ON_MOVEMENT_SCALE = -0.02`，封顶 `-0.5`）
 - 缺粮损耗 `ATTRITION_LACK_OF_FOOD = 5`、海上损耗 `ATTRITION_DAYS_AT_SEA = 0.02`、冻结损耗 `FROZEN_ATTRITION = 0.5`
 - 宣战后征召兵补员加速：`WAR_DEC_LEVY_RECRUIT_SPEED_FOR_MONTHS = 6`（月）
 
@@ -60,7 +68,22 @@
 | 炮兵 `04_army_artillery` | 1 | **1** | **1** | 1.0 | bombard=yes；`damage_taken = 1.25`、`attrition_loss = 0.5`、`food_consumption 0.66` |
 | 辅助 `05_army_auxiliary` | — | — | — | — | 运粮 |
 
-海军 4 类：galley / light_ship / heavy_ship / transport（属性 `cannons`、`hull_size`、`crew_size`、`maritime_presence`、`blockade_capacity`、`transport_capacity`）。
+> **两处类目级陷阱（1.4.x 实查）**：① 陆海**全部类目 `max_strength = 0`**——类目本身不给兵力，兵力来自 `unit_types\00_age_templates_*.txt` 的 `max_strength`（陆 0.5→3.0、船固定 1.0），改类目的 `max_strength` 无效；② 类目在用的 **`damage_taken`**（轻/重步 1.0、炮/辅 1.25）**不在 10-13 更新的 `unit_categories\readme.txt` 声明列表里**——readme 只列 `morale_damage_taken`/`strength_damage_taken`，照 readme 写会漏。
+
+### 海军 4 类（`common\unit_categories\`，1.4.1 重写）
+
+1.4.1 把海军类目改成**与陆军同构的站位属性**，并给了**海域克制**（`combat = {}`）：
+
+| 类别 | frontage | initiative | combat_speed | flanking | anti_piracy | 海域 combat 修正 |
+|---|---|---|---|---|---|---|
+| 桨帆 `10_navy_galley` | 0.5 | 2 | 1 | 1.0 | 0.2 | `deep_ocean −1.0`、`ocean −0.5`、`inland_sea +0.25`、`narrows +0.5` |
+| 轻型船 `11_navy_light_ship` | 1 | 3 | 2 | 1.2 | 1.0 | — |
+| 重型船 `13_navy_heavy_ship` | 1.5 | 1 | 0.5 | 1.0 | 0.1 | `inland_sea −0.25`、`narrows −0.40` |
+| 运输船 `14_navy_transport` | 1 | 1 | 1 | 1.0 | 0.05 | `transport = yes`、`blockade_capacity 0.01`、`exclude_from_combined_arms = yes` |
+
+即：**桨帆=内海/海峡之王、深海废柴；重型船反过来**——海战从"数值对轰"变成"选对船型+战场"。
+四类还都带 `food_storage_per_strength`（0.5/1.0/2.0）与 **`repair_demand`**（补员/修理时的货物需求；三级回退：单位级 → 类目级 → `construction_demand`）。
+`unit_types` 侧的海军属性仍是 `cannons`、`hull_size`、`crew_size`、`maritime_presence`、`blockade_capacity`、`transport_capacity`。
 
 ### 兵种模板与升级（`common\unit_types\`）
 
@@ -75,40 +98,78 @@
   | 5 absolutism | 2.5 / 2.25 | 5.5 / 0.25 / 7 |
   | 6 revolutions | 3.0 / 3 | 7.5 / 0.30 / 9 |
 
-- 海军模板 `00_age_templates_navy.txt`：重型船 hull 15→60、cannons 30→120；运输船 transport_capacity 0.25→1.5、food_storage 30→960
+- 海军模板 `00_age_templates_navy.txt`（1.4.1 重写）：每级船型给 `maritime_presence`（`ship_very_small_maritime` / `ship_small_maritime` / `ship_small_mid_maritime` / `ship_medium_maritime` / `ship_above_medium_maritime` / `ship_large_maritime` / `ship_very_large_maritime` / `ship_giant_maritime` 等命名档）+ `hull_size`、`cannons`、`crew_size`、`blockade_capacity`、`transport_capacity`。跨度：重型船 hull **15→60**、cannons **30→120**；桨帆 hull 6→20、cannons 8→30；运输船 `transport_capacity 0.25→1.5`、hull 9→36。**没有 `food_storage` 键**（补给走类目的 `food_storage_per_strength`）。
 - 升级链 `upgrades_to`（如 `n_carrack → n_galleon → n_twodecker → n_threedecker`）；`copy_from` 继承
 - 特殊兵种：`3_janissaries.txt`（每代 `strength_damage_taken = -0.10`、`morale_damage_taken = -0.10`，受 `janissary_unit_limit` 限制）、骑士 `0_knights.txt`、征服者、大象、卡瓦、齐兹尔巴什
 - 征召兵 `levy = yes` → 战力 ×`LAND_LEVY_COMBAT_IMPACT = 0.75`
 - 雇佣兵池 `mercenaries_per_location = { pop_type = X multiply = N }`（如 laborers 0.1、nobles 0.3）
 - 全修饰符清单见 `unit_types\readme.txt`（frontage/initiative/combat_speed/flanking_ability/secure_flanks_defense/combat_power/max_strength/damage_taken…）
 
-## 三、战斗常数（`NCombat`）
+## 三、战斗常数（`NCombat` 447–562，共 83 条；1.4.x 改为「日 tick」结算）
 
-| 常量 | 值 | 说明 |
+> **1.4.x 核心改动**：整个战斗时钟由**小时**改为**天**，4 个常量被**改名**（旧名已删除，老 mod 覆盖旧名会静默失效）：`HOURS_PER_PHASE→DAYS_PER_PHASE`、`MINIMUM_COMBAT_DURATION→MINIMUM_COMBAT_DAYS`、`MINIMUM_NAVAL_COMBAT_DURATION→MINIMUM_NAVAL_COMBAT_DAYS`、`COMBAT_HOURLY_MORALE_TICK→COMBAT_DAILY_MORALE_TICK`，另 `BOMBARD_HOURS→BOMBARD_DAYS`。
+
+### 3.1 时序骨架
+
+| 常量 | 值 | 说明（原文注释） |
 |---|---|---|
-| `COMBAT_DICE_SIDE` | 10 | 10 面骰 |
-| `COMBAT_BASE` / `COMBAT_MAX` | 5 / 15 | 骰值基准与上限 |
-| `COMBAT_DAMAGE_MULT` | 0.01 | 伤害倍率 |
-| `HOURS_PER_PHASE` | 5 | 每阶段 5 小时 |
-| `MINIMUM_COMBAT_DURATION` | 24 | 陆战最少 24 小时 |
-| `MINIMUM_NAVAL_COMBAT_DURATION` | 72 | 海战最少 72 小时 |
-| `STRAIT_CROSSING_DICE` | −2 | 海峡 |
-| `RIVER_CROSSING_DICE` | −1 | 渡河 |
-| `SEA_LANDING_DICE` | −1 | 登陆 |
-| `MAX_FRONTAGE_OVERSTACKING` | 1.25 | 侧翼可超编 25% |
+| `DAYS_PER_PHASE` | **4** | "combat phase rotation interval in daily ticks"——每 4 天轮换阶段（旧 5 小时） |
+| `MINIMUM_COMBAT_DAYS` | **5** | "minimum land combat duration in daily ticks"（旧 24 小时） |
+| `MINIMUM_NAVAL_COMBAT_DAYS` | **5** | 海战同样 5 天（旧 72 小时） |
+| `COMBAT_DAMAGE_MULT` | **0.12** | "damage per daily tick"（旧 0.01/小时） |
+| `COMBAT_DAILY_MORALE_TICK` | **0.03** | "morale drain per daily tick"（旧 0.01/小时） |
+| `COMBAT_DICE_SIDE` / `COMBAT_BASE` / `COMBAT_MAX` | 10 / 5 / 15 | 每日骰 5+1d10，封顶 15 |
+| `STRAIT_CROSSING_DICE` / `RIVER_CROSSING_DICE` / `SEA_LANDING_DICE` | −2 / −1 / −1 | 海峡 / 渡河 / 登陆 |
+| `BASE_MORALE_DAMAGE` | 1.0 | 士气伤害基数 |
+| `MORALE_COLLAPSE_THRESHOLD` | 0.05 | 士气崩溃线 |
+| `MAX_FRONTAGE_OVERSTACKING` | 1.25 | "25% overstack in flanks" |
 | `MIN_FRONTAGE_AFTER_TERRAIN` | 2 | 地形削减后最低正面宽度（在 `NLocation`） |
-| `MORALE_COLLAPSE_THRESHOLD` | 0.05 | 士气崩溃 |
-| `COMBAT_HOURLY_MORALE_TICK` | 0.01 | 每小时士气流失 |
-| `INITIATIVE_BASE_CHANCE / _EACH / _HOURS / _MAX` | 0.1 / 0.02 / 0.01 / 0.1 | 主动性决定接敌概率 |
-| `COMBAT_SPEED_SCALE` | 0.05 | 战斗速度影响攻击频率与撤退 |
-| `RETREAT_STRENGTH_DAMAGE` | 0.1 | 撤退损失 10% 兵力 |
-| `LAND_EXPERIENCE_DAMAGE_REDUCTION` | 0.5 | 经验减伤上限 50% |
-| `EXPERIENCE_GAIN` | 30 | 战斗经验 |
-| `TRADITION_GAIN_LAND / _NAVAL` | 10 / 20 | 传统 |
-| `COMBAT_IMPRISONED_UNIT_DEATH_RATE` | 0.4 | 俘虏死亡率 |
-| `LAND_WAR_EXHAUSTION_FROM_LOSSES` | 1（海军 ×1.5），`MAX_WAR_EXHAUSTION_FROM_BATTLE` 5.0 | 厌战度（`ALERT_HIGH_WAR_EXHAUSTION = 10`、AI `SAFE_AMOUNT_OF_WAR_EXHAUSTION = 5`） |
-| `PRESTIGE_FROM_LAND/_NAVAL`、`PRESTIGE_VS_RIVAL` | 0.5 / 0.5 / 1.5 | 威望（打宿敌 ×1.5） |
-| 海战专属 | `NAVAL_MORALE_DAMAGE_MODIFIER 0.2`、`NAVAL_LOW_MORALE_THRESHOLD 1.5`、`NAVAL_COMBAT_SHIP_STR_SINK_THRESHOLD 0.1`、`NAVAL_RETREAT_CHANCE 10` | 海战士气伤害仅 20% |
+
+### 3.2 接敌（主动性）
+
+| 常量 | 值 | 注释要点 |
+|---|---|---|
+| `INITIATIVE_BASE_CHANCE` | **0.60**（旧 0.1） | "base chance per daily tick, below 12-tick parity (0.72) to leave probability headroom" |
+| `INITIATIVE_CHANCE_EACH` | 0.025（旧 0.02） | "Chance to engage per point of initiative" |
+| `INITIATIVE_CHANCE_PER_DAY` | 0.03（旧 0.01） | 接敌概率随战斗天数增长 |
+| `INITIATIVE_CHANCE_MAX` | **0.30**（旧 0.1） | "Cap on the initiative-derived part… saturates at effective initiative 12" |
+
+接敌概率 ≈ `0.60 + min(initiative×0.025, 0.30) + 0.03×已打天数`（封顶 1）。**主动性超过 12 的部分不再加接敌率**，但 `army_initiative` 类修正仍有效（注释原话）。
+
+### 3.3 伤害通道（新增一批）
+
+| 常量 | 值 | 含义 |
+|---|---|---|
+| `LAND_STRENGTH_DAMAGE_MODIFIER` / `NAVAL_STRENGTH_DAMAGE_MODIFIER` | 0.04 / 0.0625 | 强度伤害通道 |
+| `LAND_MORALE_DAMAGE_MODIFIER` / `NAVAL_MORALE_DAMAGE_MODIFIER` | **0.25 / 0.05** | 士气伤害通道（海战仅陆战 1/5；旧版海军 0.2） |
+| `NOT_ENGAGED_STRENGTH_DAMAGE_MODIFIER` / `NOT_ENGAGED_MORALE_DAMAGE_MODIFIER` | 1.1 / 1.2 | 未接敌（预备/被卡位）单位乘数 |
+| `MORALE_SIZE_RATIO_MAX` | 4.0 | "cap on how far regiment size may scale morale damage, either way" |
+| `LAND_EXPERIENCE_DAMAGE_REDUCTION` / `NAVAL_EXPERIENCE_DAMAGE_REDUCTION` | 0.5 / 0.5 | 经验减伤上限 50% |
+| `COMBAT_SPEED_SCALE` | **0.1**（旧 0.05） | 战斗速度 → 攻击频率与撤退 |
+
+### 3.4 超限击溃（overrun，新增）
+
+| 常量 | 值 | 注释 |
+|---|---|---|
+| `INITIAL_OVERRUN_FACTOR` | 10 | "strength ratio that overruns a side outright on the first tick"（首日 10:1 直接击溃） |
+| `MORALE_OVERRUN_FACTOR` | 2 | 士气已崩时 2:1 即击溃 |
+| `NAVY_OVERRUN_EXTRA_CAPTURE_CHANCE` | 0.15 | 海上超限额外捕获概率 |
+| `NAVAL_COMBAT_DAMAGED_SHIP_EXTRA_CAPTURE_SCALE` | 0.025 | 受损舰额外捕获 |
+
+### 3.5 海战专属（1.4.x 重做）
+
+| 常量 | 值 | 注释 |
+|---|---|---|
+| `NAVAL_LOW_MORALE_THRESHOLD` | 1.5 | 低于基础士气 3.0 的 50% → "shattered retreat to port" |
+| `NAVAL_RETREAT_DAMAGE_THRESHOLD` | 0.5 | 兵力低于 50% 才进入撤退判定 |
+| `NAVAL_RETREAT_CHANCE` | **3**（旧 10） | 每 tick 3/100，注释：**战斗速度会提高它** |
+| `NAVAL_COMBAT_SHIP_STR_SINK_THRESHOLD` | 0.1 | 撤退时单船低于该比例 → 有沉船判定 |
+| `NAVAL_COMBAT_DAMAGED_SHIP_SINK_CHANCE` | 10 | 对 d100 判沉 |
+| `NAVAL_WAR_EXHAUSTION_FROM_LOSSES` | 1.5 | 海军损失厌战系数 |
+
+### 3.6 未变 / 其他
+
+`RETREAT_STRENGTH_DAMAGE 0.1`、`COMBAT_IMPRISONED_UNIT_DEATH_RATE 0.4`、`EXPERIENCE_GAIN 30`、`TRADITION_GAIN_LAND/_NAVAL 10/20`、`LAND_WAR_EXHAUSTION_FROM_LOSSES 1`、`MAX_WAR_EXHAUSTION_FROM_BATTLE 5.0`、`PRESTIGE_FROM_LAND/_NAVAL/_VS_RIVAL 0.5/0.5/1.5`、`NAVAL_LEVY_IMPACT 0.05`、`LAND_LEVY_COMBAT_IMPACT 0.75`、`GARRISON_AFTER_OCCUPATION 0.010`、`FOOD_PERCENTAGE_LOST_AT_OCCUPATION 0.9`、`FOOD_PERCENTAGE_LOST_AT_RETREAT 0.5`。
 
 ## 四、地形修正
 
@@ -138,10 +199,10 @@
 | `SIEGE_MEMORY` | 11 |
 | 短缺惩罚 | 补给 −0.02 / 粮食 −0.03 / **水源 −0.05** / 守军逃亡 −0.1 / 破口 −0.05 |
 | `SIEGE_DISEASE_IMPACT` | 0.05 |
-| 轰炸 | `BOMBARD_BASE_CHANCE = 0.2`、`BOMBARD_HOURS = 5` |
+| 轰炸 | `BOMBARD_BASE_CHANCE = 0.2`、**`BOMBARD_DAYS = 3`**（旧 `BOMBARD_HOURS = 5`，同样"小时→天"） |
 | 强攻 | 攻方 `ASSAULT_ATTACKER_LOSS = 2.5`、士气 −3.0；守方 0.03 / 士气 −0.3；`ASSAULT_DICE_MODIFIER = 5`、`ASSAULT_WIDTH_LIMIT = 1` |
 | 占领获得 | `GARRISON_AFTER_OCCUPATION = 0.010`、`FOOD_PERCENTAGE_LOST_AT_OCCUPATION = 0.9` |
-| 炮兵门槛 | `SIEGE_REGIMENTS_FOR_ARTILLERY = 3`；`FORT_GARRISON_UPKEEP = 2`（NLocation） |
+| 炮兵门槛 | **`SIEGE_REGIMENTS_FOR_ARTILLERY = 2`**（旧 3，已降低）；`FORT_GARRISON_UPKEEP = 2`（NLocation） |
 
 驻军强度脚本：`common\script_values\garrison.txt`（根为 location；`garrison_strength`、`combat_side_strength`、`besieger_strength`，输出守/攻比值用于出击判定）。
 
@@ -380,3 +441,23 @@ requestpeace  = { enforced_demand = 1   surrendered_to_other = -100   desperatio
 **战争（`game_concepts_l_simp_chinese.yml`）**：`game_concept_casus_belli` **宣战理由**（:1080）、`game_concept_truce` **停战**（:1421）、`game_concept_war_exhaustion`（厌战度）、`game_concept_war_score`（战争分数）、`game_concept_war_enthusiasm`（战争热情）、`game_concept_call_to_arms` 召唤参战（:1015）、`game_concept_coalition` 包围网（:2043）、`game_concept_great_power` 列强（:1163）、`game_concept_hegemony` 霸权（:1171）。
 
 **界面**（`in_game\gui\`）：**`declare_war_lateralview.gui`（103KB）**、**`peace_offer_view.gui`（74KB）**、`war_lateralview.gui`（75KB）、`battle_lateralview.gui`（81KB）、`battle_result.gui`（60KB）、**`shared\combat_tooltips.gui`（155KB，全库最大单文件之一）**、`shared\war_tooltips.gui`（32KB）、`wars_ledger.gui`、`war_viewer.gui`、`threaten_war.gui`、`confirm_intervene_war_popup.gui`、`select_war_to_intervene.gui`、`attribute_columns\war.gui`；局势/灾难专属面板 `panels\situation\hundred_years_war|hussite_wars|italian_wars|war_of_religions.gui`、`panels\disaster\*civil_war*.gui`。
+
+## 十四、1.4.x 兼容坑（改名与失效）
+
+1.4.x（含 **1.4.1，2026-10-13**）把战斗结算从「小时」改为「天」并重写海军类目/兵种，老 mod 直接搬会**静默失效**（解析通过、不报错、不生效）：
+
+| 旧写法（1.3.x） | 现状 | 后果 |
+|---|---|---|
+| `HOURS_PER_PHASE` | 已删除 → `DAYS_PER_PHASE`（=4） | 覆盖旧名不生效 |
+| `MINIMUM_COMBAT_DURATION` | → `MINIMUM_COMBAT_DAYS`（=5） | 同上 |
+| `MINIMUM_NAVAL_COMBAT_DURATION` | → `MINIMUM_NAVAL_COMBAT_DAYS`（=5） | 同上 |
+| `COMBAT_HOURLY_MORALE_TICK` | → `COMBAT_DAILY_MORALE_TICK`（=0.03） | 同上 |
+| `INITIATIVE_CHANCE_HOURS` | → `INITIATIVE_CHANCE_PER_DAY`（=0.03） | 同上 |
+| `BOMBARD_HOURS` | → `BOMBARD_DAYS`（=3） | 同上 |
+| 海军类目沿用旧 schema | 现在可写 `frontage`/`initiative`/`combat_speed`/`flanking_ability`/`combat = {}`/`repair_demand` | 缺键不报错，但站位/海域克制走默认值 |
+| 在类目里改 `max_strength` | **无效**——类目恒为 0，兵力由 `unit_types` 模板给 | 改了没反应 |
+| 只按 `unit_categories\readme.txt` 写 | `damage_taken` **readme 未列但本体在用**（1.0 / 1.25） | 照 readme 写会漏掉减伤差异 |
+
+**验证方法**：`error.log` 不报错 ≠ 生效。改名类常量要回 `00_defines.txt` **grep 新名**确认存在，再对比 `shared\combat_tooltips.gui` 里的实际显示值。
+
+**无法分账（诚实声明）**：安装目录无官方 changelog，**1.4.0 与 1.4.1 各自改了哪些常量无法从文件区分**；本篇只保证「当前 1.4.x 是什么」，并把 1.4.1 明确动过的文件集（海军 `unit_categories` ×4、海军兵种/模板、`00_defines.txt`，mtime 2026-10-13）标出。

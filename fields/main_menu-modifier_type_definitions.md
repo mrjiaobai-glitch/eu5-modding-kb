@@ -2,7 +2,7 @@
 
 > **一句话**：修正键注册表：显示层字段、必填的 game_data 与十种作用域类别，以及两条本地化键。
 > **什么时候看**：写任何修正键、要查它归哪类对象或补名称与说明时翻这篇。
-> **体量**：94 行 · 约 5 分钟通读
+> **体量**：104 行 · 约 5 分钟通读
 
 来源：**本类目没有 readme、也没有 info**——3 个档实查（`00_modifier_types.txt` **212,995 B / 2,393 键**、`01_byz.txt` 29 键、`02_generic_bureaucracies.txt` 14 键）。
 
@@ -92,3 +92,13 @@ MODIFIER_TYPE_DESC_<键>     # 说明（英文 loc 2,477 条）
 | `movement_cost` / `hostile_movement_cost` / `friendly_movement_cost` | L4673 / L4681 / L4689 | `location` | 成本，与速度成反 |
 | `capital_movement_cost_modifier` | L2916 | `country` | 首都距离成本 |
 | `movement_blocked` | L5941 | `location`（`boolean`） | 完全断路 |
+## 整合速度键作用域速查（2026-10 实查）
+
+机制全貌见 `vanilla\vanilla-territory-integration.md`。地点四态 `integration_level`（`colonized`/`conquered`/`integrated`/`core`）的推进速度由这 4 个修正决定：
+
+| 键 | 行 | `category` | 备注 |
+| --- | --- | --- | --- |
+| `province_integration_speed` | L6253 | `province` | 内阁 `integrate_*` 期间给的省速度 |
+| `local_integration_speed` | L6259 | `location` | 地点级绝对速度（percent） |
+| `local_integration_speed_modifier` | L6265 | `location` | 地点级百分比（percent） |
+| `global_integration_speed_modifier` | L6272 | `country` | 全国百分比（percent） |

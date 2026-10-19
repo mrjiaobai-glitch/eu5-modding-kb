@@ -2,7 +2,7 @@
 
 > **一句话**：梳理探索三动作、特许殖民地与迁徙执行器、征服者、殖民领附属国与殖民地联邦 IO，并给出 `NColony` 常量与区域偏好、CB 清单。
 > **什么时候看**：做殖民或探索内容、改迁徙与殖民领规则、加殖民 CB 或调探索偏好与成本时翻这篇。
-> **体量**：341 行 · 约 16 分钟通读
+> **体量**：354 行 · 约 17 分钟通读
 
 ## 目录
 
@@ -18,6 +18,7 @@
   - [3.1 创建与放弃](#31-创建与放弃)
   - [3.2 目标选择与引擎候选](#32-目标选择与引擎候选)
   - [3.3 成本常量（`NColony`，defines 2746–2774）](#33-成本常量ncolonydefines-27462774)
+  - [特许目标（`common\colonial_charter_goals\`，2026-10 补）](#特许目标commoncolonial_charter_goals2026-10-补)
 - [四、迁徙（migration）——真正的执行器](#四迁徙migration真正的执行器)
   - [4.1 引擎效果](#41-引擎效果)
   - [4.2 三个来源（原版全部用法）](#42-三个来源原版全部用法)
@@ -176,6 +177,18 @@
 | `COLONIAL_CHARTER_MIN_POPS_TO_TAKE_LOCATION` / `MAX_...` | 1 / 5 | 拿下一块地点需要当地人口在 1000–5000 之间 |
 | `COLONIAL_CHARTER_PP_POP_TARGET_IMPACT` | 0.04 | 力量投射对人口目标的影响 |
 | `COLONIAL_MIGRATION_DISTANCE_FACTOR` | 0.0001 | 迁徙量随距离衰减 |
+
+### 特许目标（`common\colonial_charter_goals\`，2026-10 补）
+
+殖民特许**占地后怎么处置**由三种目标决定（`needs_subject` / `is_valid_subject` / `is_available` / `default_priority` / `ai_will_select`）：
+
+| 目标 | 触发条件要点 | 行为 |
+|---|---|---|
+| `expand_subject` | `needs_subject = yes`；需存在**殖民领附庸**（`is_subject_type = colonial_nation` 且 `is_subject_of = scope:owner`），且目标省份与附庸首都**同区或相邻区**（`capital.area` / `neighbor_area` / `region`） | 把新占地并入已有殖民领 |
+| `form_colonial_nation` | 目标省份**对宗主是海外**（`would_be_overseas_for = scope:owner`）、且无他国控制 | 新建殖民领（`default_priority = 50`，附近已有殖民领时降权） |
+| `keep_as_territory` | `is_available = always yes`；仅当**非海外**时 `default_priority +150` | 直接留作本土领土；**AI 对海外目标永不选**（`ai_will_select` 基准 −1000，海外再 −9000） |
+
+> 改这块 = 改"殖民领 vs 直辖"的 AI 与玩家默认行为；`scope:owner` = 宗主、`scope:target` = 省份定义（province definition）、ROOT = 候选附庸。
 
 ## 四、迁徙（migration）——真正的执行器
 

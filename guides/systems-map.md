@@ -2,7 +2,7 @@
 
 > **一句话**：in_game\common\ 全部约 160 个类目按功能分组的总表，标注哪些有 readme、入口文件、实测规模与对应字段档。
 > **什么时候看**：动手做某个系统前，先在这里找它的类目入口文件与字段档，再去读原版样例。
-> **体量**：248 行 · 约 12 分钟通读
+> **体量**：253 行 · 约 12 分钟通读
 
 `in_game\common\` 全部类目（实查 ~160 个），按功能分组。**每类目制作流程**：看本表找入口文件 → read 原版样例 → 加载 `fields\` 对应字段文档核对字段 → 照抄改。标注 `[有readme]` 的类目其 `readme.txt` 是官方字段说明（73 个 total）。
 
@@ -18,6 +18,7 @@
 | employment_systems `[有readme]` | 就业系统（平等/先来先得/资本主义） | 00_default.txt |
 | town_rights `[有readme]` | 城镇权利（区域特色建筑/修正） | 00_traditions.txt、10_country_specific.txt… |
 | town_setups | 城镇初始布局 | 00_default.txt |
+| industry_types `[有readme]` | 产业类型（`textiles = { potential; goods = { cloth fine_cloth } }`，按商品归组，供建筑/产业归类） | 01_industries.txt |
 
 ## 军事
 
@@ -30,6 +31,7 @@
 | levies `[有readme]` | 征召（**特化单位必须放文件顶部**） | 00_default.txt |
 | recruitment_method `[有readme]` | 招募方式（strength/experience/build_time） | 00_default.txt |
 | subject_military_stances `[有readme]` | 附庸军事姿态（AI 优先级 float） | 00_default.txt |
+| unit_families `[有readme]` | 兵种家族（家族级 `limit = { add = … }` 加成，如 `cawa`、拜占庭 `varangians`） | 00_unit_families.txt、D008_byzantine_unit_families.txt |
 
 ## 人口与阶层
 
@@ -83,6 +85,7 @@
 | religious_aspects / religious_factions / religious_focuses / religious_figures / religious_schools | 宗教五件套 | common.txt、calvinist.txt、sunni.txt… |
 | holy_sites / holy_site_types `[有readme]` | 圣地与类型 | 00_default.txt |
 | gods `[有readme]` | 神祇（religion/group 两种写法） | hellenism.txt… |
+| religious_order_types / _callings / _zeal_modifiers `[有readme]` | **修会**（类型→calling→zeal 三层；与 `chivalric_orders` 骑士团是两套；主机逻辑 `generic_actions\religious_orders.txt` 约 1800 行） | 00_catholic.txt 等；详见 `vanilla\vanilla-culture-and-religion.md` §三·bis |
 
 ## 外交与战争
 
@@ -114,6 +117,7 @@
 | 类目 | 用途 | 入口文件 |
 |---|---|---|
 | generic_actions\colonial_charters.txt | **特许殖民地**（建/弃；目标 = **预设省份**，候选由引擎给） | 本文件（2 个动作） |
+| colonial_charter_goals | 殖民特许**处置目标**（`expand_subject` 并入殖民领 / `form_colonial_nation` 建殖民领 / `keep_as_territory` 留作本土；AI 对海外永不选 keep） | 三个同名文件 |
 | generic_actions\explorers.txt | 探索（开始/换探险家/取消；三选 = area + 出发港 + 角色） | 本文件（3 个动作） |
 | generic_actions\conquistadors.txt | 征服者（建立 `conquistador` 附属国） | 本文件（1 个动作） |
 | cabinet_actions\send_people_to_the_colonies / settle_the_frontier / settle_tribesmen / encourage_migration `[有readme]` | 殖民四内阁行动（`add_migration` 的三个来源） | 各同名文件 |
@@ -135,6 +139,7 @@
 |---|---|---|
 | on_action `[有 info]` | 触发钩子（**21 个数据档 + 1 个 .info / 279 KB / 顶层 216 条**；`_hardcoded.txt` 134 KB 装 132 个引擎钩子，含 6 个 `on_mission_*`） | `_hardcoded.txt`、`country_yearly.txt`、`location_pulses.txt`（天气/火山/地震）、`religion_flavor_pulse.txt`… |
 | scripted_effects `[有readme]` | 效果宏（$参数$） | 00_default.txt、country_effects.txt… |
+| decision_categories | 决议分类（`country_specific_decisions` / `expansion_decisions` / `government_decisions`…） | base_decision_categories.txt |
 | scripted_triggers `[有readme]` | 条件宏 | 00_default.txt、war_triggers.txt… |
 | script_values `[有 info]` | 数值与公式（**info 是完整数学 DSL 文档**；与 `guides\scripting-core.md` §一 分工） | 26 文件（`define_values.txt`、`unit_values.txt`…；**无 `00_default.txt`**） |
 | scripted_lists（main_menu） `[有 info]` | 自定义脚本列表（`base` 只写 `any_/random_/every_/ordered_` **之后**的部分 + `conditions`） | `main_menu\common\scripted_lists\` |

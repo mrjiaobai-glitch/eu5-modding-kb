@@ -2,7 +2,7 @@
 
 > **一句话**：实测 8 种 POP 类型与阶层结构，给出增长、晋升、迁移、同化改宗与满意度叛乱阈值的原版常量，多在 `NPop`／`NCharacter` 段。
 > **什么时候看**：要改 POP 类型、晋升／满意度／叛乱数值、阶层权力税收，或排查人口与就业问题时翻这篇。
-> **体量**：135 行 · 约 7 分钟通读
+> **体量**：164 行 · 约 8 分钟通读
 
 版本基准：EU5 1.3.x。核心文件：`common\pop_types\00_default.txt`（240 行）、`common\estates\00_default.txt`（1275 行）、`common\employment_systems\`、`loading_screen\common\defines\00_defines.txt` 的 `NPop`（1591–1637）与 `NCharacter`（同化修正 1487–1506）。
 
@@ -29,13 +29,41 @@
 - `upper = yes` + `has_cap = yes`（贵族/教士/市民）→ 上层阶级**有比例上限**
 - `grow = yes`（除奴隶外基本都可增长）；`tribal_rules = yes`（部落民特殊晋升）
 - `city_graphics`：城市视觉权重（市民 1.0 → 农民 0.01）
+- **部落民（`tribesmen`）单独立篇深挖**：POP / 阶层 / 文本 / 机制四层定义 + 18 项原版部落特权 + 杠杆清单（含"布尔键默认值先查 `auto_modifiers\country.txt`"这条硬规则）见 `vanilla\vanilla-tribes-and-tribal-estate.md`。
 - 阶层映射：农民/劳工/士兵 → `peasants_estate`；贵族 → `nobles_estate`；部落民 → `tribes_estate`；另有 `dhimmi_estate`（齐米）、`cossacks_estate`（哥萨克）
 - 市民 `counts_towards_market_language = yes`（决定市场语言，影响同化）
 
 ## 三、四大动态循环
 
 ### 1. 增长
-粮食盈余驱动（`GROWTH_FROM_FOOD_MULTIPLIER_MAX = 10`，NEconomy）；饥饿放大需求 `STARVING_ON_FOOD_DEMAND = 1.5`；各类型可受 `global_X_pop_growth` / `local_X_pop_growth` 修正。
+
+**两个直接来源**（月增长，`NPop` 块；粮食盈余为主线）：
+
+| 常量 | 值 | 含义 |
+|---|---|---|
+| `FOOD_SURPLUS_POP_GROWTH` | **0.0015** | 粮食有盈余时的基准月增长 |
+| `GROWTH_FROM_FOOD_MULTIPLIER_MAX` | **2** | 盈余倍率上限（NEconomy；**1.3.x 旧档曾记 10，已订正**） |
+| `GROWTH_FROM_FOOD_SURPLUS_THRESHOLD` | 1.25 | 盈余倍数达到该值才起效（NEconomy） |
+| `FOOD_STORAGE_POP_GROWTH` | **0.001** | 有粮食储备时的额外月增长 |
+
+**容量与阻尼**：`GROWTH_DAMPING_START = 0.6`——人口到容量 **60% 后增长递减**；容量由 **8 类 POP 各有** `local_<type>_desired_pop` / `_desired_pop_scaled`（location, percent）与 `global_<type>_desired_pop*`（country, percent）决定；市场侧 `REGIONAL_FOOD_BASE_CAPACITY = 100`、`FOOD_CAPACITY_FACTOR = 1.0`（NMarket）。
+
+**修正键（mod 抓手，⚠️ 量纲不同）**：
+
+| 键 | 作用域 | 量纲 |
+|---|---|---|
+| `local_population_growth` / `global_population_growth` | location / country | **percent** |
+| `local_<type>_pop_growth` / `global_<type>_pop_growth`（8 类各有） | location / country | **addend** |
+| `cap_maximum_population_growth_at_zero` | location | percent |
+
+**需求侧（决定盈余真假）**：每 POP 食物消耗 **nobles 20 / clergy 5 / burghers 4 / soldiers 5 / laborers 1 / peasants 1 / slaves 1 / tribesmen 0**；`STARVING_ON_FOOD_DEMAND = 1.5`（饥饿时需求放大 1.5×）、`NEGATIVE_FOOD_ON_FOOD_DEMAND = 0.5`；`DEVELOPMENT_SCALE_ON_DEMAND = 0.05`、`PRODUCED_IN_MARKET_DEMAND = 0.1`。
+
+**人口外流（"负增长"，`NPop`）**：`DISCRIMINATED_EMIGRATION_MONTHLY_RATE = 0.002`（受歧视文化每月外流）、`POST_CONQUEST_EMIGRATION_FRACTION = 0.0025` × `POST_CONQUEST_EMIGRATION_MONTHS = 12`（征服后 1 年外流）、`SETTLER_PULL_BASE = 2.0` / `SETTLER_PULL_RAMP_YEARS = 25`（边疆移民拉力）。
+
+**死亡**：疾病（`NDisease` 块：`PANDEMIC_MIN_DEATHS = 50000` / `SEVERE_MIN_DEATHS = 1000` / `MODERATE_MIN_DEATHS = 50`）。⚠️ 战争/军队损耗是否直接扣 POP **未证**（见文末）。
+
+> **与满意度解耦**：满意度常量（`BASE_SATISFACTION = 0.2`、文化档位 primary +0.25 / accepted +0.10 / tolerated +0.05 / discriminated −0.25）影响**移民与叛乱**，不直接进 growth；直接决定增员的只有粮食盈余/储备、容量阻尼、growth 修正键。
+> **别混淆**：`promotion_factor` 是**类型间转移**（下一节），不改变总人口。
 
 ### 2. 晋升
 - `MIN_SIZE_TO_BLOCK_PROMOTION = 0.5`（<500 人禁止晋升）
@@ -127,6 +155,7 @@ YEARLY_POP_SATISFACTION_FROM_EVENTS_DECAY = 0.01
 |---|---|
 | 新增 POP 类型 | `common\pop_types\` 新文件（定义 promote_to/estate/grow/literacy_impact）；注意引擎对 pop_type ID 的引用点（建筑雇佣、征召、疾病） |
 | 晋升/同化/改宗速率 | defines `NPop`/`NCharacter` 段；或用 `local_pop_conversion_speed(_modifier)`、`local_pop_promotion_speed_modifier`、`global_pop_assimilation_speed` |
+| **人口增长** | `NPop`（`FOOD_SURPLUS_POP_GROWTH`/`FOOD_STORAGE_POP_GROWTH`/`GROWTH_DAMPING_START`）+ `NEconomy`（`GROWTH_FROM_FOOD_MULTIPLIER_MAX=2`/`_SURPLUS_THRESHOLD=1.25`）；修正键：`local/global_population_growth`（**percent**）与 `local/global_<type>_pop_growth`（**addend**，8 类各自），容量用 `*_desired_pop` 族 |
 | 满意度与叛乱 | `auto_modifiers\country.txt` 的 `pop_join_rebel_threshold`（国家基础值）+ 各修正；`NPop` 阈值 defines |
 | 阶层权力/税收 | `common\estates\`（`power_per_pop`/`tax_per_pop`/high_power/low_power） |
 | 就业优先级 | `common\employment_systems\`（`priority` 脚本值） |

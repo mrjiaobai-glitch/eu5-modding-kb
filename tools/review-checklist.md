@@ -2,9 +2,9 @@
 
 > **一句话**：把全库「审查要点」按检查方式重排的统一检查表：文件结构、引用完整性、作用域、语义陷阱、本地化、合并覆盖与防误报白名单。
 > **什么时候看**：逐文件审查 mod 时当主检查表用；判不准某条是不是错，就翻第七节白名单。
-> **体量**：88 行 · 约 4 分钟通读
+> **体量**：90 行 · 约 5 分钟通读
 
-> **用途**：`eu5-mod-review` 逐文件审查时的**统一检查表**。内容是把本库 24 篇 vanilla + 103 篇 fields 里的「审查要点」按**检查方式**重新归类——**能脚本判的给判据，判不了的给对照表**。每条末尾括号里是权威档，细节回原档看。
+> **用途**：`eu5-mod-review` 逐文件审查时的**统一检查表**。内容是把本库 27 篇 vanilla + 103 篇 fields 里的「审查要点」按**检查方式**重新归类——**能脚本判的给判据，判不了的给对照表**。每条末尾括号里是权威档，细节回原档看。
 
 ## 一、文件与结构（脚本可判）
 
@@ -50,6 +50,8 @@
 - **`rebel_demands` 的 `concession_effect` 必须含 `pacify_rebel_pops`**（原版 12/13），否则让步后叛军不平息（`fields\common-rebel_demands.md`）。
 - **`defines` 覆盖原版零使用**：改常量牵动多人哈希与存档兼容（`fields\main_menu-game_rules.md`）。
 - **`law` 与 `policy` 是两个概念**（law 只锁/解锁，policy 才可切换）（`vanilla\vanilla-law-and-estate.md`）。
+- **`*_estate_allowed_*` / `*_migration_allowed` 这类布尔键，先查默认值再判断有没有用**：默认值在 `in_game\common\auto_modifiers\country.txt`（country base values）。默认已为 `yes` 的键，在特权/改革里再写一遍 = 空操作（实例：`tribes_estate_allowed_leading_military` base=**yes**，而 `global_tribesmen_migration_allowed` base=no、议会/内阁/通婚都只有贵族有 base）（`vanilla\vanilla-tribes-and-tribal-estate.md` §七·补）。
+- **`Select-String -Path` 只要有一个路径不存在，整条命令报错并把命中当 0**——"某键全库 0 处"这类结论必须先 `Test-Path` 或改用显式文件清单，否则会静默误判（本篇实测踩过）。
 - **`law`／`reform` 的 `potential` 会被引擎周期复查，失效即整条撤销**——potential 里出现**动态值**（兵力、阶层力量、金币、战争状态）即是错误；只允许政体／宗教／改革／tag 这类几乎不变的条件。要求"已生效后 potential 恒真"（`guides\law-design.md` §三、`cases\laws-events-and-estates-2026-09.md` §1）。
 
 ## 五、本地化（脚本可判）

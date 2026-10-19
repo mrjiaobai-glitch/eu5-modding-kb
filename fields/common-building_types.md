@@ -2,7 +2,7 @@
 
 > **一句话**：建筑类型的完整字段表：建造耗时、雇用规模与产出、可建范围与外国建筑条件、生产方式引用，以及各触发字段的作用域。
 > **什么时候看**：新增或改动建筑、排查建造条件与修正作用域写错时翻这篇。
-> **体量**：166 行 · 约 8 分钟通读
+> **体量**：167 行 · 约 8 分钟通读
 
 来源：`in_game\common\building_types\readme.txt`
 
@@ -40,11 +40,12 @@
     capital_to_overlord_modifier = <modifier> # 施加于宗主（仅建筑所有者是附庸时）
     foreign_country_modifier = <modifier>     # 施加于当前所有国（仅 is_foreign = yes）
     modifier = <modifier>; raw_modifier = <modifier>  # location；后者不缩放
+    raw_modifier = { gives_cardinal = yes }   # 注册 boolean 键（00_modifier_types.txt:4181，category=location）：给该 location 一个枢机位
     market_center_modifier = <modifier>       # 市场中心时施加于 location
     pop_size_created = <float>                # 新建筑创建 pop（从首都取；仅外国建筑）
     increase_per_level_cost = <percent>       # 每级成本增幅；0.5 = 每级贵 50%
     <location rank>: <yes/no>                 # 可建造的 location 等级
-    on_built = { <effects> }; on_destroyed = { <effects> }
+    on_built = { <effects> }; on_destroyed = { <effects> }   # 通用字段；"建成就坐一个角色"的完整配方见 guides\building-seat-character.md
     always_add_demands = <yes/no>             # 未雇满也要求完整需求
     custom_tags = { <strings> }
     AI_ignore_available_worker_flag = <yes/no>  # AI 缺 pop 类型也会建造

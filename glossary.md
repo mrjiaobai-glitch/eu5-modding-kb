@@ -155,6 +155,9 @@
 | `modifier` | 修正 | 数值增减块；键必须在 `modifier_type_definitions` 注册 | `tools\review-checklist.md` §二 |
 | `static_modifier` | 静态修正 | 引擎按名识别，零脚本引用也生效 | `pitfalls.md` §七 |
 | `scaled & triggered modifier` | 缩放修正 | 用 `scale` + `potential_trigger` 动态算值 | `fields\common-bureaucracies.md` |
+| `integration_level` | 整合状态 | 地点四态 `colonized`/`conquered`/`integrated`/`core`（既是字段也是地点触发器） | `vanilla\vanilla-territory-integration.md` |
+| `is_core_of` / `add_core` / `remove_core` | 是否核心 / 加核心 / 去核心 | 核心态判定与增删；脚本给的核心有期限 `SCRIPTED_CORE_DURATION_YEARS=100` | 同上 |
+| `province_integration_speed` 等 4 键 | 整合速度 | province/location/country 三级；`integrated→core` 卡 `CORE_THRESHOLD=0.5` | 同上 |
 | `counters` / `variables` | 变量 | 用前必初始化；`exists = var:X` 不宜用于数值变量 | `pitfalls.md` §三 |
 | `INJECT` / `REPLACE` | 追加 / 替换前缀 | 文件合并前缀；事件不能 REPLACE/INJECT | `guides\merging.md` §二 |
 

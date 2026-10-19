@@ -2,7 +2,7 @@
 
 > **一句话**：实查 2087 个文化、528 种语言、293 个宗教及其组／信条／学派／圣地／神祇／运动，给出地位容量、统一度、好感与同化改宗速率修正链。
 > **什么时候看**：加文化或宗教、改地位与容量、做运动传播或改宗内容，或需要宗教字段表（无官方 readme）时翻这篇。
-> **体量**：507 行 · 约 24 分钟通读
+> **体量**：540 行 · 约 25 分钟通读
 
 ## 目录
 
@@ -29,7 +29,10 @@
   - [3.8 宗教启用机制（⚠️ 最容易踩）](#38-宗教启用机制️-最容易踩)
   - [3.9 运动（movements）—— 宗教/文化的传播引擎](#39-运动movements-宗教文化的传播引擎)
   - [3.10 宗教 IO / 局势 / 灾难](#310-宗教-io--局势--灾难)
-- [四、语言（文化的硬依赖）](#四语言文化的硬依赖)
+- [三·bis、修会系统（religious orders，2026-10 补）](#三bis修会系统religious-orders2026-10-补)
+  - [三层结构：type → calling → zeal](#三层结构type--calling--zeal)
+  - [脚本接口](#脚本接口)
+  - [可改点 / 未证](#可改点--未证)
 - [五、耦合点（写 mod 时的接口总表）](#五耦合点写-mod-时的接口总表)
 - [六、Mod 改造建议（可改 vs 硬编码）](#六mod-改造建议可改-vs-硬编码)
 - [七、⚠️ 统计方法学警告（2026-09 本轮实测）](#七️-统计方法学警告2026-09-本轮实测)
@@ -428,7 +431,37 @@ modifier = { tolerance_heretic = -2 }
 
 结束条件 `religious_turmoil_end_trigger`：宗教统一度 > 0.90 **或** 精神/人文轴 > 90 **或**（轴 < −60 且教士满意度 > 0.6 / 教士力量 > 0.20）。灾难期间解锁 3 个专属行动（`religious_turmoil_actions.txt`：推精神派、推人文派、支持皈依努力），全部以 `disaster_type = disaster_type:religious_turmoil` 为前置。
 
-## 四、语言（文化的硬依赖）
+## 三·bis、修会系统（religious orders，2026-10 补）
+
+> **与骑士团（`chivalric_orders`）不是一回事**：`chivalric_orders` 是**角色向勋位**（`potential` + `country_modifier` + `character_modifier` + `character_eligible`，如圣乔治勋章）；本节讲的是**持有地向的修会实体**（有类型、calling、狂热值，可占地、可换 calling、可改 zeal）。
+
+**数据位置**：`common\religious_order_types\`（2 档：`00_catholic.txt` + readme）、`common\religious_order_callings\`（4 档：iberian_military / mendicant / monastic + readme）、`common\religious_order_zeal_modifiers\`（1 档）、**主机逻辑** `generic_actions\religious_orders.txt`（约 1800 行：建会/入会/依附/换 calling/改 zeal）、持有地货物需求 `goods_demand\religious_orders.txt`（`religious_order_holding_demand`）、`attribute_columns\133_religious_order_type.txt`。
+
+### 三层结构：type → calling → zeal
+
+**① 修会类型 `religious_order_types`**（readme 全字段）：`color`、`default_founding_country_allow` / `default_founding_location_allow`（建国/建址条件，country/location 触发器）、`founding_name_pattern`、`location_overlay_loc_key`、`founding_cost_gold`、**`can_field_levies`（默认 no）**、`default_calling`、`valid_callings`、`holding_goods_demand`、`graphical_cultures`、`on_leader_death`、`content_priority`。
+
+本体三类：
+| 类型 | 颜色 / gfx | `on_leader_death` |
+|---|---|---|
+| `iberian_military_order_type` | 200 50 50 / military_order_gfx | 从持有地随机 pop（30–50 岁）产生新首领 |
+| `monastic_order_type` | 70 90 160 / monastic_gfx | 同上 |
+| `mendicant_order_type` | 120 85 50 / monastic_gfx | 同上 |
+
+**② calling `religious_order_callings`**：`valid_for_types`、`preferred_societal_values`（社会价值观偏好）、`location_trigger`、`location_modifier`、`country_modifier`（**按 持有地数 × zeal 缩放**）、`low_zeal_country_modifier`（**按 持有地数 × (100 − zeal) 缩放**）、`location_revenue_modifier`、`ai_will_select`。
+实例：`crusaders_calling`（iberian military；revenue 1.0、`local_levy_size_modifier +1.0`、低 zeal 时 `land_morale_modifier −0.03`、`global_mercenaries_modifier +0.25`）；`preachers_calling`（mendicant；`local_pop_conversion_speed_modifier +0.2`）；`contemplatives_calling`（monastic）。
+
+**③ 狂热 `religious_order_zeal_modifiers`**：`valid_for_callings` + `country_trigger` + `value`（0–100 尺度）。例：`zeal_at_war_with_heathen = 12`（对 crusaders/wardens/confidants/mariners 四个 calling）。`NReligion` 另有 `RELIGIOUS_ORDER_SOCIETAL_VALUE_PUSH = 0.05`（修会推动社会价值观的力度）。
+
+### 脚本接口
+- **效果**（`effect_localization\religious_order_effects.txt`）：`attach_to_religious_order`、`join_religious_order`、`change_religious_order_calling`、`change_religious_order_zeal`、`remove_religious_order`、`remove_all_religious_orders`。
+- **触发器**（`trigger_localization\religious_order_triggers.txt`）：`is_religious_order_member`、`is_holding_of_any_religious_order`、`has_any_religious_order_presence`、`num_locations_in_religious_order`、`religious_order_zeal`、`religious_order_type_foundable_by`。
+
+### 可改点 / 未证
+- 可改：类型/颜色/建国条件/`founding_cost_gold`/`can_field_levies`/`valid_callings`/zeal 触发与数值/calling 的 location·country 修正与缩放（缩放公式在注释里写死：`holdings × zeal` 与 `holdings × (100−zeal)`）。
+- **未证**：zeal 的**自然衰减/基础增长**（只见到 zeal_modifier 加值，未见月度基准）；`low_zeal_country_modifier` 的具体换算阈值（"low" 的判定线未见）；`can_field_levies` 与征召兵系统的确切挂接点。
+
+
 
 - `languages\` 528 个条目 = **名字库 + 构名规则**：`male_names`（446 条有）、`female_names`（439）、`dynasty_names`（436）、`lowborn`（436）、`family`（295）、`dialects`（31，**子块**，方言可继承/覆盖父语言）、`character_name_order`（23）、`character_name_short_regnal_number`（23）、`patronym_suffix_son`(15)/`_daughter`(13)、`patronym_prefix_son`(10)/`_daughter`(10)、`location_prefix`(18)/`_suffix`(6)/`_vowel`(4)/`_elision`(2)/`_ancient(_vowel)`、`descendant_prefix`/`_suffix`/`_male`/`_female`、`fallback`(4)、`require_genitive_location_names`、`ship_names`(3)、`dynasty_template_keys`(3)。
 - `language_families\` 56 个语族，只存 `color`。

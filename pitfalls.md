@@ -1,8 +1,8 @@
-# 实测坑速查（pitfalls）
+﻿# 实测坑速查（pitfalls）
 
-> **一句话**：汇总 EU4→EU5 语法对照与实修踩过的坑：作用域、变量、合并结构、本地化 BOM、AI 生态、词条量级校准、审计脚本误报、统计偏误、PowerShell 静默故障，以及 1.4 关闭/移除的接口与字段。
+> **一句话**：汇总 EU4→EU5 语法对照与实修踩过的坑：作用域、变量、合并结构、本地化 BOM、AI 生态、词条量级校准、审计脚本误报、统计偏误、PowerShell 静默故障，以及 1.4 / 1.4.1 关闭/移除的接口与界面表达式。
 > **什么时候看**：写完或审查 mod 出报错、加关键字条、写审计脚本、跨版本移植，或想确认某写法是不是坑时先查这里。
-> **体量**：477 行 · 约 23 分钟通读
+> **体量**：944 行 · 约 43 分钟通读
 ## 目录
 
 - [一、EU4 语法混入（最常见）](#一eu4-语法混入最常见)
@@ -32,12 +32,33 @@
 - [十四、PowerShell 静默故障（2026-10 实测 7 次：不是误报，是**恒为 0 / 丢数据 / 毁文件**）](#十四powershell-静默故障2026-10-实测-7-次不是误报是恒为-0--丢数据--毁文件)
   - [病根：大集合 + 管道/字典索引，在这个环境下会静默失效](#病根大集合--管道字典索引在这个环境下会静默失效)
   - [另一类：正则/语法的静默偏差](#另一类正则语法的静默偏差)
-  - [最危险的一类：变量撞车导致破坏性写入（2026-10 实测，11 个文件被毁）](#最危险的一类变量撞车导致破坏性写入2026-10-实测-11-个文件被毁)
+  - [最危险的一类：变量撞车导致**破坏性写入**（2026-10 实测，11 个文件被毁）](#最危险的一类变量撞车导致破坏性写入2026-10-实测11-个文件被毁)
   - [强制自查规则（写进任何统计脚本）](#强制自查规则写进任何统计脚本)
+  - [数组字面量里的字符串拼接会被逗号抢走（2026-10-17 连踩两次）](#数组字面量里的字符串拼接会被逗号抢走2026-10-17-连踩两次)
 - [十五、关闭/移除的接口与字段（2026-10 实查 1.4）](#十五关闭移除的接口与字段2026-10-实查-14)
 - [十六、校验器自身失真（2026-10 两次实测：假阴性比假阳性更危险）](#十六校验器自身失真2026-10-两次实测假阴性比假阳性更危险)
+  - [强制规则](#强制规则)
+  - [元教训](#元教训)
+- [十七、汉化 mod 的版本迁移坑（2026-10-13 实查 EU5 1.4.1）](#十七汉化-mod-的版本迁移坑2026-10-13-实查-eu5-141)
+- [十八、"官中有键但值没译"这一整类（2026-10-13 实做 1399 条）](#十八官中有键但值没译这一整类2026-10-13-实做-1399-条)
+- [十九、`hidden = yes` 的事件**仍然要 title**（2026-10-17 日志实查，EU5 1.4.1）](#十九hidden--yes-的事件仍然要-title2026-10-17-日志实查eu5-141)
+  - [附带一条：`unlock_law_effect` 自带显示包装，别再套](#附带一条unlock_law_effect-自带显示包装别再套)
+- [二十、tooltip 描述里的 `：` 会在冒号处被引擎切段（2026-10-17 截图实测，EU5 1.4.1）](#二十tooltip-描述里的--会在冒号处被引擎切段2026-10-17-截图实测eu5-141)
+- [二十一、新增修正键必须自带图标，否则 tooltip 不显示效果（2026-10-17 实测，EU5 1.4.1）](#二十一新增修正键必须自带图标否则-tooltip-不显示效果2026-10-17-实测eu5-141)
+- [二十二、隐式 AND 在 tooltip 里会渲染成平级条目，看起来像"或"（2026-10-17 实测，EU5 1.4.1）](#二十二隐式-and-在-tooltip-里会渲染成平级条目看起来像或2026-10-17-实测eu5-141)
+- [二十三、同一个概念，地点级可能是绝对值、国家级才是百分比（2026-10-17 实测，EU5 1.4.1）](#二十三同一个概念地点级可能是绝对值国家级才是百分比2026-10-17-实测eu5-141)
+- [二十四、政策只写"阶层专属修正"时，会让整张政策卡变成空白（2026-10-17 实测，EU5 1.4.1）](#二十四政策只写阶层专属修正时会让整张政策卡变成空白2026-10-17-实测eu5-141)
+- [二十五、"本体 0 先例"会被两种假象骗出来（2026-10-17 做十九法键位普查时踩到，EU5 1.4.1）](#二十五本体-0-先例会被两种假象骗出来2026-10-17-做十九法键位普查时踩到eu5-141)
+- [二十六、mod 自建修正类型（modifier type）在 1.4.1 实测不生效——门控建筑请用 `has_policy`（2026-10-17 实机回报，EU5 1.4.1）](#二十六mod-自建修正类型modifier-type在-141-实测不生效门控建筑请用-has_policy2026-10-17-实机回报eu5-141)
+- [二十七、`category = estate_category` 的阶层建筑不能由 mod 新增（2026-10-17 四建筑对照实验，EU5 1.4.1）](#二十七category--estate_category-的阶层建筑不能由-mod-新增2026-10-17-四建筑对照实验eu5-141)
+- [二十八、decision 的三条隐形限制：`allow` 为假不显示 / `potential` 里的 `any_subject` 丢整条 / `only_once = yes` 也会丢（2026-10-17 七轮拆块探针，EU5 1.4.1）](#二十八decision-的三条隐形限制allow-为假不显示--potential-里的-any_subject-丢整条--only_once--yes-也会丢2026-10-17-七轮拆块探针eu5-141)
+  - [① `allow` 为假时，决议**根本不出现在面板上**（不是灰显）](#-allow-为假时决议根本不出现在面板上不是灰显)
+  - [② `potential` 里出现 `any_subject` ⇒ **整条决议被静默丢弃**](#-potential-里出现-any_subject--整条决议被静默丢弃)
+  - [③ `only_once = yes` 会让决议完全不显示（同一存档内实测）](#-only_once--yes-会让决议完全不显示同一存档内实测)
+  - [排查方法论（值得复用）](#排查方法论值得复用)
 
-> **⚠️ 最危险的是第十四节与第十六节**：十四是脚本静默返回 0 / 丢数据，把"漏了一大片"伪装成"全部覆盖"；十六是**连"用来发现漏没漏的那个校验"本身都在说谎**——它报"通过"，你就不再有第二次怀疑。
+> **最后校验**：EU5 1.4.1（Steam buildid 25905365）/ 2026-10-17（新增第二十八节）
+> **⚠️ 最危险的是第十四节与第十六节**：十四是脚本静默返回 0 / 丢数据，把"漏了一大片"伪装成"全部覆盖"；十六是**连"用来发现漏没漏的那个校验"本身都在说谎**——它报"通过"，你就不再有第二次怀疑。第十七节是这两条在**汉化场景**下的合体：官中与本 mod 的失效调用不会报错，只有靠逐键差集才看得见。
 
 来源：`eu5-mod-review` 的实测记录（《刀锋与王座》2026-07/2026-08 实修，EU5 1.3.x；2026-10 于 1.4.0 测试版复核并新增第十五节）+ 本知识库翻阅游戏本体时的观察 + **工具与校验环节的自身故障记录（2026-10 新增第十六节）**。**EU5 ≠ EU4**，以下都是真实踩过的坑。
 
@@ -60,6 +81,9 @@
 4. **mercenary scope 不能直接用 unit_location**（报 "Wrong scope: mercenary, expected unit"）——经 ordered_mercenary_sub_unit / every_mercenary_sub_unit 取子单位再取位置。
 5. 事件选项里用 immediate 保存的 scope 做 title/desc 本地化是支持的，但**别在 title 里引用选项才有的 scope**。
 6. **on_action 的 on_actions 列表引用带 trigger 的子块时，子块 trigger 可能不被评估**（2026-09 实测：landless_passage_pulse 挂在 monthly_country_pulse 的 on_actions，其 trigger 要求"军队型+流亡标记"，结果全部原版军队国（察合台等，无任何标记）都执行了 effect、收到专属事件）。原版同文件子块（on_papal_opinion_added）trigger 正常 → 疑似"跨文件合并块引用的子块"才触发此问题。**对策：关键身份/条件门槛内聚到事件自身 trigger + 调用处 effect 内 if（双保险），不要只依赖 on_action 子块 trigger**。事件自身 trigger 实测可靠（加门槛后不再误弹）。
+7. **创建流程里 `scope:target` / `scope:target_province` 可能尚未绑定** ⇒ 门槛若裸写 `scope:target = { culture != root.culture }`，会去对"此刻还不存在的对象"求值 ⇒ **静默判假**，表现为"这个类型凭空不出现在创建列表里"，且不产生任何 error.log 条目。⇒ 这类门槛一律写保护形 `scope:target ?= { … }`（本体保护形先例：`tusi.txt:44` 的 `dominant_culture ?=`、`scripted_triggers\country_triggers.txt:1341` 的 `overlord ?= { … }`）。同族坑：`is_subject_type` 对 mod 自定义类型疑似恒真、`local_separatism` 被 `integration_integrated` 自身 +0.1 污染——**都是门槛引用了不该引用/还不存在的东西**。
+8. **`subject_types` 的 `visible` 比创建门槛更根本**：readme 原话是"is this subject type visible **at all**"。⇒ 只要 `visible` 里有一条低等级过不去的 `country_rank_level >= N`，**创建侧字段怎么放宽都没用**。排查"类型不出现"时顺序应为：`visible` → `creation_visible` → `release_country_enabled` / `subject_creation_enabled` → 外交侧 `*_through_diplomacy`（注意：原版 `vassal` 只写 `visible`，不写任何 `*_through_diplomacy` ⇒ 不写≠禁用）。
+9. **mod 自身的等级/规模类门槛必须与玩家的开局状态相容**：本体阶梯是 `rank_county=1 / rank_duchy=2 / rank_kingdom=3 / rank_empire=4`（`in_game\common\country_ranks\00_default.txt:160/:139/:85/:33`）——"伯国"就是 level 1。凡写 `country_rank_level >= 2`，先问一句**"作者/玩家开局的哪一国过得了"**；做"初期体验"类 mod 时，`>= 2` 等于把功能锁死在初期之后。
 
 ## 三、变量坑
 
@@ -76,6 +100,26 @@
 - **事件不能 REPLACE/INJECT**——复制修改会产生无害 "Duplicated event ID"。
 - on_action 同名块是合并语义，直接写同名块追加即可，别加 REPLACE。
 - **顺序敏感块**（country_name_construction 等"第一个匹配生效"）同样不能用 INJECT。
+- **图标注册表只认【类型键】，不认 static 块名**（2026-10-12 实测）：往 `main_menu\common\modifier_icons\` 里写 `某个 static 块名 = { positive = … }` **静默无效**——面板一行的图标取自"块内各个效果键"的图标。实查：`local_max_control`(00_modifier_icons.txt:1172)、`local_separatism`(:2514) 有条目；而 `isolating_cities` / `segregate_the_infected` / `strict_quarantines` / `favoring_buddhism_schools` / `recently_raided_by_horde` / `minor_rebel_uprising` 这些**被 `add_location_modifier` 真正挂上的 static 块名全部没有条目**。⇒ 想给一行修正专属图标，只能给它一个**自己注册在 modifier_type_definitions 里的类型键**；error.log 的 `Missing Icon for Modifier` 也只报类型键，不报块名。
+- **同一个地点修正有两种 tooltip，读到的东西不一样**（2026-10-12 截图，作者纠正了我的误读）：
+  悬停**图标** → 按效果键逐条列数值（例："最大控制力 +1.00%"）；
+  悬停**行文字**（修正名）→ 显示"无。"＋持续期（"直到其领土彻底丢失"）＋描述，
+  **不按效果键列值**。⇒ 想把自定义读数做给玩家看，只能指望**图标 tooltip** 那一侧；
+  在行文字 tooltip 里它是"无。"。（我先前从"无。"推出"`size` 是乘数、0 年所以无"——**推理路径是错的**：
+  两张图是同一修正的两种视图，与年数无关。结论本身后来由**实机逐年观察**独立证实，见下条。）
+- **`add_location_modifier` 的 `size` 是【乘数】，会把变量真的乘进效果值**（2026-10-12 实机确认：
+  保持人群好感 ≥0.5 的地点，图标 tooltip 的"最大控制力"**逐年 +1%**；不满足者不递增）。
+  本体 `black_death.txt:149-167` 的写法（`size = { value = { desc = game_concept_control value = local_control multiply = 0.85 } }`）
+  正是"取一个量 × 系数"的乘法语义。⇒ 两条推论：
+  ① **想只读不痛**：拿它显示自定义变量时，显示值 = 锚点键值 × 变量 ⇒ 想"百分比数字 = 计数"
+     就把锚点键值设成 0.01；想要整数就把锚点换成自建 `decimals=0` 的类型键（见上条图标规则）。
+  ② **会造出"奖励悬崖"**：如果锚点键是**真实效果**，那么"进度期间累计的加成"必须在
+     **达成那一刻被终态值接住**，否则玩家会在成功当天看到数值**下降**。
+     例：基础 +0.05、每年 +0.01、第 9 年 = +0.14，而终态只给 +0.10 ⇒ 回落 4 个点。
+     规避：把终态值抬到 ≥ 基础 + 峰值（0.15），或让锚点键**零副作用**（自建纯显示类型键）。
+- ⚠️ **修正描述里不要调 `.Custom(`**：本体 3,042 行 `STATIC_MODIFIER_DESC` 中 `.Custom(` 出现 **0 次**
+  （其它 loc 用 `.Custom(` 都要有已绑定的 scope 对象，如 `[SCOPE.sCountry('actor').Custom('…')]`；
+  `[location.Custom('…')]` 没有可绑对象）⇒ 大概率渲染成裸文本。要动态读数就走 `size`。
 
 ## 五、本地化坑
 
@@ -432,7 +476,7 @@ balanced_education =
 | 4 | 函数返回 `@{ KV = $h; File = $f }` 后取 `$r.KV` | 成员变成空，后续统计恒 0 | 不用函数封装，**在同一个脚本作用域里内联**两个 Hashtable |
 | 5 | 把结果 `Cat $_`（自定义函数）传给 `Group-Object { }` | 函数名被当成**路径**解析，报"驱动器不存在"，输出全是垃圾 | 不用函数，直接在循环里算出分类列，`Export-Csv` 后用列名 `Group-Object` |
 | 6 | 变量名 `$mod` / `$home` 等 | `$mod` 是 **PowerShell 自动变量**，赋值被**静默忽略** → 路径拼错 → 文件根本没装载 → 统计恒 0 | 用 `$modDir` / `$gameDir` 等非保留名；避免一切自动变量 |
-| 10 | **`$x` 与 `$X` 同时使用**（循环变量 `$x` 累加进列表 `$X`） | PowerShell **变量名大小写不敏感** ⇒ 两者是同一个变量 ⇒ 循环最后一次赋值把列表**覆盖成字符串** ⇒ 循环后 `WriteAllLines($f, $X, …)` 把一个字符串当行数组写入 ⇒ **11 个文件各剩 1 行 61 字节，数据被毁** | **禁止**单字母变量名，尤其禁止仅大小写不同的名字并存。累加列表用 `$items`/`$linesOut`，循环元素用 `$item`/`$line`，名字必须语义化且互不为大小写变体 |
+| 10 | **`$x` 与 `$X` 同时使用**（循环变量 `$x` 累加进列表 `$X`） | PowerShell **变量名大小写不敏感** ⇒ 两者是同一个变量 ⇒ 循环最后一次赋值把列表**覆盖成字符串** ⇒ 循环后 `WriteAllLines($f, $X, …)` 把一个字符串当行数组写入 ⇒ **11 个文件各剩 1 行 61 字节，数据被毁** | **禁止**单字母变量名，尤其禁止仅大小写不同的名字并存。累加列表用 `$items`/`$linesOut`，循环元素用 `$item`/`$line`，名字必须语义化且互不为大小写变体。**参数名也受此约束**（2026-10 复现：`param([string]$Out)` 与体内 `$out = New-Object List` 是同一变量 ⇒ 路径参数被集合顶掉，`WriteAllLines` 收到空字符串，写文件静默失败） |
 
 ### 另一类：正则/语法的静默偏差
 
@@ -441,6 +485,8 @@ balanced_education =
 | 7 | `$k -match '^A_\|^B_'`（或运算未分组） | 锚点只作用于第一个分支，匹配结果偏离预期 | `$k -match '^(?:A_\|B_)'` |
 | 8 | 严格正则 `^\s+(K)\s*:\s*"(.*)"\s*$` 遇上**行尾注释** | 漏掉所有带注释的行，键数偏低 | 先确认目标文件是否有尾注释；有则用宽松式 `^\s+(K)\s*:\s*"`，值另取 |
 | 9 | **用错列**——TSV 的 `Zh` 列里放的其实是官英原值，却去查另一张表 | 分类恒为 0（等价于"全都无需翻译"） | 分类前先 `Import-Csv` 打印 `PSObject.Properties.Name` 与前 3 行原文，**确认列义再写判据** |
+| 11 | **`$text.IndexOf($needle, $i)` 扫二进制数据**（把字节按 Latin1 转成 String 再搜） | .NET 默认按**当前区域性**比较，needle 里 `U+00A8`/`U+00A7` 这类**零权重字符被忽略** ⇒ 给出**假命中**（实测：`5b 0d 32 a8` 被报在 `5b 0d 03 01` 处），且**结果看着完全合理**——存档解码统计里把一维数据整体污染，另一维却"复现一致"，极易误采信 | 一律 `$text.IndexOf($n, $start, $count, [System.StringComparison]::Ordinal)` **并且**命中后逐字节核验；或干脆手写字节循环。拼小端整数用 `-shl`，**不要用 `[Math]::Pow`**（返回 double，进 `[int64]` 累加会炸成 `[System.Object[]] 不包含 op_Division`，症状是"某字段全读空"而不是报错） |
+| 12 | **函数返回 `HashSet`/`List` 等集合**（`return $o`） | PowerShell 输出时会**解卷（unroll）集合**：集合为空时函数返回 `$null`，调用方 `$x.Contains(…)` 直接炸「不能对值为 Null 的表达式调用方法」；集合非空时则退化成 `Object[]`，`.Contains` 又**不存在** → 校验器静默漏判 | 函数写 `return , $o`（前置逗号阻止解卷）。2026-10-13 实测：汉化差集普查脚本因此当场报错；同一 bug 若不报错就是假阴性 |
 
 ### 最危险的一类：变量撞车导致**破坏性写入**（2026-10 实测，11 个文件被毁）
 
@@ -462,6 +508,24 @@ balanced_education =
 4. **抽样人工核对**：统计出的"需翻译清单"里挑 5 条调出原文看，确认确实需要翻译（本次抽样才发现 `CATEGORY_HOSTILE_ACTIONS`、`$MEN$@manpower!` 这类**不该译**的标识符占了 2/3）。
 5. **破坏性操作（force-push / 覆盖写 / 批量删除）永远不许和它的验证步骤链在同一个脚本里**：验证输出必须先回到执行者眼前、读过之后再发破坏指令。2026-10-09 实案：git 强推脚本把 fetch 检查与 `push -f` 连写，fetch 明明显示远程有 99 条真实历史，脚本照推——全靠推送前刚 fetch 过、对象还在本地才抢救回来。链式脚本里的"看起来没问题就继续"等于没检查。
 6. **多行文本（提交信息等）不许当 PS 变量直接传命令行参数**——PS 会把多行字符串按数组展开成多个参数，命令报错又常被 `| Out-Null` 吞掉（同案：`git commit -m $msg` 静默失败、HEAD 原地不动，后续验证全建立在错误前提上）。多行消息一律写临时文件 + `git commit -F`。另：git 默认 `core.quotepath=true` 会把中文文件名输出成八进制转义，拿它回喂 `git rm` 必然失配——脚本前先 `git config core.quotepath false`。
+
+### 数组字面量里的字符串拼接会被逗号抢走（2026-10-17 连踩两次）
+
+```powershell
+$d = @(
+  ' k1: "aaa' + $x + '"',      # ← 期望 2 个元素
+  ' k2: "bbb' + $y + '"'
+)
+$d.Count      # 实际 1！两条 loc 键被并成一行写进 .yml
+```
+
+PowerShell 里**数组分隔逗号的优先级高于 `+`**，于是 `'a' + $x + '"', 'b'` 被解析成
+`'a' + $x + ('"', 'b')` 之类的形态：元素被合并、或后面的变量整段丢失（本项目两次症状分别是
+"两条 loc 键挤进同一行"和"`[ShowRegionName(...)]` 片段凭空消失"）。
+
+**改法**：① 每个元素整体加括号 `@( ('a'+$x), ('b'+$y) )`；② 更稳的是**不要数组**——
+每种语言/每种键各用一次独立赋值 `$s = '前缀' + $var + '后缀'`，再分别写回。
+**自检**：写完立刻 `ReadAllLines` 数一下目标键各出现几次（应为 1），以及行长是否离谱地长（合并的典型征兆是两倍长度）。
 
 ## 十五、关闭/移除的接口与字段（2026-10 实查 1.4）
 
@@ -494,7 +558,387 @@ balanced_education =
 3. **分支锚点必须包组**：`^A_|B_` 的真实语义是"以 `A_` 开头"**或**"含 `B_`"，`^` 只管第一个分支；要写 `^(?:A_|B_)`（与第十四节第 7 条同源，此处按"校验器"视角重记）。
 4. **"日志干净"≠"没问题"，"校验报 0"≠"事实为 0"**：与第十五节 `is_army/is_navy` 那条同理——引擎不质疑语义只执行逻辑，校验器也只执行你给的模式，不质疑模式是否写错。
 5. **判断编码问题不要用控制台脸色**：用可显式指定编码的手段复核（`Get-Content -Encoding UTF8`、Python `open(..., encoding='utf-8')`、读字节头看 BOM）。
+6. **结构校验不许"数原始括号"**：必须**先剥注释行**，再逐块跟踪深度，并断言**顶层块的数量与命名**。
+   实案（2026-10-16）：往某 `.txt` 注释头末尾插入一段注释时漏了分隔换行，结果
+   `#big_house_with_field_for_farmer = {` 整行变成注释 ⇒ 该建筑块**从文件里消失**、
+   后面留下一个孤立的 `}`；而"原始文本数 `{` / `}`"仍报 **14/14 平衡**（注释里的括号也被算进去）
+   ⇒ **假安全，比没校验更糟**。配套两条：① Clausewitz 脚本里 `#` 开头即注释，任何结构统计都要先跳过；
+   ② PowerShell here-string `@'…'@` **不含闭合定界符前那个换行**，用它拼"注释块 + 代码块"时必须显式补 "`n"，
+   否则就是这次这种"两行黏成一行"。
 
 ### 元教训
 
 **校验器也要被验证。** 越是"证明没问题"的检查，越要先证明它有本事发现问题。
+
+## 十七、汉化 mod 的版本迁移坑（2026-10-13 实查 EU5 1.4.1）
+
+> 规范做法见 `guides\localization.md` §界面表达式的版本迁移。本节只记**坑与症状**。
+
+- **官中不会跟着本体小版本重扫表达式**：1.4.1 官英把 `@[X.GetFlag]!` 全量换成 `[X.GetFlagIconWithNoTooltip]`（官英 `.GetFlag]` **0 处**），官中却留 **44 处**；`[scope:foo.Bar]` 官英 **0 处**，官中留 **7 处**。**零报错**，症状是旗帜图标消失 / 界面露出 `@[` 原始标记。→ 每次本体更新（**小版本也算**）都要重跑普查，不能只补新增词条。
+- **汉化 mod 会把官中的失效方法一起继承进来**：译文若照抄官中的 `[...]` 表达式，就等于把官中的版本债也背上（实测本 mod 4,400+ 条中有 18 条含官英已不存在的 `GetPlayerPower`/`GetPlayerLoyalty` 一类方法）。→ 唯一可靠的自检是**逐键与本版本官英取 `[令牌]` / `$占位符$` 差集**，多出来的就是问题。
+- **差集比对不规范化会产生 30 倍噪声**：`[X.GetName|Y]` vs `[X.GetName]`（颜色格式）、`[war|e]` vs `[war|E]`（大小写）都是正常的；不剥离格式直接比，实测从 42 条真问题涨到 **1,539 条**，结果没人敢看。
+- **`$占位符$` 改名 = 界面直接露原文**：1.4.1 `LOSTTRAIT_TITLE` 官英由 `No longer $TRAIT_NT$` 改成 `$TITLE$`，官中仍是 `$TRAIT_NT$` → 通知标题显示字面 `$TRAIT_NT$`。占位符差集与令牌差集**必须分别跑**，两类病因不同。
+- **官中自身的语义未必对得上官英**（实测两例）：`holy_war.9.desc` 官英 "as leader of the `[cardinal_io.GetName]`"（国际组织），官中译成"作为 `[crusade|e]` 的领袖"；`iberian_culture.21.b.tt` 官英用 `pop_satisfaction_mild_penalty`，官中用 `severe_penalty`（数值显示错误）。→ **官中是待修对象，不是底本**；一切以本版本官英为准，官中只借用其术语。
+- **结构不同构的条目不能机械迁移**：官中 `VOTED_ENTRY` 自己加了 `$EFFECT_LIST_BULLET$` 和 `[TARGET_COUNTRY.GetName]`、把"投票数"改写成"投票支持 X"，与官英句式不同。批量正则替换 `@[..GetFlag]!` 后仍过不了逐键校验。→ 普查脚本产出的补丁必须**过一遍严格校验**，被拦下的少数条目单独重写。
+- **未发布 DLC 的词条会先出现在 loc 里**：1.4.1 成就已引用 `battle_for_the_strait` / `golden_century` 两个 situation，而 `dlc\` 下并无对应脚本（全游戏搜不到该 situation 定义）。→ 这类文案**照译无风险**（官英同样如此），但**绝不能据 loc 反推机制存在**，更不能去译只占位、脚本未装的内容包正文。
+- **DLC 显示名官中保留拉丁原文**（`across_the_pillars_key` 官中值 = 官英原文）：把它"补译"成中文反而与原版风格冲突。→ 判定"该不该译"要看**同类条目官中的做法**，不是看它是否等于英文。
+
+## 十八、"官中有键但值没译"这一整类（2026-10-13 实做 1399 条）
+
+第十七节讲的是官中**表达式**失效；本节是另一半真相：官中**键存在、值仍是整句英文**（键存在 ≠ 已本地化）。两者症状都是"游戏里露英文"，但普查判据完全不同——只查新增键会整类漏掉（实测：1.4.1 新增键 238 条做完后，仍有 1399 条这类未译）。
+
+- **初筛判据**：官中值不含任何 CJK 字符。**这一步会给出 2653 条，其中近一半是噪声**，必须再剥四类：
+  1. `[...]` 括号、`$…$` 占位符、`#标记`/`#!`、`@图标!`；
+  2. **整段 `#TOOLTIP:…#!` 指令串**——只剥 `#TOOLTIP` 与 `#!` 不够，中间的 `GAME_CONCEPT,expedition` 会被当英文词（实测外交组 33 条全是这种纯指令，一条文案都没有）；
+  3. **值是"另一个键名"**：剥完只剩全大写标识符（`ADMINISTRATIVE_LAW_CATEGORY`、`CATEGORY_SUBJECT_ACTIONS`）或 `:TOKEN,`（`:GAME_CONCEPT,`）→ 引擎会再去本地化那个键，**把它当文案翻译＝直接把键名写死，反而改坏**（实测法律组 83 条里 40 条是 `_CATEGORY`）；
+  4. 剥完不足 2 个 ≥3 字母英文词 → 短标签/数字串/曲名，逐条判断。
+  按此判据 2653 → **1399 条真需翻译**（剔除 507 条标识符/指令、16332 条纯格式串、362 条短标签）。
+- **旧清单不可信**：汉化项目自己攒的"待译清单"若以**官中键表**为源，会混进官英已删的死键。实测 103 条"遗留待译"里 **99 条脚本树零引用**，且它们是**下划线旧写法**（`disempower_the_parliament_decision_desc`），而引擎现用**点号写法**（`.title`/`.desc`/`.a_tt`）——于是同一个面板被误判成"没内容"，真正露英文的 4 条反倒没盯住。→ 判定"要不要译"的唯一依据是**该键现在是否被脚本引用**（EU5 事件/决议显式写 loc 键名，可直接扫 `in_game\` + `main_menu\common\` + `dlc\` 的 .txt/.info），并**必须做阳性对照**（拿一个已知被引用的键验证扫描确实命中；否则"零引用"这个结论作废）。
+- **曲名/人名的取舍先定再动手**（否则上百条反复返工）：英文描述性曲名意译（`05 - The Rise of an Empire` → 「05 — 帝国的崛起」）；**非英语原语曲名保留原文**（拉丁 `Lux aeterna`、德语众 chorale 名、阿拉伯语曲名），只译文化前缀与版本注记（`North German - Sarabande（柔和版）`）；人名保留、括号内的**乐器/职务**译出（`Yingying Herrdahl（琵琶）`）；`_flavour`/`_facts` 正文一律译。公司名（`#credits_studio PARADOX TINTO#!`）官中本身保留 → 不译。
+- **翻译批次的门禁**：与官英同键的 `[令牌]` / `$占位符$` / 标记集合必须**完全相等**，多一个少一个都拒绝写入。本次靠它当场拦下 4 类真实错误：漏 `[country|e]`、把 `[cardinal_io.GetName]` 写成 `[war|e]`、`[ShowNamedValue(…)]` 少带格式后缀、把 `[host_lord.GetName]` 写成 `[scope:host_lord…]`。写完立刻复查 BOM、键数、自重复、残留英文。
+
+## 十九、`hidden = yes` 的事件**仍然要 title**（2026-10-17 日志实查，EU5 1.4.1）
+
+本体 `in_game\events\readme.txt` 关于 `hidden` 的说明会让人以为隐藏事件不需要标题/描述。**实测会报错**：
+
+```
+[14:17:19][event_database.cpp:624]: Event #zzz_himalayan.1 is missing a title in events/zzz_himalayan_unlock.txt.
+```
+
+- 事件本体结构无其它报错（条件、`immediate`、效果都正常跑），**只有 title 这一条**。
+- ⇒ 写 `hidden = yes` 的解锁/逻辑事件时**照样给 `title`**（哪怕玩家看不到）；或者干脆改用**决议**做一次性触发
+  （见 `guides\law-design.md` §三「用决议当解锁器」），决议不需要事件骨架。
+
+### 附带一条：`unlock_law_effect` 自带显示包装，别再套
+
+`unlock_law_effect` 的本体实现是 `custom_description = { text = … value = law:$type$  set_variable = { name = unlocked_law_$type$ … } }`
+（`in_game\common\scripted_effects\country_effects.txt:108-115`）——它**本身就是"执行 + 显示"**。
+外面再包 `show_as_tooltip`（本体 `decisions\flavor_decisions_fra.txt:209` 是这么写的）属于多余包装。
+**实测确认（2026-10-17 实机复测）**：用 `show_as_tooltip = { unlock_law_effect = { type = X } }` 写决议，
+点完决议**法律不会出现在界面上**；改成裸调用 `unlock_law_effect = { type = X }` 后同一存档立即正常解锁。
+⇒ 结论：解锁类效果**不要套任何显示包装**，裸调用即可（本体 FRA 那条写法在 1.4.1 上是失效的）。
+可靠性更高的判据是：本项目现有两条法律由政府改革 `on_activate = { unlock_law_effect = { … } }` **裸调用**解锁，实机确认可用。
+
+## 二十、tooltip 描述里的 `：` 会在冒号处被引擎切段（2026-10-17 截图实测，EU5 1.4.1）
+
+**症状**（政策 tooltip）：描述文本里出现全角冒号 `：`（U+FF1A）时，冒号处会
+①空出一大段（约 4~6 个全角字宽）②**冒号之后的整段文字换成另一种字体**。
+
+**同屏对照组**（同一条法律的 4 条政策，只差标点）：
+
+| 政策 | 描述里有 | 渲染结果 |
+|---|---|---|
+| 编户齐民 | 无冒号、无破折号 | **完全正常**（两行统一字体） |
+| 征为山兵 | `：` | 冒号处空档 + 后半句换字体 |
+| 开山通商 | `：` | 同上 |
+| 头人授职 | `——` | 在破折号处断行（属正常 CJK 折行，不是必须改） |
+
+- 渲染路径：`laws_lateralview.gui:599` → `action_tooltip { description = "[Policy.GetDesc]" }`。
+  而同为描述文本的**法律面板**走的是 `text = "[Law.GetDesc]"`（`international_organizations_view.gui:300`），
+  **未观察到该现象** ⇒ 只有 `action_tooltip` 的 `description` 字段会把 `：` 当分段边界。
+- **修法**：`*_desc` 值里别用冒号。简中改 `。`；动词引导的从句（"承认：…"）改 `，` 才通顺。
+  拉丁/西里尔语言改 `. ` 并把后续首字母大写。单次全量清掉 **11 语言共 111 条** `*_desc`。
+- ⚠️ 本体 `laws_and_policies_l_simp_chinese.yml` 里 law/policy 描述**也有 41 处冒号**
+  （如 `republicanism_policy_desc`、`sheikh_ul_islam_policy_desc`），说明这不是模组特有写法；
+  但既然模组文字在游戏里肉眼可见被切成两段，就统一避开。
+- 证据等级：**B（游戏内行为观察 + 截图）**，机制未从引擎侧确认。
+
+## 二十一、新增修正键必须自带图标，否则 tooltip 不显示效果（2026-10-17 实测，EU5 1.4.1）
+
+在本体 `main_menu\common\modifier_type_definitions\00_modifier_types.txt` 里**照抄形状**新增一个修正类型，
+注册是成功的（能用在 `country_modifier` 里、不报 unknown modifier），但**游戏里该修正的 tooltip 是空的**，
+`error.log` 只有一行：
+
+```
+[modifier_type.cpp:1314]: Missing Icon for Modifier : allow_tibetan_monastery
+```
+
+- 图标按**键名**去 `main_menu\gfx\interface\icons\modifier_types\<修正键>.dds` 找（本体每个修正键一个 `.dds`，
+  例如 `allow_clerical_archives.dds`）。**没有图标就不渲染效果行**，看起来就像"这个修正没生效"。
+- **修法**：把本体同类修正的图标复制到 mod 的同路径并改名即可（本实例复制 `allow_clerical_archives.dds`
+  → `allow_tibetan_monastery.dds`），二进制文件可直接 Copy-Item，不需要重画。
+- **新建筑同样要图标**：`main_menu\gfx\interface\icons\buildings\<建筑id>.dds`；否则建筑列表里是空白格。
+- 推论：**任何"新增注册"都要配资源**——修正键配 `modifier_types\` 图标、建筑配 `buildings\` 图标、
+  静态修正配 `static_modifier_icons`。缺了不会报错崩溃，只会静默不显示，最容易被当成"效果没写对"。
+
+## 二十二、隐式 AND 在 tooltip 里会渲染成平级条目，看起来像"或"（2026-10-17 实测，EU5 1.4.1）
+
+写触发器时把两条并列就是 AND（引擎语义没问题），**但决议/修正的 tooltip 渲染不一样**：
+
+```txt
+# 这样子游戏里长这样：父级 OR 下多出两条平级条目，玩家读起来是"或"
+OR = {
+    culture ?= {
+        has_culture_group = culture_group:chinese_group
+        has_culture_group = culture_group:confucian_group
+    }
+    ...
+}
+```
+
+```
+至少一项:
+  ✗ 越南属于中华文化组          ← 两条平级，看起来像两个独立分支
+  ✓ 越南属于儒家文化圈文化组
+```
+
+写成显式 `AND = { }` 才会渲染出「**以下所有**」的缩进分组：
+
+```txt
+OR = {
+    culture ?= {
+        AND = {
+            has_culture_group = culture_group:chinese_group
+            has_culture_group = culture_group:confucian_group
+        }
+    }
+    ...
+}
+```
+
+```
+至少一项:
+  以下所有:
+    ✗ 越南属于中华文化组
+    ✓ 越南属于儒家文化圈文化组     ← 一眼看出"两条都要满足"
+```
+
+- **语义两种写法完全一样**，差别只在 UI 表达；但**可读性差别极大**——玩家会把自己的误解当成 bug 上报（本项目就是这么被作者抓到的）。
+- 规则：**只要一个块里有多条并列触发器，且该块处在 `OR` 之下（或会被平铺展示），就显式写 `AND = { }`**。
+- 同理，`NOT = { A  B }`（两条并列）在 tooltip 里也容易读错，多条件建议写 `NOT = { AND = { … } }` 或拆成两条 `NOT`。
+- 检查手法：`Select-String -Pattern '(?s)culture \?= \{\s*has_culture_group'` 之类可以快速找出"作用域后紧跟裸触发器"的写法；
+  再对照该处是否处在 OR 之下，决定是否补 `AND`。
+
+## 二十三、同一个概念，地点级可能是绝对值、国家级才是百分比（2026-10-17 实测，EU5 1.4.1）
+
+挑修正键时**只看名字会被坑**。注册表里有些键没有 `percent=yes`，它们是**绝对值**（点数/人力），
+名字却和百分比键长得很像；更麻烦的是**某些概念只有地点级绝对值版，百分比版只存在于国家级**。
+
+查证方法（唯一可靠）：打开 `main_menu\common\modifier_type_definitions\00_modifier_types.txt`，
+找到该键的定义块，看有没有 `percent=yes`；同时看 `game_data { category = location|country }` 与
+`format=` / `decimals=`。本次实查的成对关系：
+
+| 概念 | 地点级 | 国家级 | 备注 |
+|---|---|---|---|
+| 人力 | `local_manpower`（**绝对值**，location） | `local_manpower_modifier`（百分比，location） | 同在 location，靠 `_modifier` 后缀区分 |
+| 守军规模 | `local_garrison_size`（**绝对值**，location） | `global_garrison_size_modifier`（百分比，**country**） | **没有地点级百分比版**；绝对值量级参考堡垒自身 `local_garrison_size = 1.0` |
+| 人口升级速度 | `local_pop_promotion_speed`（绝对值） | `local_pop_promotion_speed_modifier`（百分比） | 建筑多给绝对值 0.001，百分比版适合"加成"叙事 |
+| 贸易容量 | `local_merchant_capacity`（绝对值） | `local_merchant_capacity_modifier`（百分比） | 同上 |
+| 识字上限 | `local_max_literacy`（百分比） | `global_max_literacy`（百分比） | 两个都是百分比，量级 5～20 |
+
+**踩坑实例（本项目）**：给「卫所屯田」写 `local_garrison_size = 0.1`，以为是 +10%；
+实际是 **+0.1 点人力**——本体堡垒自身就给 `1.0`（`building_types\forts.txt:140`），
+等于我们只给了堡垒的十分之一，游戏里几乎无感。改成 `1.0` 才与堡垒同级。
+
+**规则**：
+1. 先用 `percent=yes` 判定"这个键是加成还是点数"，再决定量级——绝对值键看着像百分比，差两个数量级。
+2. 想"整国 +X%"又找不到地点级百分比版时，两个选择：换国家级百分比键（会溢出区域范围），
+   或留在地点级用绝对值并**按本体同类建筑的数值校准**。
+3. 绝对值地点键尤其要小心覆盖面积（本项目 `han_geography` 有 1619 个地点，每点 0.01 就是全国 +16）。
+
+## 二十四、政策只写"阶层专属修正"时，会让整张政策卡变成空白（2026-10-17 实测，EU5 1.4.1）
+
+法律政策（law policy）里若只放**依附某阶层的修正**，而该国**没有那个阶层**，游戏会把该修正**整行隐藏**，
+于是政策卡片只剩标题、内容空白——看起来像"这条政策没了"。
+
+实测案例：阿萨姆管理的两条政策只写了
+`global_tribes_estate_power` / `tribes_estate_max_tax`（部落民阶层专属），
+在**没有部落民阶层**的国家里两卡全空（作者截图确认，四条标题都在、后两条无内容）。
+
+- 依附阶层、可能整行消失的键（本项目已遇到）：
+  `*_estate_power` / `*_estate_max_tax` / `*_estate_min_tax` / `*_estate_levy_size` /
+  `*_estate_target_satisfaction` / `*_estate_satisfaction_*` / `*_trades_per_burgher`。
+  其中 `tribes_estate_*`、`dhimmi_estate_*`、`cossacks_estate_*` 最容易缺（并非所有政体都有这些阶层）。
+- **两种修法**：
+  1. **补一条与阶层无关的修正**，让卡片永远有内容（本例补 `global_garrison_size_modifier` 与
+     `peasants_estate_max_tax`——农民阶层几乎任何政体都有）。
+  2. 或者用政策级 `potential = { country_has_estate = estate_type:tribes_estate }`
+     （本体先例 `advances\country_zan.txt:59` 用 `estate_type:dhimmi_estate`）**把这条政策整个藏起来**，
+     这样国家没有该阶层时玩家根本看不到这条政策。
+- 取舍：想让玩家"看得见但用不到"（说明这套制度需要该阶层）就选 1；想保持面板干净就选 2。
+  本项目选 1（八法都是四政策结构，少了会显得残缺）。
+- 检查手法：grep 政策块里是否有 `*_estate_*` 键；若有，确认该政策里还至少有一条**不依赖阶层**的修正。
+
+## 二十五、"本体 0 先例"会被两种假象骗出来（2026-10-17 做十九法键位普查时踩到，EU5 1.4.1）
+
+给 mod 键做"本体有没有先例"的普查时，两个方向都会误判，而且**误判方向相反**：
+
+**假象 1：把"有先例"判成"0 先例"（漏报先例）**
+
+本体很多键的取值不是数字而是**脚本值引用**：
+
+```
+# in_game\common\advances\4_choices_dip.txt:218
+trade_sea_efficiency = medium_trade_sea_efficiency_bonus
+```
+
+只按 `key = 数字` 匹配就会认为该键"没人用过"。`trade_sea_efficiency` 曾被误判为"本体 0 处使用"，
+实际扫全目录是 **84 次 / 77 个内容文件**（数值在 `main_menu\common\script_values\` 里，如
+`small_trade_sea_efficiency_bonus = 0.10`）。
+
+⇒ **正确做法**：先把 `main_menu\common\script_values\*.txt`（966 个脚本值）解析成 `名字 → 数值` 映射
+（两种写法都要吃：`name = 0.05` 与 `name = { value = 0.05 ... }`），扫描时把引用解析成数值再比对档位。
+
+**假象 2：把"没用过"判成"用过"（虚报先例）**
+
+`main_menu\common\modifier_type_definitions\`（注册表）与 `modifier_icons\`（图标）里出现的键，
+只是**声明**，不代表有任何内容文件使用。
+
+⇒ 扫描时必须排除这两个目录。反过来，`main_menu\common\static_modifiers\` **要算使用**——
+`local_tribesmen_migration_allowed` 与 `local_trade_embark_disembark_efficiency` 在 EU5 1.4.1
+里**都只在 static_modifiers 出现过**（前者 `province.txt:27`，后者 `location.txt:36`），
+把它们当成"0 先例"会白紧张一场。
+
+**判据模板**（三分类，比"有没有先例"更有用）：
+
+| 分类 | 含义 | 风险 |
+|---|---|---|
+| `ZERO` | 除注册表/图标外无任何文件使用 | 最高：引擎只保证类型存在，效果与显示全靠实测 |
+| `STATIC` | 只在 `static_modifiers\` 出现过 | 中：语义有先例，语境（法律政策）没有 |
+| `NOTIER` | 有先例但取值不在本体档位集合里 | 中：看数值合不合理，尤其**符号方向**（有的键本体只当惩罚用） |
+
+实战脚本：mod 工作区 `工具\audit_keys_19_v5.ps1`（定向扫描，只把用到的键做成交替式，2056 文件 3258 命中，约 20 秒）。
+
+## 二十六、mod 自建修正类型（modifier type）在 1.4.1 实测不生效——门控建筑请用 `has_policy`（2026-10-17 实机回报，EU5 1.4.1）
+
+**现象**：在 `main_menu\common\modifier_type_definitions\` 新建一档声明自建键
+
+```
+allow_tibetan_monastery = {
+	boolean = yes
+	game_data = { category = country }
+}
+```
+
+再在**建筑**里用它门控、在**法律政策**里给它赋值：
+
+```
+# 建筑
+country_potential = { modifier:allow_tibetan_monastery = yes }
+# 法律政策
+country_modifier = { allow_tibetan_monastery = yes }
+```
+
+注册表文件在、本地化 `MODIFIER_TYPE_NAME_*` / `MODIFIER_TYPE_DESC_*` 在、`.dds` 图标也补了
+（早先还真的报过 `[modifier_type.cpp:1314]: Missing Icon for Modifier` 并被修掉），
+**实机里建筑就是不出现**。
+
+**判断依据（证据等级 B：行为观察）**：整条链路上只有"自建修正类型"这一环没有本体先例；
+其余每一环都有先例——`modifier:allow_*` 在 `country_potential` 里（`building_types\estate_buildings.txt:564`）、
+`country_modifier` 在法律政策里、`region = region:X` 在 `location_potential` 里（`capital_buildings.txt:1059`）。
+⇒ 2026-10-17 后续**对照实验**（四个同源教士建筑：① 无任何门槛 ② 只有 `location_potential = { region = region:X }` ③ 只有 `country_potential = { has_policy = X }` ④ 双闸）**四个全都不出现在建筑列表里**。
+**因此真正的原因不是"闸门"，而是：`category = estate_category` 的阶层建筑不能由 mod 新增**（证据等级 B，待复核）。
+换 `has_policy` 门控同样无效——那是治错了病。
+
+**正确做法：用 `has_policy` 门控建筑**（本体自带的"某条政策生效才出现"机制）：
+
+```
+# 本体先例：building_types\estate_buildings.txt:1109-1117（free_press 那栋）
+country_potential = {
+	has_policy = free_press
+}
+remove_if = {
+	owner = { NOT = { has_policy = free_press } }
+}
+```
+
+- `has_policy = <政策 id>` 在建筑里共 **12 处**先例（`capital_buildings.txt:1344`、
+  `culture_buildings.txt:313/320`、`estate_buildings.txt:1077/1111`）。
+- 自带 `remove_if` 语义：**政策一换，建筑自动拆除**——这正是"法律路线解锁建筑"想要的行为。
+- 政策 id 就是 `laws\xxx.txt` 里那一级 `policy_id = { ... }` 的名字，mod 的政策同样适用。
+- 于是**法律政策里不需要写任何建筑解锁键**；但政策卡不能因此变空（见第二十四节）——
+  另配一条与阶层无关的地点级修正即可。
+
+**副产品教训**：本项目还有两个同类的自建键（`subject_pays_ethnic_autonomy_cost_modifier`、
+`subject_pays_delegated_rule_cost_modifier`，声明于 `main_menu\common\modifier_type_definitions\zzz_autonomy_pays.txt`）
+目前**未被任何内容文件使用**，若将来要用，先按本节结论改用本体键或换个机制。
+## 二十七、`category = estate_category` 的阶层建筑不能由 mod 新增（2026-10-17 四建筑对照实验，EU5 1.4.1）
+
+**实验设计**（一次进游戏分辨到底卡在哪）：
+
+| 建筑 | 门槛 |
+|---|---|
+| A | **无任何门槛**（连 `country_potential` / `location_potential` 都不写） |
+| B | 只有 `location_potential = { region = region:tibet_region }` |
+| C | 只有 `country_potential = { has_policy = <政策 id> }` |
+| D | 两个闸都写 |
+
+四者除门槛外与本体 `clerical_archives` 逐字一致（`category = estate_category`、`pop_type = clergy`、
+`estate = clergy_estate`、`employment_size = estate_clergy_employment`、`town = yes`）。
+
+**结果：四个全都不出现在任何城镇/城市的建筑列表里。**
+
+⚠️ **结论边界（同日补充修正）**：本 mod 另有 7 栋**自建住宅**（`big_house_*`，`category = infrastructure_category`），
+作者长期使用，没有"看不见"的反馈 ⇒ 限制**只在 `category = estate_category`** 这一族，
+不是"mod 不能新增任何建筑"。至于阶层建筑为何不行：最可能是它绑在"阶层建筑槽"上、而槽位对应的建筑清单
+不在 `common` 目录里（全目录搜 `clerical_archives` 只有 11 处引用，没有任何清单文件），引擎侧另有枚举——**未验证**，留作待查。
+**实践建议**：要给"某条法律路线解锁一栋建筑"，优先选非阶层类目（`infrastructure_category` / `religion_category` 等）
+自建，避开 `estate_category`。
+
+⇒ 结论：**mod 不能新增阶层建筑**（`category = estate_category`）。
+
+**排除项（都查过，不是它们的问题）**：
+
+- `location_potential = { region = region:X }`：本体 6 处先例（`capital_buildings.txt:1059`、
+  `unique_buildings.txt:1089/1610/2393/5040/5612`）。
+- `country_potential` 里用 `has_policy`：本体 12 处先例（`estate_buildings.txt:1077/1111` 等）。
+- 建筑是否需要登记在别处：全目录搜 `clerical_archives` 只有 11 处引用
+  （建筑定义、教士特权、议会议程、图标、修正注册表），**没有全局建筑清单**。
+- 文件本身：`depth = 0`、BOM 正常、字段逐字抄本体。
+- `in_game\common\building_types\readme.txt`：只列属性说明，**没有任何"不能新增"的提示**。
+
+**怎么办（按代价从低到高）**：
+
+1. **纯修正替代**（推荐）：放弃建筑，把"这条政策给什么"全部写成地点级修正。
+   本项目青藏法最终就是：`local_clergy_max_literacy = 10` + `local_clergy_estate_power = 0.1`
+   + `local_clergy_desired_pop = 0.05`（最后一个补"多养僧人"的语义，上限类不叠加）。
+2. **复用本体现成建筑**：给政策一个本体已注册的建筑解锁键（如 `allow_clerical_archives = yes`，
+   本体教士特权 `clergy_literacy_rights` 就是这么做的），代价是失去"只许本地/放宽城镇等级"这类定制。
+3. **覆盖本体建筑文件**（不推荐）：把 `estate_buildings.txt` 整份复制进 mod 再追加自己的建筑。
+   维护成本高、与他 mod 冲突、游戏更新后要重抄。
+
+## 二十八、decision 的三条隐形限制：`allow` 为假不显示 / `potential` 里的 `any_subject` 丢整条 / `only_once = yes` 也会丢（2026-10-17 七轮拆块探针，EU5 1.4.1）
+
+**背景**：本 mod 的 19 个"解锁区域法"决议在 1337 年正常显示，玩家玩了 12 年后（中途改过脚本）全部消失，
+**不报错、不进 `error.log`、`PostValidate` 无任何记录**。用逐块探针（每轮只放一个条件）才定位到三条互相独立的限制。
+
+### ① `allow` 为假时，决议**根本不出现在面板上**（不是灰显）
+
+想让玩家"看见但点不了"在本作做不到。若把门槛写在 `allow` 里，条件不满足就等于这部法不存在。
+
+⇒ **正确写法：条件全写 `potential`，`allow = { always = yes }`。** 代价是条件不满足时完全看不到决议。
+
+### ② `potential` 里出现 `any_subject` ⇒ **整条决议被静默丢弃**
+
+| 探针 | `potential` 内容 | 结果 |
+|---|---|---|
+| S3 | `any_owned_location = { is_in_scripted_geography = … }` | ✅ 显示 |
+| **S4** | `any_subject = { any_owned_location = { is_in_scripted_geography = … } }` | ❌ **不显示** |
+| S5 | 真决议 potential 去掉 `any_subject` | ✅ 显示 |
+
+`any_subject` 在本体里是合法触发器（`auto_modifiers\byzantium.txt:558` 等 171 处，含 `potential_trigger` 内），
+但在 **decision 的 `potential` 里**会让整条决议失效。⇒ 属国代持（"属国在该区域有地也算你满足"）这条路走不通，
+领土闸只能写 `any_owned_location`。**未验证** `any_subject` 在 `allow` 里是否同样失效（本轮 `allow` 已改 always，未单测）。
+
+### ③ `only_once = yes` 会让决议完全不显示（同一存档内实测）
+
+| 探针 | 与真决议的唯一差别 | 结果 |
+|---|---|---|
+| T1 | 逐字克隆（`only_once = yes`） | ❌ 不显示 |
+| T2 | 同上，`effect` 换 `add_prestige` | ❌ 不显示 |
+| **T4** | 同上，`only_once = no` | ✅ 显示 |
+
+⇒ 一次性不必靠 `only_once`：`potential` 里写 `NOT = { has_unlocked_law_trigger = { type = X } }` 即可
+（解锁后 potential 转假、决议自然消失）。
+
+### 排查方法论（值得复用）
+
+- **每轮只加一个变量**。前六轮失败的原因是每轮同时改了好几处（`allow` 结构、`any_subject`、`effect`、`potential` 地理），
+  结果每轮都能被另一种解释推翻。
+- **逐块探针**：把真决议的 `potential` 拆成 N 个单条件决议（`potential = { <单条件> }`），一次进游戏就能定位。
+- **逐字克隆**：怀疑"文件/内容层面"时，把真决议复制一份只改 id，再各消掉一处差异（`only_once` / `effect` / loc），
+  比推理快得多。
+- ⚠️ 探针自身的 `potential`/`allow` 若写成 `always = yes`，**永远会显示**，不能用来测"会不会被丢弃"。
+
+**证据基准**：EU5 1.4.1；相关文件 `in_game\common\decisions\zzz_*_decisions.txt`（本 mod）、
+`in_game\common\scripted_effects\country_effects.txt`（`unlock_law_effect` 定义，内部即 `set_variable unlocked_law_<type>`）。

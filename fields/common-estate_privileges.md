@@ -2,7 +2,7 @@
 
 > **一句话**：阶层特权字段：适用阶层、可用门槛、生效时长与三类缩放修正，以及撤销已实施特权的条件字段。
 > **什么时候看**：写阶层特权，或核对阶层引用与实施时长时翻这篇。
-> **体量**：144 行 · 约 7 分钟通读
+> **体量**：146 行 · 约 7 分钟通读
 
 来源：`in_game\common\estate_privileges\readme.txt`
 
@@ -23,6 +23,8 @@
     can_revoke = <trigger>          # 何时可以撤销已实施的特权
 }
 ```
+
+> **部落特权（`estates:tribes_estate`）的完整杠杆清单 + 默认值陷阱**见 `vanilla\vanilla-tribes-and-tribal-estate.md`：`*_estate_allowed_*` 类布尔键的**默认值**在 `in_game\common\auto_modifiers\country.txt`，默认已 `yes` 的键在特权里再写一遍是空操作。
 
 ## 审查要点
 
