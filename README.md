@@ -1,10 +1,10 @@
 # EU5 Modding 知识库（eu5-modding）
 
-> 🧪 **本分支 = EU5 1.4 open beta 适配**（本体 2026-10-01 起为测试版）；行号/defines/计数已按 beta 重校，见 `tools\kb-self-audit.md` 第十轮。
-> ⚠️ 正文里那句「**EU5 1.3.x**」**已过时**，以本条为准。**正式版（1.3.x）请用 `main` 或 tag `1.3.x-stable`。**
+> 🧪 **历史分支 = EU5 1.4 open beta 适配**（**已并入 `main`，不再更新**）。
+> ⚠️ 正式版（1.4.5）请看 `main` 或 tag `1.4.5-stable`；正文里「EU5 1.3.x」字样已过时。
 
 
-> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——25.4 万字、182 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
+> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——25.4 万字、182 篇文档，全部基于游戏本体文件（EU5 1.4.5）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
 >
 > **怎么用**：
 > - **有 AI agent**（Claude Code / DSH / Codex…）：`git clone https://github.com/mrjiaobai-glitch/eu5-modding-kb.git` → 把 `skills\eu5-mod-review\` 复制进技能目录 → 直接说"按这个库给我写 / 审 EU5 mod"（技能自动定位本库，见 `skills\README.md`）
