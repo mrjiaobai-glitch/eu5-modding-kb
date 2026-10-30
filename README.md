@@ -4,14 +4,14 @@
 > ⚠️ 正式版（1.4.5）请看 `main` 或 tag `1.4.5-stable`；正文里「EU5 1.3.x」字样已过时。
 
 
-> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——25.4 万字、182 篇文档，全部基于游戏本体文件（EU5 1.4.5）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
+> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——26.2 万字、192 篇文档，全部基于游戏本体文件（EU5 1.4.5）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
 >
 > **怎么用**：
 > - **有 AI agent**（Claude Code / DSH / Codex…）：`git clone https://github.com/mrjiaobai-glitch/eu5-modding-kb.git` → 把 `skills\eu5-mod-review\` 复制进技能目录 → 直接说"按这个库给我写 / 审 EU5 mod"（技能自动定位本库，见 `skills\README.md`）
 > - **查资料**：从下方「目录结构」进对应部分——`fields\` 字段库（本体 74 份 readme 逐条提炼）/ `vanilla\` 原版机制解析（哪些能改、哪些引擎硬编码）/ `guides\` 制作指南 / `pitfalls.md` 实战坑速查
 > - **不用 AI**：`fields\` 103 档本身就是本体 readme 的中文逐条提炼，可直接当速查手册
 >
-> **规模**：182 篇 · 3,121 KB · 38,097 行 · 254,399 汉字 · 20,497 行表格 · 357 个代码块 · MIT
+> **规模**：192 篇 · 3,269 KB · 40,110 行 · 262,033 汉字 · 22,000 行表格 · 361 个代码块 · MIT
 
 > **定位**：Europa Universalis V（jomini 引擎）模组制作与审查的**知识总库**——独立于任何技能，可被技能、对话或其他知识库引用。
 > **本仓库**：本仓库即该知识库本身；配套 agent 技能随库附带于 `skills\eu5-mod-review\`（安装见 `skills\README.md`）。
@@ -47,7 +47,7 @@ eu5-modding-kb\
 | 改地图 / 开局数据 | `vanilla\vanilla-map-and-geography.md`、`vanilla\vanilla-setup-data.md` | 三层开局数据（国家定义 / 模板 / start） |
 | 审查或修自己的 mod | `tools\review-checklist.md` → `tools\error-log-decoder.md` → `pitfalls.md` | 清单化自检 + 报错归属判断 |
 | **验证"某机制在本版本到底生不生效"** | `tools\save-decoding.md`（只读解档，不等游戏年份）→ 对应 `vanilla\*.md` | debug 模式存档是纯文本，走最短路径；正式档要解 ZIP |
-| 某机制到底能不能改 | `vanilla\`（27 篇机制解析，篇末都标了可改点与硬编码边界） | 例如天气风暴实际效果是硬编码 |
+| 某机制到底能不能改 | `vanilla\`（，篇末都标了可改点与硬编码边界） | 例如天气风暴实际效果是硬编码 |
 | 查某个脚本类目的字段 | `guides\systems-map.md` → `fields\` 对应档 | 类目地图先定位入口文件与 readme |
 
 > 更细的路线（零基础按顺序读哪几篇、每步耗时、常见坑）见 **`START-HERE.md`**；术语与常见误译见 **`glossary.md`**。

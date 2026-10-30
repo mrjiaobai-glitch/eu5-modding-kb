@@ -2,7 +2,7 @@
 
 > **一句话**：上篇讲怎么打赢（单位、`NCombat` 常数、地形、围城、战争目标），下篇讲战争本身（102 个 CB、战争分数热情、64 个和约条款、土地承诺）。
 > **什么时候看**：调战斗与围城数值、写 CB 或和约条款、改战争分数与战争热情权重，或查宣战代价时翻这篇。
-> **体量**：463 行 · 约 22 分钟通读
+> **体量**：465 行 · 约 22 分钟通读
 
 ## 目录
 
@@ -56,6 +56,8 @@
 - 宣战后征召兵补员加速：`WAR_DEC_LEVY_RECRUIT_SPEED_FOR_MONTHS = 6`（月）
 
 ## 二、单位体系
+
+> **属性的作用/常量/待验证项**（frontage、flanking_ability、initiative、combat_power、combat_speed…）见 `reference\unit-attributes.md`；本节只讲单位体系与数值。
 
 ### 陆军 6 类（`common\unit_categories\`）
 

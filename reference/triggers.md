@@ -3,6 +3,7 @@
 > 按触发器名排列；"说明"取自引擎文档首段，"支持 scope"决定可用作用域。
 > **来源**：游戏内 `script_docs` 生成（`docs\` 日志），**EU5 1.4.5**，2026-10-30。
 > **体量**：**检索用清单，不必通读**。
+> 首都三触发器（`is_capital` / `is_historical_capital` / `counts_as_capital`）的机制说明见 `vanilla\vanilla-capital-and-historical-capital.md`。
 
 | 名称 | 说明 | 支持 scope | 目标 / 参数 |
 |---|---|---|---|
