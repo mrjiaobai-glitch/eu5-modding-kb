@@ -5,7 +5,7 @@
 > **体量**：84 行 · 约 4 分钟通读
 
 位置：`loading_screen\common\defines\`（三处）：
-- `00_defines.txt`（2836 行）——全部引擎常量
+- `00_defines.txt`（2861 行）——全部引擎常量
 - `graphic\00_graphics.txt`——图形常量
 - `jomini\`——引擎层：00_tooltips.txt / adjacencies.txt / fog_of_war.txt / icons.txt / mapeditor.txt / rivers.txt / roads.txt
 
@@ -15,23 +15,23 @@
 |---|---|---|
 | NGame | 1–27 | 时间（START_DATE "1337.4.1" / END_DATE "1836.12.31"）、HOUR_TICK=2、游戏速度表 |
 | NCityAudio / NAlertAudio / NJominiMap / NGUI / NText | 28–124 | 音频/地图/GUI/文本 |
-| NCountry | 125–333 | 国家级（稳定度、威望、厌战度等） |
+| NCountry | 125–335 | 国家级（稳定度、威望、厌战度等） |
 | NMercenary | 334–360 | 雇佣兵（MERCENARY_PRISONER_MAX_MORALE=0.6） |
-| **NUnit** | 363–444 | 单位：REGIMENT_SIZE=1000、LAND_MORALE=3.0、NAVAL_MORALE=3.0、MONTHLY_REINFORCE=0.25、MONTHLY_REPAIR=0.1、ATTRITION_LACK_OF_FOOD=5、LEVY_MAINTENANCE_FACTOR=0.01、**ARMY_MOVEMENT_SPEED=0.9、NAVY_MOVEMENT_SPEED=3.525**（1.3.x 为 0.13/0.5） |
-| **NCombat** | **447–562** | 战斗（1.4.x 改为**日 tick**）：COMBAT_DICE_SIDE=10、COMBAT_BASE=5、COMBAT_MAX=15、**COMBAT_DAMAGE_MULT=0.12**、**DAYS_PER_PHASE=4**、**MINIMUM_COMBAT_DAYS=5**、**MINIMUM_NAVAL_COMBAT_DAYS=5**、STRAIT_CROSSING_DICE=-2、RIVER_CROSSING_DICE=-1、SEA_LANDING_DICE=-1、MAX_FRONTAGE_OVERSTACKING=1.25、LAND_LEVY_COMBAT_IMPACT=0.75、INITIATIVE_*（BASE=0.60/EACH=0.025/PER_DAY=0.03/MAX=0.30）、ASSAULT_*、SIEGE_*（BOMBARD_DAYS=3、SIEGE_REGIMENTS_FOR_ARTILLERY=2、DAYS_PER_SIEGE_PHASE=30、MAX_BREACH=3）、TRADITION_GAIN_LAND=10。**旧名已删**：HOURS_PER_PHASE / MINIMUM_COMBAT_DURATION / MINIMUM_NAVAL_COMBAT_DURATION / COMBAT_HOURLY_MORALE_TICK / BOMBARD_HOURS |
-| **NAI** | **564–1600** | AI：**1037 行内约 839 个常量**（`AI_` 前缀 393 / `PEACE_` 59 / `CONQUER_` 27 / `HUNT_` 16 / `WAR_` 11 / `COLONY_` 9…）——战争平衡（`WAR_BALANCE_REGULARS_IMPORTANCE=3`、`WAR_BALANCE_LEVY_BOATS_IMPORTANCE=10`）、胜率（`BATTLE_WIN_CHANCE_SENSITIVITY=16`、`BATTLE_WIN_CHANCE_ENEMY_BIAS=1.1`、100 军事≈+25% 兵力）、扩张（`DEFAULT_CHANCE_OF_EXPANSION=0.25`/月、`AI_NUM_EXPANSION_TARGETS=20`、`CONQUER_DESIRE_*` 27 个）、和平（`PEACE_OFFER_*` 59 个）、军事 AI（`HUNT_ARMIES_` 16、`CARPET_SIEGE_` 4、撤退阈值）、AI 性能节拍（`AI_PERFORMANCE_*_MONTHS_BETWEEN_UPDATES`：内阁 36 / 改革 24 / 政策 6 / 特权 12）、储蓄模式（`AI_SAVING_MODE_*`）。**逐条自带英文注释，是全游戏最自解释的一段 defines；详见 `vanilla\vanilla-ai.md`** |
+| **NUnit** | 364–445 | 单位：REGIMENT_SIZE=1000、LAND_MORALE=3.0、NAVAL_MORALE=3.0、MONTHLY_REINFORCE=0.25、MONTHLY_REPAIR=0.1、ATTRITION_LACK_OF_FOOD=5、LEVY_MAINTENANCE_FACTOR=0.01、**ARMY_MOVEMENT_SPEED=0.9、NAVY_MOVEMENT_SPEED=3.525**（1.3.x 为 0.13/0.5） |
+| **NCombat** | **448–563** | 战斗（1.4.x 改为**日 tick**）：COMBAT_DICE_SIDE=10、COMBAT_BASE=5、COMBAT_MAX=15、**COMBAT_DAMAGE_MULT=0.12**、**DAYS_PER_PHASE=4**、**MINIMUM_COMBAT_DAYS=5**、**MINIMUM_NAVAL_COMBAT_DAYS=5**、STRAIT_CROSSING_DICE=-2、RIVER_CROSSING_DICE=-1、SEA_LANDING_DICE=-1、MAX_FRONTAGE_OVERSTACKING=1.25、LAND_LEVY_COMBAT_IMPACT=0.75、INITIATIVE_*（BASE=0.60/EACH=0.025/PER_DAY=0.03/MAX=0.30）、ASSAULT_*、SIEGE_*（BOMBARD_DAYS=3、SIEGE_REGIMENTS_FOR_ARTILLERY=2、DAYS_PER_SIEGE_PHASE=30、MAX_BREACH=3）、TRADITION_GAIN_LAND=10。**旧名已删**：HOURS_PER_PHASE / MINIMUM_COMBAT_DURATION / MINIMUM_NAVAL_COMBAT_DURATION / COMBAT_HOURLY_MORALE_TICK / BOMBARD_HOURS |
+| **NAI** | **565–1607** | AI：**1043 行内约 839 个常量**（`AI_` 前缀 393 / `PEACE_` 59 / `CONQUER_` 27 / `HUNT_` 16 / `WAR_` 11 / `COLONY_` 9…）——战争平衡（`WAR_BALANCE_REGULARS_IMPORTANCE=3`、`WAR_BALANCE_LEVY_BOATS_IMPORTANCE=10`）、胜率（`BATTLE_WIN_CHANCE_SENSITIVITY=16`、`BATTLE_WIN_CHANCE_ENEMY_BIAS=1.1`、100 军事≈+25% 兵力）、扩张（`DEFAULT_CHANCE_OF_EXPANSION=0.25`/月、`AI_NUM_EXPANSION_TARGETS=20`、`CONQUER_DESIRE_*` 27 个）、和平（`PEACE_OFFER_*` 59 个）、军事 AI（`HUNT_ARMIES_` 16、`CARPET_SIEGE_` 4、撤退阈值）、AI 性能节拍（`AI_PERFORMANCE_*_MONTHS_BETWEEN_UPDATES`：内阁 36 / 改革 24 / 政策 6 / 特权 12）、储蓄模式（`AI_SAVING_MODE_*`）。**逐条自带英文注释，是全游戏最自解释的一段 defines；详见 `vanilla\vanilla-ai.md`** |
 | NCulture / NCharacter / NPortrait | 1593–1741 | 文化；角色（MAX_ABILITY_VALUE=100、LEADER_COMBAT_TRAIT_GAIN_CHANCE=0.5、ASSIMILATION_* 同化修正表 1487–1506） |
 | **NPop** | 1752–1824 | POP：MIN_REBEL_POP_SIZE_THRESHOLD=5、DISPLAY_SIZE=1000（显示=千）、BASE_SATISFACTION=0.2、主文化+0.25/接纳+0.10/容忍+0.05、pop_join_rebel_threshold 相关 REBEL_JOIN_MIN_THRESHOLD=0.05、POP_MINORITY_SIMILAR_THRESHOLD=4/8、YEARLY_POP_SATISFACTION_FROM_EVENTS_DECAY=0.01 |
 | NEstate | 1825–1891 | 阶层 |
-| **NLocation** | 1905–1968 | 地点：SUPPLY_LIMIT_OWNER=0.25、FORT_GARRISON_UPKEEP=2、MIN_FRONTAGE_AFTER_TERRAIN=2、NORMAL_LOCATION_SIZE=25、MONTHLY_CONTROL_DECAY=0.01 |
+| **NLocation** | 1914–1977 | 地点：SUPPLY_LIMIT_OWNER=0.25、FORT_GARRISON_UPKEEP=2、MIN_FRONTAGE_AFTER_TERRAIN=2、NORMAL_LOCATION_SIZE=25、MONTHLY_CONTROL_DECAY=0.01 |
 | NMarket / NEconomy | 1957–2207 | 市场/经济：MONTHLY_PRICE_CHANGE=0.05、GROWTH_FROM_FOOD_MULTIPLIER_MAX=10、LOCATION_DEPOPULATION_ALERT_MONTHS=60 |
-| NDiplomacy / NWar | **2223–2654 / 2656–2717** | 外交/战争：DEFAULT_WARGOAL_BATTLESCORE_BONUS=3、WARSCORE_MAX_FROM_BATTLES=50、BATTLE_RESULT_SCALE=25、PARTICIPATION_SCORE_BATTLE=0.03 |
+| NDiplomacy / NWar | **2232–2663 / 2665–2726** | 外交/战争：DEFAULT_WARGOAL_BATTLESCORE_BONUS=3、WARSCORE_MAX_FROM_BATTLES=50、BATTLE_RESULT_SCALE=25、PARTICIPATION_SCORE_BATTLE=0.03 |
 | NWorkOfArt / NDynasty / NColony | 2703–2775 | 艺术品/王朝/殖民 |
 | NInternationalOrganization / NImperialCircle | 2776–2787 | 国际组织/帝国圈。⚠️ **`NInternationalOrganization` 全文件出现两次**：`2776–2779`（仅 `MONTHS_TO_DISBAND_FROM_BIAS = 3`）与 **`2830–2836`**（议会四常量 `PARLIAMENT_REQUEST_ISSUE_SUPPORT_NEEDED=0.5` / `PARLIAMENT_ISSUE_THRESHOLD=0.5` / `PARLIAMENT_DURATION_DAYS=365` / `PARLIAMENT_AVAILABLE_AGENDAS=5`，在文件最末、`NDisease` 之后）——**引用该段常量必须带行号** |
 | **NWeather** | 2788–2798 | 天气：*_DEGRADATION_DISTANCE_FOR_TOPOGRAPHY=125、PERCENT_DIFFERENCE_BETWEEN_GOOD_AND_BAD_SIDE_OF_CYCLONE=50 |
 | NReligion / NSpreadable / NDisease | 2799–2829 | 宗教/传播/疾病 |
 
-（⚠️ **行区间已按测试版 2026-10-01 build 重算**；beta 仍会再排，定稿前一律以 grep 定位为准。新增块 `NPortraitAssetShowcase`（L1742）与两处 `NInternationalOrganization`（L2776 / L2830）。**2026-10-13 1.4.1 再复核**：`NCountry`(125–334) / `NUnit`(363–444) / `NCombat`(447–562) / `NAI`(564–1600) / `NLocation`(1905–1968) / `NDiplomacy`(2223–2654) / `NWar`(2656–2717) 已更新，战斗常量同步为「日 tick」口径；**未列出的行仍为 2026-10-01 基准**。）
+（⚠️ **行区间已按测试版 2026-10-01 build 重算**；beta 仍会再排，定稿前一律以 grep 定位为准。新增块 `NPortraitAssetShowcase`（L1742）与两处 `NInternationalOrganization`（L2776 / L2830）。**2026-10-29 正式版再复核**：`NCountry`(125–335) / `NUnit`(364–445) / `NCombat`(448–563) / `NAI`(565–1607) / `NLocation`(1914–1977) / `NDiplomacy`(2232–2663) / `NWar`(2665–2726)（defines 2,861 行）；战斗常量仍为「日 tick」口径、**数值未变**；未列出的行仍为旧基准。**游戏版本实测 = 1.4.5（Rio Salado）**，checksum `b88a`（界面）/ `de9dbde3…`（binaries）；build 哈希 `06472e2a`、clausewitz `2026.43.0`、branch `ud009/release/next`、build 时间 2026-10-23。）
 
 **行号口径与体检结论（2026-09 全量复核）**：
 
@@ -41,7 +41,7 @@
 
 ## 修改方式
 
-1. **直接覆盖**：mod 里建 `loading_screen\common\defines\00_defines.txt`，只写要改的块（同名块合并，键级覆盖）。
+1. **直接覆盖**：mod 里建 `loading_screen\common\defines\00_defines.txt`，只写要改的块（**wiki 称 defines 有"只替换单个键"的特例机制，未实测**；其它类目的同名文件是**整文件覆盖**，见 `merging.md` §八）。
 2. **游戏规则覆盖**（推荐，玩家可选）：`main_menu\common\game_rules\00_game_rules.txt` 的 setting 里写 `defines = { NCombat = { COMBAT_BASE = 6 } }`（格式见 `_game_rules.info`），并可配 flag 阻止成就。
 3. **图形常量**：`graphic\00_graphics.txt`。
 

@@ -41,4 +41,4 @@ TAG = {
 
 **国家名/形容词不在这里**：在 `main_menu\localization\<lang>\country_names_l_<lang>.yml` 的 `<TAG>` / `<TAG>_ADJ` 两键（11 语言）。
 
-**下两步在别处**：领土与开局状态在 `main_menu\setup\start\10_countries.txt`（`own_control_core = { <location…> }` + `starting_technology_level` + `include = "<模板>"`，模板层 205 档见 `guides\game-layout.md` 的 `setup\` 段）；端到端流程见 **`guides\new-country-tutorial.md`**。
+**下两步在别处**：领土与开局状态在 `main_menu\setup\1337\10_countries.txt`（`own_control_core = { <location…> }` + `starting_technology_level` + `include = "<模板>"`，模板层 207 档见 `guides\game-layout.md` 的 `setup\` 段）；端到端流程见 **`guides\new-country-tutorial.md`**。

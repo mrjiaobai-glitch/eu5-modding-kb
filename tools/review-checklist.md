@@ -23,7 +23,7 @@
 
 > 通例：**引用写错一律静默失效**（不报错、永不命中）。类目字段权威见 `fields\` 对应档；loc 键存在性规则见 `tools\loc-keys.md`。
 >
-> **两类高频引用另有专档**：修正键 → `fields\main_menu-modifier_type_definitions.md`（3 个档 / 2,436 键 / `category` 10 值 / 必填 `game_data`）；旗帜 COA 键 → `fields\main_menu-flag_definitions.md` 与 `fields\main_menu-coat_of_arms.md`（`coa = <键>` 必须能在 4,566 个 COA 键里找到，或写成 `list "<池名>"`）。
+> **两类高频引用另有专档**：修正键 → `fields\main_menu-modifier_type_definitions.md`（3 个档 / 2,713 键 / `category` 10 值 / 必填 `game_data`）；旗帜 COA 键 → `fields\main_menu-flag_definitions.md` 与 `fields\main_menu-coat_of_arms.md`（`coa = <键>` 必须能在 4,566 个 COA 键里找到，或写成 `list "<池名>"`）。
 
 ## 三、作用域（人工对照；kb 已记录的高频错误）
 

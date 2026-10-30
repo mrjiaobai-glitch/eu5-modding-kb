@@ -1,17 +1,17 @@
 # Mod 骨架（mod-skeleton）
 
-> **一句话**：本机 mod 目录实查出的骨架：目录结构、metadata.json 注册、文件命名与编码规则，附 DLC 包结构对照。
+> **一句话**：本机 mod 目录实查出的骨架：目录结构、metadata.json 注册、文件命名与编码规则，附 DLC 包结构对照。**EU5 没有游戏启动器**（与 EU4/CK3/VIC3 不同，连 Steam 直接进游戏），mod 由**游戏内 Mod 管理器**启用。
 > **什么时候看**：新建 mod 时最先看——定目录、写 metadata.json、命名文件都在这一步。
 > **体量**：73 行 · 约 4 分钟通读
 
-mod 目录（本机示例）：`%USERPROFILE%\Documents\Paradox Interactive\Europa Universalis V\mod\`（launcher 加载）。已装 mod 参照：`刀锋与王座`、`尼泊尔王公自用平衡`。
+mod 目录（本机示例）：`%USERPROFILE%\Documents\Paradox Interactive\Europa Universalis V\mod\`（EU5 **无启动器**，mod 在游戏内 Mod 管理器启用，启用状态存 `playsets.json` 的 `orderedListMods`）。
 
 ## 目录结构（真实 mod 实查）
 
 ```
 mod\<mod名>\
 ├── .metadata\
-│   ├── metadata.json      # launcher 注册（必需）
+│   ├── metadata.json      # 游戏注册（必需；无启动器，游戏内 Mod 管理器直接读）
 │   └── thumbnail.png      # 预览图
 ├── in_game\               # 游戏内覆盖/新增
 │   ├── common\<类目>\     # 只放要改的类目
@@ -44,17 +44,17 @@ mod\<mod名>\
 ## 文件组织规则
 
 1. **只放要改的文件**：同路径同名 = 覆盖/合并原版（见 `merging.md`）；不存在的路径 = 新增。原版没有的类目子目录直接新建即可。
-2. **加载顺序 = 文件名**：`00_` 前缀最先加载，数字越小越先；同数字按文件名序。原版惯例：`00_default.txt` / `0_xxx.txt` / `1_xxx.txt` / `2_xxx.txt` / `3_xxx.txt`（如 unit_types：0_tribal → 1_uniques_for_age_x → 2_unlocked_through_tech → 3_special）。mod 文件建议用大数字或 `zzz_` 前缀保证后加载（后加载的普通条目可覆盖先加载的同名条目；INJECT 语义见 merging.md）。
+2. **加载顺序 = 文件名**：`00_` 前缀最先加载，数字越小越先；同数字按文件名序。原版惯例：`00_default.txt` / `0_xxx.txt` / `1_xxx.txt` / `2_xxx.txt` / `3_xxx.txt`（如 unit_types：0_tribal → 1_uniques_for_age_x → 2_unlocked_through_tech → 3_special）。⚠️ **实测更正（2026-10-30）**：**后加载的同名条目不会覆盖先加载的，而是被丢弃**（`error.log`：`Duplicated key … will not be created from file: …`），且文件处理顺序**不是** ASCII 升序。所以 `zzz_` 前缀**不能**用来压原版同键；要改原版条目请用 `REPLACE:`（见 `merging.md` §八，含与 wiki 的差异表）。
 3. **本地化文件命名**：`<主题>_l_<lang>.yml`，主题建议用 mod 名前缀（真实 mod 用 `zzz_blades_and_thrones_l_english.yml`）。
-4. **语言目录**：mod 可放 `in_game\localization\<lang>\` 或 `main_menu\localization\<lang>\`——**两处都会加载，但不必互为镜像**（43 个真实 mod 实测：22 个只放 main_menu、7 个只放 in_game、7 个两者都用且无同路径同名文件；详见 `localization.md`）。同键时加载顺序后者胜出，键尽量不重复定义。
+4. **语言目录**：mod 可放 `in_game\localization\<lang>\` 或 `main_menu\localization\<lang>\`——**两处都会加载，但不必互为镜像**（43 个真实 mod 实测：22 个只放 main_menu、7 个只放 in_game、7 个两者都用且无同路径同名文件；详见 `localization.md`）。同键时**先处理者胜、后到者被丢弃**（2026-10-30 实测）。⚠️ **与 wiki 不同**：wiki 说"后加载的键不覆盖、必须放 `replace/` 目录"；实测**普通目录即可覆盖**（简中 `EXIT` 已验）。键仍建议不重复定义（见 `merging.md` §八）。
 5. **编码**：yml 必须 UTF-8 **BOM**；txt 建议 BOM。
 6. **改名/删除原版文件不可取**：用合并前缀或整体覆盖。
 
 ## DLC 包（官方 mod 形态）
 
-`game\dlc\D008_fate_of_the_phoenix\`：in_game + loading_screen + main_menu 三分区（765 / 23 / 350 档，共 1,141 档 / 539 MB）+ `D008_fate_of_the_phoenix.dlc.json`（元数据，字段同 metadata.json 风格）+ thumbnail.dds + checksum_manifest.txt。`dlc\D000_shared\` 展示最小共享包：`main_menu\common\dlc\`、`main_menu\localization\dlc\<lang>\`。
+`game\dlc\D008_fate_of_the_phoenix\`：in_game + loading_screen + main_menu 三分区（767 / 69 / 361 档，共 1,200 档 / 523.5 MB）+ `D008_fate_of_the_phoenix.dlc.json`（元数据，字段同 metadata.json 风格）+ thumbnail.dds + checksum_manifest.txt。`dlc\D000_shared\` 展示最小共享包：`main_menu\common\dlc\`、`main_menu\localization\dlc\<lang>\`。
 
-> **⚠️ 两条与 mod 直接相关的实测**：①**DLC 只新增、不覆盖基础包**（D008 的 1,141 档与基础包 **0 路径碰撞**），官方给内容上锁用的是**基础包文件里的 `has_dlc = "<dlc 名>"`**（44 个基础包文件在用）；②`common\dlc\<pack>.txt`（13 字段）**只有 DLC 目录里有**，mod **不能**靠它注册自己，注册仍走 `metadata.json`。详见 `vanilla\vanilla-dlc-and-assets.md`。
+> **⚠️ 两条与 mod 直接相关的实测**：①**DLC 只新增、不覆盖基础包**（D008 的 1,200 档与基础包 **0 路径碰撞**），官方给内容上锁用的是**基础包文件里的 `has_dlc = "<dlc 名>"`**（368 处 / 66 个基础包文件：d008 275/44 + d009 93/25）；②`common\dlc\<pack>.txt`（13 字段）**只有 DLC 目录里有**，mod **不能**靠它注册自己，注册仍走 `metadata.json`。详见 `vanilla\vanilla-dlc-and-assets.md`。
 
 ## 发布 mod 时要碰到的三个文件（第八轮补齐）
 

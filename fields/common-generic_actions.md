@@ -59,7 +59,7 @@
 
 ## 本体实测补缺（2026-09 普查）
 
-> **数据源**：`in_game\common\generic_actions\` 全量 **115 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **数据源**：`in_game\common\generic_actions\` 全量 **116 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
 > **口径**：字段 = 顶层块内的 ``key =``；已排除 readme 以 ``<模式>`` 声明的键、以及本体修正注册表（``modifier_type_definitions``，2,437 键）内的修正名。
 
 ### 一、原版在用、readme 未声明的字段

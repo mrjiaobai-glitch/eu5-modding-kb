@@ -3,7 +3,7 @@
 > **一句话**：本地化文件的放置位置、UTF-8 BOM 与语言头格式、11 种语言代码，以及事件、任务、修正、交互各类键的前缀规则与占位符写法。
 > **什么时候看**：写 loc 文件或排查界面显示 raw key 时，对照本文的位置、格式与键前缀规则。
 > **体量**：105 行 · 约 5 分钟通读
-> **最后校验**：EU5 1.4.1（Steam buildid 25905365）/ 2026-10-13 —— 新增「界面表达式的版本迁移」一节
+> **最后校验**：EU5 1.4.2（Steam buildid 26043558）/ 2026-10-21；**2026-10-30 实测当前版本已为 1.4.5（Rio Salado）** —— 1.4.2 复核：官英**无新增**表达式迁移（仍无 `@[X.GetFlag]!`、无小写 `[scope:xxx.]`），官中那 35 处 `@[…GetFlag]!` 与 7 处 `[scope:]` **仍未修**（汉化 mod 已全量覆盖）；1.4.2 新增 57 键全部无官中
 
 ## 文件位置（实查修正）
 
@@ -23,7 +23,7 @@
 
 - 实测口径（2026-09，创意工坊 36 个带 yml 的 mod）：**22 个只放 `main_menu\`、7 个只放 `in_game\`、7 个两者都用**；而"两者都用"的 mod 里**没有一对同路径同名的文件**（两处放的是不同内容）。→ **不存在"必须双镜像、两侧键必须一致"的要求**（旧版文档写过这条，已按实测订正）。
 - 原版自身：`main_menu\localization\` **5,835 个 yml**（主体，事件/任务/概念词条全在这里，原版事件键 `ages_of_eu.1.title` 就在 `main_menu\localization\english\advances_l_english.yml`）；`in_game\localization\` 只有 **11 个**，全是引擎内部词条 `jomini\script_system\trigger_system_l_<lang>.yml`（只读参考）。
-- 同键冲突时**按加载顺序后者覆盖**（`zzz_` 前缀 = 后加载，见 `merging.md`）；**键名不重复定义最稳**。
+- 同键冲突的覆盖率 ⚠️**待实跑**：本库旧结论是"按加载顺序后者覆盖（`zzz_` 前缀 = 后加载）"；[EU5 Wiki: Mod compatibility](https://eu5.paradoxwikis.com/Mod_compatibility) 则称后加载**不覆盖**已定义键、须放到 `localization/<lang>/replace/`（replace 目录胜出）。实跑前：**键名不重复定义最稳**；确需覆盖原版键时，**同时提供 `replace/` 目录版本**。**实跑结论（2026-10-30，EU5 1.4.5）**：普通 `localization/<lang>/` 下的**后加载文件覆盖生效**——测试 mod 用 `simp_chinese/kb_test_l_simp_chinese.yml` 覆盖 `EXIT`（原版「退出」）成功，界面显示覆盖值；`debug.log` 记 `Key 'EXIT' defined in multiple files: '...core_l_simp_chinese.yml', '...kb_test_l_simp_chinese.yml'`。→ ⚠️ **与 wiki 不同**：wiki 的"后加载不覆盖、必须 replace 目录"**不成立**；本库旧结论正确。
 
 ## 文件格式
 

@@ -4,14 +4,14 @@
 > ⚠️ 正文里那句「**EU5 1.3.x**」**已过时**，以本条为准。**正式版（1.3.x）请用 `main` 或 tag `1.3.x-stable`。**
 
 
-> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——22.7 万字、163 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
+> **这是什么**：EU5（Europa Universalis V / jomini 引擎）模组**制作 + 审查**的中文知识库——25.4 万字、182 篇文档，全部基于游戏本体文件（EU5 1.3.x）实查，**不凭 EU4 经验推测**（EU5 与 EU4 脚本体系不通用）。
 >
 > **怎么用**：
 > - **有 AI agent**（Claude Code / DSH / Codex…）：`git clone https://github.com/mrjiaobai-glitch/eu5-modding-kb.git` → 把 `skills\eu5-mod-review\` 复制进技能目录 → 直接说"按这个库给我写 / 审 EU5 mod"（技能自动定位本库，见 `skills\README.md`）
 > - **查资料**：从下方「目录结构」进对应部分——`fields\` 字段库（本体 74 份 readme 逐条提炼）/ `vanilla\` 原版机制解析（哪些能改、哪些引擎硬编码）/ `guides\` 制作指南 / `pitfalls.md` 实战坑速查
 > - **不用 AI**：`fields\` 103 档本身就是本体 readme 的中文逐条提炼，可直接当速查手册
 >
-> **规模**：163 篇 · 1,913 KB · 24,843 行 · 227,034 汉字 · 7,971 行表格 · 354 个代码块 · MIT
+> **规模**：182 篇 · 3,121 KB · 38,097 行 · 254,399 汉字 · 20,497 行表格 · 357 个代码块 · MIT
 
 > **定位**：Europa Universalis V（jomini 引擎）模组制作与审查的**知识总库**——独立于任何技能，可被技能、对话或其他知识库引用。
 > **本仓库**：本仓库即该知识库本身；配套 agent 技能随库附带于 `skills\eu5-mod-review\`（安装见 `skills\README.md`）。

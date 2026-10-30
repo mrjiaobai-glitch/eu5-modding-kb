@@ -40,7 +40,7 @@ ATH = {
 
 国家名/形容词**不在这里**：去 `country_names_l_<lang>.yml`（第 4 步）。
 
-## 第 2 步：领土与开局状态 → `main_menu\setup\start\10_countries.txt`
+## 第 2 步：领土与开局状态 → `main_menu\setup\1337\10_countries.txt`
 
 文件顶层是 `countries = { … }`，里面每个 TAG 一块。ATH（`:12491`）：
 
@@ -64,11 +64,11 @@ ATH = {
 - location id 必须真实存在（`map_data\location_templates.txt` 的 28,573 条 → 见 `vanilla\vanilla-map-and-geography.md`）。
 - 权威字段档：`fields\setup-countries.md`（同档覆盖 `in_game\setup\countries`）；`10_countries.txt` 本身**没有 readme**，字段以原版实测为准。
 
-## 第 2b 步：★ 开局模板层 → `main_menu\setup\templates\`（**205 档，kb 此前零覆盖**）
+## 第 2b 步：★ 开局模板层 → `main_menu\setup\templates\`（**207 档，kb 此前零覆盖**）
 
-**这是新国家真正的"省事开关"**：`10_countries.txt` 里 `include = "<模板名>"` 出现 **5,256 次 / 192 个去重目标**——原版每个国家都靠模板拼出开局，而不是手写十几行。
+**这是新国家真正的"省事开关"**：`10_countries.txt` 里 `include = "<模板名>"` 出现 **5,361 次 / 220 个去重目标**——原版每个国家都靠模板拼出开局，而不是手写十几行。
 
-模板能带的东西（205 档顶层字段频次实测）：
+模板能带的东西（207 档顶层字段频次实测）：
 
 | 字段 | 档数 | 内容 |
 |---|---|---|
@@ -89,7 +89,7 @@ ATH = {
 
 **做法**：先 `include` 一个政体模板 + 1–3 个 `expl_*`，再看还缺什么用直写字段补（直写会**覆盖**模板值，顺序按文件内先后）。`test_template.txt` 是原版的测试模板，可当最小样例读。
 
-## 第 3 步：（可选）POP 与思潮分布 → `main_menu\setup\start\06_pops.txt` / `08_institutions.txt`
+## 第 3 步：（可选）POP 与思潮分布 → `main_menu\setup\1337\06_pops.txt` / `08_institutions.txt`
 
 ⚠️ **这两个文件是按 location 索引的，不是按 TAG**（`ath = { define_pop = { type = clergy size = 0.007 culture = picard religion = catholic } }` / `ath = { feudalism = yes }`）。也就是说：**加了国家必须保证它的地点有 POP 定义**，否则地点是空的；这一步与"加国家"是两件事，但开局体验取决于它。
 

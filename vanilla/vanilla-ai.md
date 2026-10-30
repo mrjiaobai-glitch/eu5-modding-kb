@@ -34,7 +34,7 @@
 |---|---|---|
 | **`NAI` 常量段**（`loading_screen\common\defines\00_defines.txt`） | **515–1444 行 / 930 行内 746 个常量** | 本体逐条英文注释 |
 | `in_game\common\ai_personalities\` | **8 种国家性格** | 文件头注释（**无 readme**） |
-| `main_menu\common\modifier_type_definitions\00_modifier_types.txt` | **2393 个修正类型中 48 个带 `ai=yes`**（目录合计 **2,436**：主档 2,393 + `01_byz` 29 + `02_generic_bureaucracies` 14）；性格实际用到 **35 个** | 字段权威见 `fields\main_menu-modifier_type_definitions.md` |
+| `main_menu\common\modifier_type_definitions\00_modifier_types.txt` | **2,659 个修正类型中 48 个带 `ai=yes`**（目录合计 **2,713**：主档 2,659 + `01_byz` 30 + `02_generic_bureaucracies` 24）；性格实际用到 **35 个** | 字段权威见 `fields\main_menu-modifier_type_definitions.md` |
 | `in_game\common\ai_diplochance\` | **16 张外交接受度权重表** | **无有效 readme**：同目录的 `ai_diplochance.info` 其实是 `customizable_localization` 的格式文档（放错位置） |
 | `in_game\common\ai_scripted_expansion_score\` | **2 条**（都在 `guelphs_and_ghibellines.txt`） | `readme.txt` |
 | `in_game\common\ai_scripted_expansion_target\` | **2 条**（同上文件） | `readme.txt` |
@@ -108,7 +108,7 @@
 
 **性格是修正，不是硬编码**：8 种性格合计使用 **35 个修正类型**（全部定义在 `modifier_type_definitions\00_modifier_types.txt`），且与**特质、社会价值观的 AI 修正叠加**（文件头原文："These stack additively with trait and societal value modifiers"）。所以同一个性格在不同政体/价值下表现不同。
 
-**AI 专用修正类型共 48 个**（`game_data` 里标 `ai=yes`，主档 2,393 个修正中占比极小；目录合计 2,436）：
+**AI 专用修正类型共 48 个**（`game_data` 里标 `ai=yes`，主档 2,659 个修正中占比极小；目录合计 2,713）：
 
 ```
 win_war_chance_threshold / win_war_chance_lower_limit / unintegrated_land_expansion_penalty_modifier

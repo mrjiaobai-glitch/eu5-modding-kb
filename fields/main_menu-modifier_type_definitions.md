@@ -6,7 +6,7 @@
 
 来源：**本类目没有 readme、也没有 info**——3 个档实查（`00_modifier_types.txt` **212,995 B / 2,393 键**、`01_byz.txt` 29 键、`02_generic_bureaucracies.txt` 14 键）。
 
-> ⚠️ **口径提醒**：本库其它篇引用的 "2393 个修正" 是**只算主档**的数字；**目录合计 2,436 个键**（2026-09 体检修正）。凡说"修正键必须在这里注册"的地方，指的都是本档。
+> ⚠️ **口径提醒**：本库其它篇引用的 "2,659 个修正" 是**只算主档**的数字；**目录合计 2,713 个键**（2026-10-29 复测）。凡说"修正键必须在这里注册"的地方，指的都是本档。
 
 ## 它是什么
 
@@ -62,7 +62,7 @@ MODIFIER_TYPE_DESC_<键>     # 说明（英文 loc 2,477 条）
 
 | 项 | 数据 |
 |---|---|
-| 键总数 | **2,436**（00_modifier_types 2,393 + 01_byz 29 + 02_generic_bureaucracies 14） |
+| 键总数 | **2,713**（00_modifier_types 2,659 + 01_byz 30 + 02_generic_bureaucracies 24；去重 2,711） |
 | 带 `ai = yes` | **48**（全部在 00 主档） |
 | category 分布 | country 1,870 / location 345 / IO 94 / unit 70 / character 43 / all 5 / movement 4 / religion 3 / province 1 / rebel 1 |
 | DLC 追加 | `01_byz.txt`、`02_generic_bureaucracies.txt` 是 DLC/内容包追加的键（44 个）——**mod 也可以照这个方式追加自己的档** |

@@ -1,16 +1,16 @@
 # 原版解析：事件 · 任务（vanilla events & missions）
 
-> **一句话**：实测原版 7,470 个事件与 11 条任务链的体量分布、字段真实使用次数、触发方式与任务奖励规则，并划出可改点与硬编码边界。
+> **一句话**：实测原版 7,963 个事件与 11 条任务链的体量分布、字段真实使用次数、触发方式与任务奖励规则，并划出可改点与硬编码边界。
 > **什么时候看**：写事件或任务链、判断某字段原版是否真在用、排查任务不触发与奖励不生效时翻这篇。
 > **体量**：155 行 · 约 8 分钟通读
 
-版本基准：EU5 1.3.x。**本篇是什么**：事件与任务这两套"内容容器"的**原版体系实测**——原版怎么摆放 7,470 个事件、任务链由什么驱动、哪些字段文档里有而原版从不用、默认游戏规则会把什么关掉。
+版本基准：EU5 1.3.x。**本篇是什么**：事件与任务这两套"内容容器"的**原版体系实测**——原版怎么摆放 7,963 个事件、任务链由什么驱动、哪些字段文档里有而原版从不用、默认游戏规则会把什么关掉。
 
 > **分工**：字段全集见 `fields\common-events.md`、`fields\common-missions.md`；"怎么写一个事件"见 `guides\event-making.md`；调度语法（`events` / `random_events` / `delay` / `on_action` 全集）见 `fields\common-on_action.md` 与 `guides\scripting-core.md` §四。本篇只讲**原版事实与可改点**。
 
 | 系统 | 文件 | 中文 | 规模 |
 |---|---|---|---|
-| 事件 | `in_game\events\` | **事件** | 349 档 / 10.52 MB / **7,470 个事件** / **361 个 namespace**（权威：`events\readme.txt` 6.9 KB） |
+| 事件 | `in_game\events\` | **事件** | 373 档 / 11.38 MB / **7,963 个事件** / **387 个 namespace**（权威：`events\readme.txt` 6.7 KB） |
 | 任务链 | `in_game\common\missions\` | **任务链 · 任务节点** | 11 档 / 142 KB / **11 条链 / 108 个节点**（权威：`____Info.txt` 61 行） |
 | 任务事件 | `in_game\events\missionevents\` | 任务事件 | 3 档 / 75 KB / 40 个事件 |
 | 任务本地化 | `main_menu\localization\<lang>\missions\` | — | 每语言 4 档（en 136 KB / 最大 `generic_missions_l_english.yml` 93 KB） |
@@ -23,7 +23,7 @@
 
 | 目录 | 档数 | 体量 | 事件数 | 备注 |
 |---|---|---|---|---|
-| **`DHE\`** | 159 | **6,239 KB** | **4,145** | 历史事件，**占全部事件 55.5%** |
+| **`DHE\`** | 159 | **6,239 KB** | **4,145** | 历史事件，**占全部事件 51.8%** |
 | `disaster\` | 36 | 808 KB | 469 | 灾难事件 |
 | `situations\` | 25 | 768 KB | 456 | 局势事件 |
 | `government\` | 20 | 724 KB | 655 | 政体/改革/官僚 |
@@ -42,13 +42,13 @@
 
 **根目录散档是"跨主题单件"**，最大的几档：`earthquake_events.txt` 137 KB / 96 事件、`random_event.txt` 114 KB / 112、`institution_events.txt` 105 KB / 59、`hre.txt` 29 KB / 26、`free_cities.txt` 27 KB / 19、`wokou_events.txt` 21 KB / 13。另有 `readme.txt`（字段权威，本身不是事件档）。
 
-**事件类型**（349 档全量）：`country_event` **7,413** / `exploration_event` 36 / `location_event` 20 / `age_event` 1 / **`unit_event` 0**。→ 原版 99.2% 的事件是国策级事件；`unit_event` 是文档允许但原版零使用的类型。
+**事件类型**（373 档全量）：`country_event` **7,905** / `exploration_event` 36 / `location_event` 20 / `age_event` 1 / **`unit_event` 0**。→ 原版 99.2% 的事件是国策级事件；`unit_event` 是文档允许但原版零使用的类型。
 
 **namespace**：363 处定义、去重 361 个；一个档一个 namespace 是惯例（`namespace` 必须是文件第一个东西）。
 
 ---
 
-## 二、字段的原版使用实况（349 档全量计数）
+## 二、字段的原版使用实况（373 档全量计数）
 
 | 字段 | 次数 | 字段 | 次数 |
 |---|---|---|---|
@@ -69,7 +69,7 @@
 
 **取值分布**：
 
-- `outcome`：`neutral` 7,331 / `negative` 126 / `positive` 50 → **97.6% 的事件不写或写 neutral**；`negative` / `positive` 合法但罕见（旧档里"negative 是常用值"的说法按全量实测修正）。
+- `outcome`：`neutral` 7,331 / `negative` 126 / `positive` 50 → **94.2% 的事件不写或写 neutral**；`negative` / `positive` 合法但罕见（旧档里"negative 是常用值"的说法按全量实测修正）。
 - `category`（事件图标）：`disaster_event` 466 / `situation_event` 452 / `international_organization_event` 3。⚠️ 直接 grep `category =` 会捞到 `estate 77` / `pretender 53` / `nationalist 29` 等**别处的同名键**（叛军等），必须白名单过滤取值。
 - `image` 路径：`gfx/interface/illustrations/...` 1,394 / `gfx/interface/icons/...` 207。
 

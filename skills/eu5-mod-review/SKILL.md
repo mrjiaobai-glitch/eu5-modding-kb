@@ -1,6 +1,6 @@
 ---
 name: eu5-mod-review
-description: EU5（jomini 引擎）模组全流程：制作与审查一体。制作侧：搭建 mod 骨架（metadata.json 注册、三区 common、localization 放置与 BOM）、按游戏本体文件约定编写事件/效果/触发器/修正/单位/建筑等脚本、正确使用 INJECT/REPLACE 合并与本地化镜像、用游戏自带测试与 error.log 排错；审查侧：检查语法结构、作用域、具名 scope、var 变量体系、本地化键前缀规则、BOM 双镜像、合并前缀、括号配对，并对照原版 game 目录验证词条/ID 存在性，输出分级结构化自检报告。另含原版机制解析（vanilla-*.md **27 篇**：天气/战斗/POP/天命/科技时代/贸易市场/生产建筑/文化宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC 与美术资源/纹章与旗帜/界面GUI…，标注可改点与硬编码边界）。全部知识基于游戏本体目录实际文件（**103 篇字段库**（74 份 readme 提炼 + 实查补缺）+ 制作层知识库 + **27 篇原版机制解析** + 7 篇查表工具），索引见 <KB>\README.md 与 <KB>\INDEX.md
+description: EU5（jomini 引擎）模组全流程：制作与审查一体。制作侧：搭建 mod 骨架（metadata.json 注册、三区 common、localization 放置与 BOM）、按游戏本体文件约定编写事件/效果/触发器/修正/单位/建筑等脚本、正确使用 INJECT/REPLACE 合并与本地化镜像、用游戏自带测试与 error.log 排错；审查侧：检查语法结构、作用域、具名 scope、var 变量体系、本地化键前缀规则、BOM 双镜像、合并前缀、括号配对，并对照原版 game 目录验证词条/ID 存在性，输出分级结构化自检报告。另含原版机制解析（vanilla-*.md **27 篇**：天气/战斗/POP/天命/科技时代/贸易市场/生产建筑/文化宗教/法律阶层议会/灾难局势/国际组织IO/角色王朝内阁/AI/政体改革官僚/殖民与探索/事件与任务/DLC 与美术资源/纹章与旗帜/界面GUI…，标注可改点与硬编码边界）。全部知识基于游戏本体目录实际文件（**103 篇字段库**（74 份 readme 提炼 + 实查补缺）+ 制作层知识库 + **27 篇原版机制解析** + 7 篇查表工具 + **19 档速查表**（`<KB>\reference\`：修正名 2,710 键 / defines 2,103 常量 / on_action 255 钩子 / triggers 1,966 / effects 1,662 / scope 143 + 作用域链 357 / 自定义本地化 484 / GUI 数据类型 2,449 / 控制台命令 / 社区工具 / 界面·定局·存档指南）），索引见 <KB>\README.md 与 <KB>\INDEX.md
 whenToUse: 用户要求新建/制作/编写/扩展/审查/检查/自检/验证 EU5 模组内容（事件、科技、建筑、单位、修正、国家、本地化、游戏规则、define 调整等），或询问"怎么做 X"需要按原版规范落地时
 disable-model-invocation: false
 ---
@@ -25,7 +25,7 @@ disable-model-invocation: false
 3. localization 不在 in_game：**main_menu\localization\<lang>\**（主语言文件，english 114 个）与 **loading_screen\localization\<lang>\**（languages.yml、load_tips）与 **loading_screen\localization\jomini\**（savegame_gui、cw_ugc_dlc）；引擎触发词条在 **in_game\localization\jomini\script_system\trigger_system_l_<lang>.yml**。细节见 `<KB>\guides\localization.md`。
 
 ### 1. 建 mod 骨架（先搭目录，再写内容）
-- 目录：`Documents\Paradox Interactive\Europa Universalis V\mod\<mod>\`，launcher 注册需 `.metadata\metadata.json`（name/id/version/supported_game_version/short_description/tags，真实样例见 `<KB>\guides\mod-skeleton.md`）。
+- 目录：`Documents\Paradox Interactive\Europa Universalis V\mod\<mod>\`（**EU5 无启动器**：连 Steam 直接进游戏，mod 在**游戏内 Mod 管理器**启用；本机 Documents 可能在非 C 盘），注册需 `.metadata\metadata.json`（name/id/version/supported_game_version/short_description/tags，真实样例见 `<KB>\guides\mod-skeleton.md`）。
 - 结构模板照抄游戏本体 DLC：`game\dlc\D008_fate_of_the_phoenix\` 与 `game\dlc\D000_shared\` 展示 mod 包分区；本机已装 mod `刀锋与王座` 是现成参照。
 - 大改小抄：**只放要改的文件**；同路径同名文件 = 覆盖合并（见合并体系）。
 
@@ -40,6 +40,7 @@ disable-model-invocation: false
 - **事件**：`<KB>\guides\event-making.md`（权威格式 = `in_game\events\readme.txt` 逐条 + `volcano_events.txt` 真实样例）。要点：`namespace` 必定义、ID 1–9999 全局唯一、type 五选一（country/location/unit/exploration/age_event）、title/desc 键 = `<ns>.<id>.title/.desc`、选项 name = `<ns>.<id>.a`、ai_chance 用 base/add。
 - **效果/触发器/脚本值/on_action**：`<KB>\guides\scripting-core.md`（`_script_values.info` 全文要点、scripted_effects/triggers 的 `$参数$` 约定、on_actions.info 全部键）。
 - **各 common 类目**：先看 `<KB>\guides\systems-map.md`（每类目：用途、入口文件、readme 位置、对应字段文档），再加载字段文档核对，照原版样例复制改。
+- **查名字/常量/触发器/效果/scope 先来 `<KB>\reference\`**：修正名 2,710 键（country/location/其它三档）、defines 2,103 常量、on_action 255 钩子、triggers 1,966、effects 1,662、scopes 143 + 作用域链 357、自定义本地化 484、GUI 数据类型 2,449，另有控制台命令/社区工具/界面·定局·存档指南。**生成版/外部资料，冲突时以 `<KB>\fields\` 实测为准**。
 - **改机制数值/结构前**：先读对应 `<KB>\vanilla\vanilla-*.md` 原版解析（**27 篇**：weather / combat / pop / mandate-of-heaven / tech-and-age / **events-and-missions** / **dlc-and-assets** / **heraldry-and-flags** / gui …），里面写清了该系统由哪些文件组成、关键常量在哪、**哪些脚本可改、哪些引擎硬编码**、以及挂钩点；避免改错层（例如天气的风暴实际效果是硬编码，只能改生成与 `on_storm_reached_location`；时代按年份全局推进，`unique` 与 `modifier` 都是全世界生效的时代修正）。
 - **修正（modifier）**：新增修正键必须在 `main_menu\common\modifier_type_definitions\00_modifier_types.txt` 注册（category/percent/boolean/format 等），再在 `main_menu\common\static_modifiers\` 定义或直接用于效果。
 - **define 调整**：`loading_screen\common\defines\00_defines.txt`（N 块索引见 `<KB>\guides\defines.md`）或 `graphic\00_graphics.txt`；也可在 game_rules 里按设置覆盖（`_game_rules.info` 的 defines 段）。
@@ -72,7 +73,7 @@ disable-model-invocation: false
 5. 审查某类目前**先加载**知识库 `fields\` 对应文档，再逐个 read，按文末格式输出报告。
 
 ## 字段权威表（必读）
-审任何类目文件前，查 `<KB>\README.md` 映射并加载 `<KB>\fields\*.md`（字段名/类型/取值/作用域/坑；readme 未写者标"未在 readme 中说明"，勿凭 EU4 补）。高价值：`common-events.md`（type/category/ai_chance 权威格式）、`common-subject_types.md`、`common-international_organizations.md`、`common-country_interactions.md`（diplo_chance 全键）、`common-missions.md`（任务链 11 条/108 节点）、`main_menu-modifier_type_definitions.md`（修正键注册表 2,436 键）、`main_menu-flag_definitions.md` + `main_menu-coat_of_arms.md`（纹章旗帜）、`main_menu-game_concepts.md`（概念词条）。
+审任何类目文件前，查 `<KB>\README.md` 映射并加载 `<KB>\fields\*.md`（字段名/类型/取值/作用域/坑；readme 未写者标"未在 readme 中说明"，勿凭 EU4 补）。高价值：`common-events.md`（type/category/ai_chance 权威格式）、`common-subject_types.md`、`common-international_organizations.md`、`common-country_interactions.md`（diplo_chance 全键）、`common-missions.md`（任务链 11 条/108 节点）、`main_menu-modifier_type_definitions.md`（修正键注册表 2,713 键）、`main_menu-flag_definitions.md` + `main_menu-coat_of_arms.md`（纹章旗帜）、`main_menu-game_concepts.md`（概念词条）。
 
 ## 语法速记（细节以知识库 `fields\` / `guides\` 为准）
 - `key = value` / `key = { }`；`#` 注释；值：数字/yes-no/字符串/脚本值。

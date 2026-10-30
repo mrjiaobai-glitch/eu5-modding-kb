@@ -16,7 +16,7 @@
 | `international_organization` | 36 | **2,630**（`is_member_of_international_organization = international_organization:<类型名>`，仅 unique 类型有效） | `fields\common-international_organizations.md` |
 | `language` | 53 档 | 1,351（`court_language ?= language:<id>`） | `fields\common-culture-religion.md` |
 | `religion` | 293 | 1,293 | 同上 |
-| **`modifier`** | **2,436** | **1,211**（`modifier:<键> = yes`）；出现在修正字段里时裸写 `country_modifier = { <键> = 1 }` | `fields\main_menu-modifier_type_definitions.md` |
+| **`modifier`** | **2,713** | **1,211**（`modifier:<键> = yes`）；出现在修正字段里时裸写 `country_modifier = { <键> = 1 }` | `fields\main_menu-modifier_type_definitions.md` |
 | `societal_value` | 17 轴 | 1,055（**必须 `A_vs_B` 全串**） | `fields\common-societal_values.md` |
 | `situation` | 22 | 932 | `fields\common-situations.md` |
 | `estate_type` | 8 | 836（`country_has_estate = estate_type:<id>`） | `vanilla\vanilla-law-and-estate.md` |
@@ -60,7 +60,7 @@
 | `gene` | `gene_<名> = { attribute = … value = { min max } }`（名字须在 `genes\` 定义） | `fields\common-genes-ethnicities.md` |
 | `coa` | `coa = <COA 键>`（或 `list "<池名>"`）——**裸键**，见 4,566 个 COA 键 | `fields\main_menu-flag_definitions.md` |
 | `game_concept` | 本地化里 `[<裸概念名>\|e]`——**只在 loc 中引用**，脚本不引用 | `fields\main_menu-game_concepts.md` |
-| **开局模板**（205 档） | `include = "<模板名>"`（`10_countries.txt` 里 5,256 处 / 192 去重；**拼错不报错、只是没效果**） | `guides\new-country-tutorial.md` §2b |
+| **开局模板**（207 档） | `include = "<模板名>"`（`10_countries.txt` 里 5,361 处 / 220 去重；**拼错不报错、只是没效果**） | `guides\new-country-tutorial.md` §2b |
 | `unit_ability` / `area_preference` / `static_modifier` / `auto_modifier` / `topography` / `vegetation` / `climate` / `town_right` / `named_color` / `message_type` / `alert` | 各族前缀写法均为 **0 处**——引用方式见对应字段档（多数是按名/按枚举/由引擎侧读取） | 见 `fields\` 同名档 |
 
 ## 三、角色与开局数据族（特殊规则）
@@ -71,7 +71,7 @@
 | `regency` | 由继承法/法律逻辑内部引用，脚本直接写 id 的场合极少 | `regencies\*.txt` |
 | `ethnicity` | 由角色生成侧读取（`template = "<族群 id>"`，**带引号**） | `fields\common-genes-ethnicities.md` |
 | `artist_type` | 前缀写法 0 处（走 `artist_types` 定义侧与 `allow = { artist_type … }`） | `fields\common-artist.md` |
-| 角色 / 王朝 | **本体不在 `common\`**——是开局数据（`main_menu\setup\start\05_characters.txt` / `04_dynasties.txt`） | 角色篇 |
+| 角色 / 王朝 | **本体不在 `common\`**——是开局数据（`main_menu\setup\1337\05_characters.txt` / `04_dynasties.txt`） | 角色篇 |
 
 ## 四、核对规则（零幻觉）
 

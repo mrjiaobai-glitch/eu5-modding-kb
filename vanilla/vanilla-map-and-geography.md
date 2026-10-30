@@ -6,7 +6,7 @@
 
 版本基准：EU5 1.3.x。全部结论来自游戏本体文件，路径相对 `<game>\`。
 
-**核心文件**：`in_game\map_data\default.map`（181KB / 1629 行，地图总声明 + 特殊地点区）、`map_data\definitions.txt`（491KB，**五级静态层级树**）、`map_data\location_templates.txt`（3.7MB / **28573 条**，地点属性表）、`map_data\named_locations\00_default.txt`（28490 条地点→位图色）、`map_data\locations.png`（8.7MB 位图）、`map_data\rivers.png`、`map_data\nodes.dat`（11MB 二进制寻路）、`map_data\ports.csv`（4421 行）、`map_data\adjacencies.csv`（184 行）；脚本侧 `in_game\common\scripted_geography\`（3 文件 / **27 个地理包** + `scripted_geography.info`）；开局数据 `main_menu\setup\start\`（**25 档**，02–27、缺 01/17；本节只解析到 16）。
+**核心文件**：`in_game\map_data\default.map`（181KB / 1629 行，地图总声明 + 特殊地点区）、`map_data\definitions.txt`（491KB，**五级静态层级树**）、`map_data\location_templates.txt`（3.7MB / **28573 条**，地点属性表）、`map_data\named_locations\00_default.txt`（28490 条地点→位图色）、`map_data\locations.png`（8.7MB 位图）、`map_data\rivers.png`、`map_data\nodes.dat`（11MB 二进制寻路）、`map_data\ports.csv`（4421 行）、`map_data\adjacencies.csv`（184 行）；脚本侧 `in_game\common\scripted_geography\`（3 文件 / **27 个地理包** + `scripted_geography.info`）；开局数据 `main_menu\setup\1337\`（**26 档**，02–27、缺 01/17；本节只解析到 16）。
 
 > **层级定义与运行时"省份"是两件事**，这是本篇最容易被写错的一点：`definitions.txt` 定义的是**预设省份 province_definition**（静态），而游戏里跑着的 **province（省份）** 是"同一预设省份内被同一国家拥有的那组地点"——**同一块地可以因所有权分裂成多个省**。详见 §二。
 
@@ -201,11 +201,11 @@ borneo_geography = {
 
 **地图模式**（`main_menu\gfx\interface\icons\map_modes\`，130+ 个 `.dds`）与地理直接相关的：`continent` / `sub_continent` / `region` / `area` / `provinces` / `locations`、`topography` / `vegetation` / `climate` / `winter` / `weather` / `terrain` / `rivers` / `roads` / `disease` / `harbor_capacity` / `natural_harbor_suitability`、以及 `culture` / `culture_group` / `language` / `dialect` / `religion`（文化与宗教篇）、`raw_material` / `market` / `market_access` / `development` / `prosperity` / `proximity` / `control`（生产·贸易·POP 篇）。
 
-## 八、开局数据层：`main_menu\setup\start\`（**25 档**）
+## 八、开局数据层：`main_menu\setup\1337\`（**26 档**）
 
-> **开局数据层已独立成篇**：`setup\start` **全部 25 档**（编号 `02_`–`27_`，缺 `01_` 与 `17_`）+ `in_game\setup\countries\` 46 档 + 模板层 205 档的逐档解析见 **`vanilla\vanilla-setup-data.md`**。下表只列与地图直接相关的文件；其余 10 档（`18_opinions` / `19_diseases` / `20_rivals` / `21_locations` / `22_situations` / `23_colonies` / `24_town_rights` / `25_area_preferences` / `26_ai_personalities` / `27_armies`）以该篇为准。
+> **开局数据层已独立成篇**：`setup\1337` **全部 26 档**（编号 `02_`–`27_`，缺 `01_` 与 `17_`；新增 `04_religious_orders.txt`）+ `in_game\setup\countries\` 46 档 + 模板层 207 档的逐档解析见 **`vanilla\vanilla-setup-data.md`**。下表只列与地图直接相关的文件；其余 10 档（`18_opinions` / `19_diseases` / `20_rivals` / `21_locations` / `22_situations` / `23_colonies` / `24_town_rights` / `25_area_preferences` / `26_ai_personalities` / `27_armies`）以该篇为准。
 
-地图层级只给"地"，**开局的人口/国家/市场/宗教分布在这一层**（`main_menu\setup\start\`，与 `map_data` 分开）：
+地图层级只给"地"，**开局的人口/国家/市场/宗教分布在这一层**（`main_menu\setup\1337\`，与 `map_data` 分开）：
 
 | 文件 | 规模 | 作用（抽样格式） |
 |---|---|---|
@@ -252,7 +252,7 @@ borneo_geography = {
 | 加港口 | `ports.csv`（`LandProvince;SeaZone;x;y;`） | 同时要给地点 `natural_harbor_suitability`（location_templates） |
 | 加跨海连接 | `adjacencies.csv`（`From;To;Type;Through;x…`） | 原版 184 行 Type 全为 `sea` |
 | 改通行费海峡 | `default.map` 的 `sound_toll`（原版 3 个） | 配套 `prices` 与贸易篇的 `SOUND_TOLL_FACTOR` |
-| 改开局人口/国家/市场 | `main_menu\setup\start\*.txt` + `in_game\setup\countries\` | `06_pops.txt` 有 5MB，改动前先备份 |
+| 改开局人口/国家/市场 | `main_menu\setup\1337\*.txt` + `in_game\setup\countries\` | `06_pops.txt` 有 5MB，改动前先备份 |
 | 换地图位图 | `locations.png` + `named_locations\00_default.txt`（键=颜色） | 两者必须一致，否则地点无法识别 |
 
 **硬编码/不可脚本化的部分**：`nodes.dat`（寻路，二进制）、`rivers.png`、`heightmap.heightmap`（**本体不存在，引擎侧生成**）、`generated_locators_port.txt` 的实例、`province` 的运行时分裂规则（由所有权驱动）、地图环绕（`wrap_x`）。

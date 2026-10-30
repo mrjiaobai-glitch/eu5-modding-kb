@@ -1,4 +1,4 @@
-﻿# 实测坑速查（pitfalls）
+# 实测坑速查（pitfalls）
 
 > **一句话**：汇总 EU4→EU5 语法对照与实修踩过的坑：作用域、变量、合并结构、本地化 BOM、AI 生态、词条量级校准、审计脚本误报、统计偏误、PowerShell 静默故障，以及 1.4 / 1.4.1 关闭/移除的接口与界面表达式。
 > **什么时候看**：写完或审查 mod 出报错、加关键字条、写审计脚本、跨版本移植，或想确认某写法是不是坑时先查这里。
@@ -56,6 +56,11 @@
   - [② `potential` 里出现 `any_subject` ⇒ **整条决议被静默丢弃**](#-potential-里出现-any_subject--整条决议被静默丢弃)
   - [③ `only_once = yes` 会让决议完全不显示（同一存档内实测）](#-only_once--yes-会让决议完全不显示同一存档内实测)
   - [排查方法论（值得复用）](#排查方法论值得复用)
+- [二十九、审计范围缺口：loc 不止 `main_menu` 一棵树（2026-10-21 实查 1.4.2）](#二十九审计范围缺口loc-不止-main_menu-一棵树2026-10-21-实查-142)
+- [三十、占位符门禁看不见"数字/字面量漂移"（2026-10-21 实测，修 3 条真错）](#三十占位符门禁看不见数字字面量漂移2026-10-21-实测修-3-条真错)
+- [三十一、"我们自己的译文"里也会有死键（2026-10-21 实测 332 条）](#三十一我们自己的译文里也会有死键2026-10-21-实测-332-条)
+- [三十二、官中把「神职尊称」整族译成亲属称谓（2026-10-21 用户反馈实查，1.4.3/1.4.4）](#三十二官中把神职尊称整族译成亲属称谓2026-10-21-用户反馈实查143144)
+- [三十三、`effect_localization` 声明是"缺词条"的权威口径（2026-10-21 实查）](#三十三effect_localization-声明是缺词条的权威口径2026-10-21-实查)
 
 > **最后校验**：EU5 1.4.1（Steam buildid 25905365）/ 2026-10-17（新增第二十八节）
 > **⚠️ 最危险的是第十四节与第十六节**：十四是脚本静默返回 0 / 丢数据，把"漏了一大片"伪装成"全部覆盖"；十六是**连"用来发现漏没漏的那个校验"本身都在说谎**——它报"通过"，你就不再有第二次怀疑。第十七节是这两条在**汉化场景**下的合体：官中与本 mod 的失效调用不会报错，只有靠逐键差集才看得见。
@@ -130,7 +135,7 @@
 - **注释已经乱码了怎么办**：分两类——**A 类（UTF-8 被当 GBK）可 GBK 回环 100% 还原**（实测 124/124 行），**B 类（含 PUA 码点 U+E000–U+F8FF）不可逆**、只能按语义重写。判定流程、抢救代码与方法论铁律见 `cases\encoding-corruption-2026-10.md`。
 - yml 键必须在语言头（`l_simp_chinese:`）下且缩进；顶格键会毁文件。
 - 事件选项 name 写裸中文 → raw key；必须 `<ns>.<id>.a` 形式。
-- 本地化**不需要双镜像**：`main_menu\localization\<lang>\` 与 `in_game\localization\<lang>\` 两处都会被加载，但实测 36 个 mod 里 22 个只放 main_menu、7 个只放 in_game、7 个两者都用（且无同路径镜像文件）——**"两侧键必须一致"是旧文档的误记**。同键冲突以加载顺序后者为准，键尽量不重复定义。
+- 本地化**不需要双镜像**：`main_menu\localization\<lang>\` 与 `in_game\localization\<lang>\` 两处都会被加载，但实测 36 个 mod 里 22 个只放 main_menu、7 个只放 in_game、7 个两者都用（且无同路径镜像文件）——**"两侧键必须一致"是旧文档的误记**。同键冲突**先处理者胜、后到者被丢弃**（2026-10-30 实测，`Duplicated key … will not be created`；本地化是例外：**后加载覆盖生效**）。⚠️ 与 wiki 不同处见 `merging.md` §八。键尽量不重复定义。
 
 ## 六、AI 生态坑（观察者模式 160 年 0 触发教训）
 
@@ -446,7 +451,7 @@ balanced_education =
 **判据**：
 
 1. 字段计数必须**限定花括号深度**（见上），或把正则锚定到**取值白名单**：`(?m)^\s*type\s*=\s*(country_event|location_event|unit_event|exploration_event|age_event)\s*$`。
-2. **总数对账**是唯一可靠的哨兵：349 档共 7,470 个事件，逐类型相加必须等于 7,470（原版 country 7,413 + exploration 36 + location 20 + age 1 + unit 0）。
+2. **总数对账**是唯一可靠的哨兵：373 档共 7,963 个事件，逐类型相加必须等于 7,963（原版 country 7,905 + exploration 36 + location 20 + omens 1 + age 1 + unit 0）。
 3. 区分"**0 = 原版从不用**"与"**0 = 正则写错**"：只有在取值范围被白名单钉死、且总量能对上时，`interface_lock` 0 处 / `hidden` 7 处才是真结论（已核对）。
 
 **同源变体：搜索范围缺一半——"本体 0 处"其实是"我没扫那儿"**（2026-09 实测，直接导致一次错误的换键建议）。
@@ -942,3 +947,73 @@ remove_if = {
 
 **证据基准**：EU5 1.4.1；相关文件 `in_game\common\decisions\zzz_*_decisions.txt`（本 mod）、
 `in_game\common\scripted_effects\country_effects.txt`（`unlock_law_effect` 定义，内部即 `set_variable unlocked_law_<type>`）。
+
+## 二十九、审计范围缺口：loc 不止 `main_menu` 一棵树（2026-10-21 实查 1.4.2）
+
+本地化文件分布在**至少五处**，只扫主树会系统性漏项，而且漏掉的往往是最"每次都会看到"的界面文本：
+
+| 位置 | 内容 | 只扫 main_menu 会怎样 |
+|---|---|---|
+| `main_menu\localization\<lang>\` | 主体：事件/决议/概念/单位/地名… | 主体，必扫 |
+| `dlc\*\main_menu\localization\**\<lang>\` | DLC 词条 | 漏 DLC 内容 |
+| **`loading_screen\localization\<lang>\`** | **`load_tips_l_<lang>.yml`（读档提示，74 键）**、`gui\common_l_<lang>.yml`（通用按钮/报错） | **1.4.2 实测漏 10 条提示引文 + 1 条磁盘报错** |
+| **`loading_screen\localization\jomini\`** | `pdx_mod_dlc_manager\cw_ugc_dlc_l_<lang>.yml`、`savegame_gui\savegame_gui_l_<lang>.yml` | **漏 Mod 管理器/创意工坊 8 条报错与按钮** |
+| **`in_game\localization\jomini\script_system\`** | `trigger_system_l_<lang>.yml`（引擎触发词，8 键） | 漏触发词条 |
+
+- **实测差异**：只扫 `main_menu`+`dlc` 得 253,004 键；三棵根全扫得 **253,128 键（+124）**，其中待译 19 条（读档提示 10 / Mod 管理器 8 / 磁盘检查 1）。
+- **正解**：导出脚本按 `main_menu\localization`、`loading_screen\localization`、`in_game\localization` 三个根 + `dlc` 汇总（见汉化 mod `_work\refresh-142.ps1`）。
+- **通用教训**：任何"全覆盖"结论都要先问一句**"我的扫描根是不是全的"**——这与第十三节"搜索范围缺一半把'没扫'当成'没有'"同源，但发生在**目录维度**而非正则维度，且症状是**清单看起来已经清零**（本次 17 条"有意保留"里混着的 19 条真正待译，直到用户追问"没别的了吗"才被发现）。
+
+## 三十、占位符门禁看不见"数字/字面量漂移"（2026-10-21 实测，修 3 条真错）
+
+本地化校验通常只比 `[令牌]` / `$占位符$` / 标记集合——**这些都只保证结构对，不保证数值对**。官英若把 `+15` 改成 `+10`、把 `1496-97` 改成 `1496`、把 `20 GB` 改成 `30 GB`，令牌集合完全不变，门禁全绿，而译文里还是旧数字：**玩家看到的是错数值，且没有任何报错**。
+
+**做法**：剥掉 `[...]`/`$…$`/`#…#!`/`@…!` 后抽数字集合，对本版本官英逐键比对（`finalcheck-142.ps1`）。
+
+- 实测 4,666 条可比对 → 31 条标红 → **人工判读后仅 3 条是真错**（同一个功能的三条提示把 `+150` 写成 `+190`），其余 28 条全是**中文写法差异**，必须人工看，不要机械改：
+  - `1496-97` → 「1496—1497 年」（补全年份，正确）
+  - `16 January 1547` → 「1547年1月16日」（多了月份数字，正确）
+  - `4.5 to 8 million` → 「450 万至 800 万」（中文习惯，正确）
+  - `11th century` → 「十一世纪」（中文数字，正则抓不到，正确）
+  - `Cello Suite No.1` → 「第一无伴奏大提琴组曲」（正确）
+- **教训**：这类检查的价值全在"人工判读那 31 条"，而不是让它自动清零；反过来，若一条都不查，错数值会静默上线。
+
+## 三十一、"我们自己的译文"里也会有死键（2026-10-21 实测 332 条）
+
+汉化项目常从**官中键表**取待译清单（因为那是最全的键来源），但官中树里混着**官英已删除、脚本也已不再引用**的残留键。结果：译得再好，游戏也永不显示，还会污染"覆盖率"统计。
+
+- 实测：本 mod 5,858 条里有 **1,192 条官英无对应键**，其中 860 条是引擎运行时合成的消息键（`ACTION_*_PERFORMED_ON_US_*` / `PERFORM_*_ACTION_*` / `WE_PERFORM_*_ACTION_*` / `OTHER_PERFORMS_*_ACTION_*`，**属正常**），另外 **332 条是事件/决议类键，脚本树零引用 = 死键**（`arctic_passage_events` 32、`danish_india_expedition_events` 43、`steppe_embassy_events` 41、`flavor_ara` 40、`eastern_embassy_events` 37…）。
+- **判定方法（必须带阳性对照）**：把这批键拼成一个正则，扫 `in_game\` + `main_menu\common\` + `loading_screen\common\` + `dlc\` 的 `.txt/.info/.gui`（排除 `localization\`）；再用一个**已知被引用**的键（如 `crisis_of_faith.6.a`）验证扫描确实会命中，否则"零引用"结论作废（`deadcheck-142.ps1`）。
+- **前缀误判陷阱**：用 `grand_embassy.2.desc` 判定"被引用"时，会命中官英实际存在的 `grand_embassy.2.desc.port`——**长键是短键的前缀**，必须加词边界 `(?![A-Za-z0-9_])`。
+- **处置建议（2026-10-28 已按此法清理 308 条）**：判据要比"官英没有这个键"严得多——必须同时满足：非引擎合成族、不在 `effect_localization` 声明里、不在 `customizable_localization` 的 `localization_key` 及 60 种 `suffix` 派生形态里、未被任何 loc 用 `$键名$` 引用、脚本/GUI 树 token 未命中。
+- **扫描根必须包含 `gui`**：`main_menu\gui`、`in_game\gui` 里的 `.gui` 文件直接引用 loc 键名（上一轮只扫 `common` 就漏了）。
+- **点号键按"事件 id 级"测**：`flavor_ara.12.desc` 要查 token `flavor_ara.12`，而不是"`flavor_ara` 命名空间存在 ⇒ 活着"（后者会把整族已删事件都判活）。
+- **边界复核必须有**：把候选拼成 `(?<![A-Za-z0-9_\.\-])KEY(?![A-Za-z0-9_\-])` 在全树搜一遍，**有反例就中止**。实测两次前缀撞车：`grand_embassy.2.desc` ↔ `grand_embassy.2.desc.port`、`ORDER_HOLDINGS_COUNTER` ↔ `ORDER_HOLDINGS_COUNTER_TOOLTIP_INTRO`。
+- 清理流程：备份 → 逐行过滤 → **删除行数 ≠ 确认数即中止** → 写回 UTF-8 BOM → 键数/重复/顶格复查 → 死键复算应为 0。
+
+## 三十二、官中把「神职尊称」整族译成亲属称谓（2026-10-21 用户反馈实查，1.4.3/1.4.4）
+
+玩家反馈"神父被译成父亲"。根因不在译文质量，而在**官中把一整族 key 按字面直译**：
+
+| 键族（`character_names_l_*.yml`） | 官英 | 官中 | 应为 |
+|---|---|---|---|
+| `father_*`（`father_default`/`father_english`/`father_spanish`…） | `Pater` / `Father` / `Padre` / `Abuna` | **父亲**（另有 5 条音译「帕特」） | **神父** |
+| `father_*_female` | `Mater` / `Mother` / `Madre` | **父亲**（还有 1 条「母亲」、几条音译） | **修女** |
+| `brother_*` / `brother_*_short` | `Frater` / `Brother` / `Fray` | **兄弟** | **修士** |
+| `brother_*_female` | `Soror` / `Sister` / `Sor` | **姐妹**（另有「索尔」音译） | **修女** |
+| `brother_*_knight` | `$brother_x$-$knight_x$` | 「骑士兄弟」 | **修士骑士** |
+| `prior_*` / `_female` / `_short` | `Prior` / `Prioress` | 「普赖尔」/「会长」混杂 | **会长 / 女会长** |
+
+- **机制**：这些是 `in_game\common\customizable_localization\character_title.txt` 里的 `character_title_prefix_father/brother/prior` 词族，按 `language ?= language:<x>_language` 选变体，`_short`/`_female`/`_knight` 靠 `parent + suffix` 派生。它们**拼在人物名前**（"Father John"），所以直译成亲属称谓会当场露馅。
+- **规模**：三族 × 各语种 × 各形态共 **442 键**（本 mod 已接管 397 条，其余官中已是「会长」故保留）。
+- **检测法（务必按文件白名单）**：只取 `character_names_l_english.yml` 内、键名符合 `^(father|brother|prior)_…$`、**且英文值长度 ≤ 20** 的键。否则会撞上 `father_governs_children`（政体改革「父治子民」）这类同前缀无关键——本次实测差点把「神父」写进改革名。
+- **`_knight` 变体的处理**：官英是 `$brother_x$-$knight_x$` 组合串，直接写字面量会触发占位符缺失校验；正确做法是**调换两个占位符顺序**（占位符集合不变，校验通过，渲染为「骑士修士」→ 建议改词序得「修士骑士」），而 `brother_catalan_short = $brother_catalan$` 这类单占位符键要原样保留占位符。
+
+## 三十三、`effect_localization` 声明是"缺词条"的权威口径（2026-10-21 实查）
+
+效果 tooltip 缺词条时，引擎在 `error.log` 里写 `Effect localization string missing: <key>`（`persistence_tests.cpp:1068`）。这些 key 的**声明来源**是 `in_game\common\effect_localization\*.txt`（40 个文件），每个效果按 `global / global_neg / first / third / *_past` 映射到具体 loc 键。
+
+- **系统审计法**：把全部声明值（本版 3,606 个独立键）与官英/官中/自建 mod 三方比对 → 一眼看出"声明了但没人写"的词条。
+- 实测结果：**只有 6 条**在官英和官中都缺，且全是 `situation_effects.txt` 里 DLC 门控内容（`change_granadan_sovereignty_effect_tt`、`reduce_granadan_sovereignty_effect_tt`、`gc_change_colonial_dominance`、`neg_gc_change_colonial_dominance`、`gc_change_european_dominance`、`neg_gc_change_european_dominance`）——上游漏交付，汉化 mod 可以直接补。
+- **`$VALUE$` 能不能用**：内置效果（无脚本定义、只有调用点，如 `gc_change_*`）同样绑定 `$VALUE$`——实测 `country_effects.txt` 的 1,211 个声明键里有 **228 条**官英文案使用 `$VALUE|G$` 之类的格式化，照抄即可。
+- **注意**：这类 key 常见于 DLC 门控（`has_dlc = "d009_across_the_pillars"` + `is_situation_active = situation:golden_century`），未安装 DLC 时不会显示，但**加载期仍会报 missing**，补上可消除日志噪音、并为日后买 DLC 预留。

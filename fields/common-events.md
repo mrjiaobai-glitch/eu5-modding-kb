@@ -74,6 +74,6 @@ option = {
 - ID 数字 1–9999 且全局唯一。
 - `ai_chance` 结构为 `base` + `modifier { add }`（勿写 value 键）。
 - 未在 readme 中说明：character_event（旧技能曾列）不在 type 枚举中——以本 readme 为准。
-- `outcome` 只取 `positive/neutral/negative`（默认 neutral）。**全量实测（349 档 / 7,470 事件）：neutral 7,331 / negative 126 / positive 50**——97.6% 的事件不写或写 neutral；`negative` / `positive` 合法但罕见，审查时勿判成错误（旧技能文案"good/bad 无效"曾被误读为"只能 neutral"；旧档里的"26 档样本 neutral 337 / negative 94"已按全量修正）。
+- `outcome` 只取 `positive/neutral/negative`（默认 neutral）。**全量实测（373 档 / 7,963 事件）：neutral 7,500 / negative 272 / positive 191**——94.2% 的事件不写或写 neutral；`negative` / `positive` 合法但罕见，审查时勿判成错误（旧技能文案"good/bad 无效"曾被误读为"只能 neutral"；旧档里的"26 档样本 neutral 337 / negative 94"已按全量修正）。
 - **文档有、原版零使用**（勿当非法字段，也别当惯例）：`interface_lock`（默认 yes 足够）、`exclusive`、`original_recipient_only`、`random_valid`（原版一律 `first_valid`）、`show_as_unavailable`（readme 自标 NOT IMPLEMENTED）；`hidden` 仅 7 处、`major` 174 处（2.3%）。目录分布与触发方式用量见 `vanilla\vanilla-events-and-missions.md`。
 - 统计本目录字段时必须**按取值白名单过滤**：`^\s*type\s*=` 会捞到事件体内的 `estate_type` / `work_of_art_type` / `casus_belli`，`^\s*category\s*=` 会捞到叛军的 `estate` / `pretender`（见 `pitfalls.md` §十三）。

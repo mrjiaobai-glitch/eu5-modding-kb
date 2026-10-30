@@ -32,7 +32,7 @@ magnus_eriksson = {
 | 字段 | 说明 |
 |---|---|
 | `priority` | 多个条目命中同一角色时的优先级 |
-| `tags` | **角色标签**（挂接键）——角色侧对应 `main_menu\setup\start\05_characters.txt` 里的角色定义 |
+| `tags` | **角色标签**（挂接键）——角色侧对应 `main_menu\setup\1337\05_characters.txt` 里的角色定义 |
 | `portrait_info.genes` | **基因块**：`<基因名> = { 4 个数 }`（`skin_color` / `hair_color` 等；基因名须在 `common\genes\` 定义，见 `fields\common-genes-ethnicities.md`） |
 
 ## ⚠️ 文件头警告（原文要点，务必遵守）
