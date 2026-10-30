@@ -2,7 +2,7 @@
 
 > **一句话**：游戏本体四个加载域的结构地图：逐目录列出内容、实查档数与可改点，含各区根部散文件与 DLC 包结构。
 > **什么时候看**：找某个文件在哪、或想知道某一层能不能改时，先在这张结构图上定位。
-> **体量**：119 行 · 约 6 分钟通读
+> **体量**：118 行 · 约 6 分钟通读
 
 根：`<game>\`（本机示例 `F:\SteamLibrary\steamapps\common\Europa Universalis V\game\`）。四个顶层目录对应四种加载域：**in_game**（游戏内）、**loading_screen**（启动/加载）、**main_menu**（主菜单/全局静态数据）、**dlc**（DLC 包，本身就是 mod 结构模板）。
 
@@ -11,7 +11,7 @@
 | 目录 | 内容 | 制作要点 |
 |---|---|---|
 | `common\` | 全部游戏机制数据，~160 个类目（见 `systems-map.md`） | mod 主要战场 |
-| `events\` | 事件文件：顶层 26 个文件 + 15 个子目录（character / colonization / culture / debug / DHE / diplomacy / disaster / economy / estates / exploration / government / missionevents / religion / situations / ai_area_conqest_events）；全库 **349 档 / 10.5 MB / 7,470 个事件 / 361 个 namespace**，`DHE\` 占 55.5% | 新事件放 `events\<前缀>_events.txt`；`readme.txt` 是权威格式；体系实测见 `vanilla\vanilla-events-and-missions.md` |
+| `events\` | 事件文件：顶层 26 个文件 + 15 个子目录（character / colonization / culture / debug / DHE / diplomacy / disaster / economy / estates / exploration / government / missionevents / religion / situations / ai_area_conqest_events）；全库 **373 档 / 11.4 MB / 7,963 个事件 / 387 个 namespace**，`DHE\` 占 51.8% | 新事件放 `events\<前缀>_events.txt`；`readme.txt` 是权威格式；体系实测见 `vanilla\vanilla-events-and-missions.md` |
 | `content_source\map_objects\` | **地图对象生成器（14 档 / 20 MB）**：`generators\vegetation_generators.txt`（`layer`/`max_density`/`mask`/加权 `meshes`；low/medium/high 三件套用 `@density_factor_*` 宏）+ `ambience_generators\`（`entity` + 条件字段 + `avoid_sea`）+ `masks\*.png` **12 张 / 20 MB**（掩码名与脚本同键）。详见 `vanilla\vanilla-dlc-and-assets.md` §六 | 地图美术层 |
 | `fonts\` | 字体定义 | — |
 | `gfx\` | 美术资源：animation_state_machines / city_materials / compound_nodes / graphical_culture_types / images / map / models / scenes / terrain2 / music_player_gui | mod 美术放同名子目录 |
@@ -62,12 +62,12 @@
 
 `localization\<lang>\`：**语言文件主目录**（english 114 个 yml，按主题命名 `<主题>_l_english.yml`，如 actions_l_english.yml、advances_l_english.yml、buildings_l_english.yml）。
 
-`setup\`（230 档 / 10.6 MB）——**开局数据层**，新手最容易漏掉的一层：
+`setup\`（`main_menu\setup\` 259 档 / 10.5 MB：模板 207 + `1337` 26 + `1658` 26）——**开局数据层**，新手最容易漏掉的一层：
 
 | 子目录/文件 | 规模 | 作用 |
 |---|---|---|
-| `setup\start\` | **25 档**（02–27，缺 01/17） | 逐地点/逐国的开局数据：`06_pops.txt` 5 MB 的 `define_pop`、`10_countries.txt` 1.6 MB 的领土与开局状态、`05_characters.txt` 2.4 MB 的角色库、`04_dynasties.txt` 王朝… |
-| **`setup\templates\`** | **205 档 / 0.2 MB** | ★ **开局模板层**：`10_countries.txt` 里用 `include = "<模板名>"`（**5,256 次 / 192 个去重目标**）拼出开局。模板可带 `government`（168 档，含继承法/议会/**13 条社会价值观初值**）、`starting_technology_level`（123）、`discovered_regions/areas/provinces`（探索知识）、`court_language`、`country_rank`；**模板可嵌套**（57 档用 include）。命名 = `expl_<地区>`（探索）或 `<宗教/文化区>_<政体>[_no_coast/_not_present/_no_censor…]`。用法见 `guides\new-country-tutorial.md` §2b |
+| `setup\1337\` | **26 档**（02–27，缺 01/17；新增 `04_religious_orders.txt`） | 逐地点/逐国的开局数据：`06_pops.txt` 5 MB 的 `define_pop`、`10_countries.txt` 1.6 MB 的领土与开局状态、`05_characters.txt` 2.4 MB 的角色库、`04_dynasties.txt` 王朝… |
+| **`setup\templates\`** | **207 档 / 0.2 MB** | ★ **开局模板层**：`10_countries.txt` 里用 `include = "<模板名>"`（**5,361 次 / 220 个去重目标**）拼出开局。模板可带 `government`（168 档，含继承法/议会/**13 条社会价值观初值**）、`starting_technology_level`（123）、`discovered_regions/areas/provinces`（探索知识）、`court_language`、`country_rank`；**模板可嵌套**（57 档用 include）。命名 = `expl_<地区>`（探索）或 `<宗教/文化区>_<政体>[_no_coast/_not_present/_no_censor…]`。用法见 `guides\new-country-tutorial.md` §2b |
 
 ## 根部散文件（不在任何子目录里的配置——第八轮补齐）
 
@@ -106,8 +106,8 @@
 ## dlc\（DLC = mod 结构模板）
 
 - `D000_shared\`：main_menu 共享（common\dlc、gfx\interface、localization\dlc\<lang>）——"共享包"最小模板
-- `D008_fate_of_the_phoenix\`：完整模板：in_game / loading_screen / main_menu 三分区（765 / 23 / 350 档，共 **1,141 档 / 539 MB**）+ 根文件 `D008_fate_of_the_phoenix.dlc.json`（dlc 元数据，形似 metadata.json）+ thumbnail.dds + checksum_manifest.txt
-- **DLC 只新增、不覆盖基础包**（实测 1,141 档与基础包 **0 路径碰撞**）；官方只在**基础包文件**里用 `has_dlc = "<dlc 名>"` 开门（**44 个基础包文件**在用）。结构与解析规则详见 `vanilla\vanilla-dlc-and-assets.md`
+- `D008_fate_of_the_phoenix\`：完整模板：in_game / loading_screen / main_menu 三分区（767 / 69 / 361 档，共 **1,200 档 / 523.5 MB**）+ 根文件 `D008_fate_of_the_phoenix.dlc.json`（dlc 元数据，形似 metadata.json）+ thumbnail.dds + checksum_manifest.txt
+- **DLC 只新增、不覆盖基础包**（实测 1,200 档与基础包 **0 路径碰撞**）；官方只在**基础包文件**里用 `has_dlc = "<dlc 名>"` 开门（**368 处 / 66 个基础包文件**：d008 275/44 + d009 93/25）。结构与解析规则详见 `vanilla\vanilla-dlc-and-assets.md`
 - `D015_ancient_monuments_pack\`、`D017_sacred_sites_pack\`：内容包
 
 ## 关键数量事实（实查）

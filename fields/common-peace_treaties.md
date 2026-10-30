@@ -2,7 +2,7 @@
 
 > **一句话**：和平条约的字段与固定作用域，补齐 readme 缺失的本地化键格式，并论证多数条约无需配套 CB。
 > **什么时候看**：新增或审查和平条约、要决定是否配套 CB 或核对本地化键数量时翻这篇。
-> **体量**：75 行 · 约 4 分钟通读
+> **体量**：158 行 · 约 8 分钟通读
 
 来源：`in_game\common\peace_treaties\readme.txt`
 
@@ -73,3 +73,86 @@ readme **没有** CB 字段；只有 CB→条约 的单向可选链接（写在 
 - **loc 键作用域是全局的、不按目录归属**（`tools\loc-keys.md:52`）。
 - **新增条约文件不需要前缀、不需要覆盖**（`guides\merging.md:8, :50`）；和平条约**不在顺序敏感清单上**（那只有 `levies` 与 `country_name_construction`）。同名文件同名块才会覆盖（`merging.md:7`）。
 - ⚠️ 若条约创建的是 **mod 新附庸类型**，门槛别用 `is_subject_type`（`pitfalls.md:59` 疑似恒真）——用变量。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\peace_treaties\` 全量 **54 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **口径**：字段 = 顶层块内的 ``key =``；已排除 readme 以 ``<模式>`` 声明的键、以及本体修正注册表（``modifier_type_definitions``，2,437 键）内的修正名。
+
+### 一、取值白名单（本体出现过的值 + 次数）
+
+- **`cost`**（2 种）：25（2）、100（1）
+- **`ai_desire`**（4 种）：1000（2）、100（2）、9999（1）、50（1）
+- **`base_antagonism`**（8 种）：1（8）、50（2）、5（2）、0.5（1）、10（1）、1.0（1）、3（1）、20（1）
+- **`blocks_full_annexation`**（1 种）：yes（8）
+- **`ai_force_add`**（1 种）：yes（3）
+- **`category`**（2 种）：country（1）、dismantle_fort（1）
+- **`are_targets_exclusive`**（1 种）：yes（1）
+- **`collate_targets`**（1 种）：yes（1）
+
+### 二、readme 声明、但本类目内原版 0 使用
+
+> ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
+
+| 字段 | 本类目 | 全库其它类目 |
+| --- | --- | --- |
+| `ai_interaction_source_list` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `allow_null` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `allow_self` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `bottom_widget` | 0 次（54 档） | **有**（出现在 1 个类目） |
+| `cache_interaction_source_list` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `cache_order` | 0 次（54 档） | **有**（出现在 1 个类目） |
+| `cache_targets` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `column` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `custom_tags` | 0 次（54 档） | **有**（出现在 7 个类目） |
+| `default` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `default_sort` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `enabled` | 0 次（54 档） | **有**（出现在 12 个类目） |
+| `format` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `interaction_source_list` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `looking_for_a` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `map_color` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `map_mode` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `max` | 0 次（54 档） | **有**（出现在 25 个类目） |
+| `max_targets_for_ui` | 0 次（54 档） | 全库也没有 → 疑似废弃字段 |
+| `min` | 0 次（54 档） | **有**（出现在 19 个类目） |
+| `name` | 0 次（54 档） | **有**（出现在 30 个类目） |
+| `none_available_msg_key` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `only_color_selectable` | 0 次（54 档） | **有**（出现在 1 个类目） |
+| `pre_evaluation_number_to_evaluate_fully` | 0 次（54 档） | **有**（出现在 6 个类目） |
+| `pre_evaluation_sort_value` | 0 次（54 档） | **有**（出现在 6 个类目） |
+| `secondary_map_color` | 0 次（54 档） | **有**（出现在 2 个类目） |
+| `selected` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `show_if` | 0 次（54 档） | **有**（出现在 2 个类目） |
+| `show_tags_in_ui` | 0 次（54 档） | **有**（出现在 1 个类目） |
+| `show_why_not_enabled` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `show_why_not_visible` | 0 次（54 档） | 全库也没有 → 疑似废弃字段 |
+| `source` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `source_ai_override` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `source_flags` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `source_flags_ai_override` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `source_global_list` | 0 次（54 档） | **有**（出现在 3 个类目） |
+| `step` | 0 次（54 档） | **有**（出现在 2 个类目） |
+| `target_flag` | 0 次（54 档） | **有**（出现在 8 个类目） |
+| `top_widget` | 0 次（54 档） | **有**（出现在 4 个类目） |
+| `visible` | 0 次（54 档） | **有**（出现在 12 个类目） |
+
+### 三、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `value` | 206 | cost、if、else_if、multiply |
+| `add` | 171 | cost、if、every_loan、every_location_in_province_definition |
+| `limit` | 159 | if、ordered_location_in_market、every_foreign_buildings_in_location、every_loan |
+| `desc` | 139 | divide、multiply、subtract、add |
+| `scope:winner` | 125 | peace_gag_force_faction_change、if、every_in_list、allow |
+| `scope:loser` | 102 | peace_gag_force_faction_change、execute_ruler、allow、if |
+| `if` | 98 | cost、if、international_organization:middle_kingdom、force_convert |
+| `scope:war` | 51 | potential、limit、effect、allow |
+| `multiply` | 43 | add_political_influence、change_loan_amount、add_prestige、scope:winner |
+| `OR` | 41 | potential、scope:winner、limit、scope:loser |
+| `type` | 34 | perform_diplomatic_action、giving_scripted_relation、country_has_special_status、international_organization_remove_special_status |
+| `target` | 31 | giving_scripted_relation、perform_diplomatic_action、add_casus_belli、leave_situation_faction |
+| `NOT` | 29 | claim_french_throne、limit、scope:winner、visible |
+| `custom_tooltip` | 25 | scope:winner、limit、effect、if |
+| `exists` | 23 | potential、limit、AND、ver_milanese_demands |

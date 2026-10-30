@@ -2,7 +2,7 @@
 
 > **一句话**：脚本化权重片段：modifier、opinion_modifier、compare_modifier 三个子块与参数替换用法。
 > **什么时候看**：要给权重写复用片段、或想确认它和国家修正无关时翻这篇。
-> **体量**：67 行 · 约 4 分钟通读
+> **体量**：66 行 · 约 3 分钟通读
 
 来源：`in_game\common\scripted_modifiers\scripted_modifiers.info`（**1,230 B**）+ 1 个数据文件（1 KB）实查
 

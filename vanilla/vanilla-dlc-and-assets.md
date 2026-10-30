@@ -2,12 +2,13 @@
 
 > **一句话**：讲 DLC 描述符与三区镜像的装载方式，以及图片/模型不靠 `.gfx` 注册、按路径直取时的引用规则与资产规模。
 > **什么时候看**：加事件插图或任务图标、给单位换外观，或研究 DLC 挂载与资产路径怎么引用时翻这篇。
-> **体量**：321 行 · 约 15 分钟通读
+> **体量**：339 行 · 约 16 分钟通读
 
 ## 目录
 
 - [一、DLC 层的结构](#一dlc-层的结构)
   - [cosmetic 包（D015 / D017）：**纯资产，脚本侧没有门控**](#cosmetic-包d015--d017纯资产脚本侧没有门控)
+  - [Across the Pillars（D009）：伊比利亚 / 马格里布内容包（2026-10-29 正式版新增）](#across-the-pillarsd009伊比利亚--马格里布内容包2026-10-29-正式版新增)
 - [二、DLC 定义档（`main_menu\common\dlc\<pack>.txt`，实查字段表）](#二dlc-定义档main_menucommondlcpacktxt实查字段表)
   - [DLC 描述符 `.dlc.json`（与 mod 描述符同形）](#dlc-描述符-dlcjson与-mod-描述符同形)
 - [三、图片是怎么被找到的（实测规则）](#三图片是怎么被找到的实测规则)
@@ -19,12 +20,13 @@
 - [九、可改点与硬编码边界](#九可改点与硬编码边界)
 - [十、中文检索键](#十中文检索键)
 
-版本基准：EU5 1.3.x。**本篇为什么存在**：`vanilla\` 下其它 19 篇都在讲"脚本怎么运作"，而 **DLC 的装载方式**与**图片/模型怎么被脚本引用**这两层此前完全空白——它们却是加一张事件图、给任务配图标、改单位外观时的必经之路。本篇基于三个区与 `dlc\` 的实查（含 170 条事件图片路径的解析实测）。
+版本基准：**EU5 1.4.x**（含 2026-10-29 正式版；DLC 增至 **5 个**，新增内容包 `D009_across_the_pillars`）。**本篇为什么存在**：`vanilla\` 下其它 19 篇都在讲"脚本怎么运作"，而 **DLC 的装载方式**与**图片/模型怎么被脚本引用**这两层此前完全空白——它们却是加一张事件图、给任务配图标、改单位外观时的必经之路。本篇基于三个区与 `dlc\` 的实查（含 170 条事件图片路径的解析实测）。
 
 | 层 | 位置 | 规模 |
 |---|---|---|
-| DLC 元数据 | `dlc\D000_shared\` | 24 档 / 6.2 MB（含 3 个 DLC 定义 + 11 语言文案 + 图标） |
-| DLC 内容 | `dlc\D008_fate_of_the_phoenix\` | **1,141 档 / 539 MB**（`in_game` 765 / `main_menu` 350 / `loading_screen` 23） |
+| DLC 元数据 | `dlc\D000_shared\` | 27 档 / 3.0 MB（含 **4 个 DLC 定义** + 11 语言文案 + 图标） |
+| DLC 内容 | `dlc\D008_fate_of_the_phoenix\` | **1,200 档 / 523.5 MB**（`in_game` 767 / `main_menu` 361 / `loading_screen` 69） |
+| DLC 内容（新） | `dlc\D009_across_the_pillars\` | **3,273 档 / 1,200.9 MB**（`in_game` 1,656 / `main_menu` 1,432 / `loading_screen` 182）——**内容包**：伊比利亚 / 马格里布 |
 | DLC 内容 | `dlc\D015_ancient_monuments_pack\` / `D017_sacred_sites_pack\` | 107 档 / 41 MB、90 档 / 49 MB（**cosmetic** 型） |
 | 2D 资产 | `main_menu\gfx\` | **16,821 档 / 2,124 MB**（`interface\` 下：icons 6,705 / illustrations 1,065 / advance 1,634） |
 | 3D 资产 | `in_game\gfx\` | **22,369 档 / 7,614 MB**（models 17,327 / terrain2 4,545 / map 348） |
@@ -47,10 +49,10 @@ dlc\D008_fate_of_the_phoenix\
 └── loading_screen\  23 档
 ```
 
-**⚠️ DLC 只新增、不覆盖基础包**（实测：D008 的 **1,141 档与基础包 0 路径碰撞**）。DLC 内容分两种落地方式：
+**⚠️ DLC 只新增、不覆盖基础包**（实测：D008 的 **1,200 档与基础包 0 路径碰撞**；D009 同样整目录镜像）。DLC 内容分两种落地方式：
 
 1. **新文件落在 DLC 目录**（上表）；
-2. **基础包文件里写 `has_dlc` 分支**——原版 **44 个基础包文件 / 263 处**用到它，**且全部是 `d008_fate_of_the_phoenix`**（实测：基础包里 `d015_*` / `d017_*` 的引用 **0 处**，见下节）：
+2. **基础包文件里写 `has_dlc` 分支**——原版 **368 处 / 66 个基础包文件**用到它——`d008` **275 处 / 44 文件**、`d009` **93 处 / 25 文件**（实测：基础包里 `d015_*` / `d017_*` 引用 **0 处**，见下节）；DLC 目录内另有 **407 处 `d009` 门控**（全库合计 775 处）：
 
 ```txt
 potential = {
@@ -60,7 +62,7 @@ potential = {
 age = age_1_traditions
 ```
 
-词条文本：`has_dlc_trigger: "Has DLC: $DLC$"` / `NOT_has_dlc_trigger`（`triggers_l_english.yml:1753-1754`）。实例分布：`advances\country_byz.txt:35`、`bureaucracies\byz.txt:11`、`disasters\D008_fate_of_the_phoenix.txt:10`、`child_educations\D008_orthodox_education.txt:6`、`building_types\unique_buildings.txt:5188`、`formable_countries\00_formable_countries.txt:1903` 等。
+词条文本：`has_dlc_trigger: "Has DLC: $DLC$"` / `NOT_has_dlc_trigger`（`triggers_l_english.yml:1753-1754`）。实例分布：`advances\country_byz.txt:66`、`bureaucracies\byz.txt:11`、`disasters\D008_fate_of_the_phoenix.txt:10`、`child_educations\D008_orthodox_education.txt:6`、`building_types\unique_buildings.txt:5188`、`formable_countries\00_formable_countries.txt:2203` 等。
 
 ### cosmetic 包（D015 / D017）：**纯资产，脚本侧没有门控**
 
@@ -93,11 +95,28 @@ in_game\gfx\map\city_data\D017_holy_sites.txt        # 文件头声明归属
 
 ---
 
+### Across the Pillars（D009）：伊比利亚 / 马格里布内容包（2026-10-29 正式版新增）
+
+| 层面 | 规模 / 要点 |
+|---|---|
+| 规模 | **3,273 档 / 1,200.9 MB**（`in_game` 1,656 / `main_menu` 1,432 / `loading_screen` 182） |
+| 描述符 | `D009_across_the_pillars.dlc.json`：`name = d009_across_the_pillars`、`path = dlc/D009_across_the_pillars`、`checksum = 55266864…`、`pops_id = d009_across_the_pillars` |
+| 局势 | `situations\battle_for_the_strait.txt`（直布罗陀海峡之战）、`golden_century.txt`（黄金世纪） |
+| 国际组织 | `international_organizations\d009_grand_alliance.txt` |
+| 事件 | **15 档**：`d009_convivencia_events`（共存）、`mudejar` / `morisco_diaspora` / `late_minorities`（穆斯林少数群体）、`iberian_union`、`iberian_policy`、`religious_orders`、`flavor_ara|cas|gra|tle`（阿拉贡/卡斯蒂利亚/格拉纳达/特莱姆森） |
+| 法律 | **7 档**（`d009_00_monarchy` / `00_religious` / `01_common` / `01_legal_system` / `02_country_specific` / `02_distribution_of_power`、`iberian_union_common_laws`） |
+| 决策 | **7 档**（`d009_golden_century_decisions`、`ara/cas/gra/tle_decisions`、葡/西官僚决策等） |
+| 革新 | `advances\d009_region_iberia` / `region_maghreb` / `saqaliba` / `country_mor` |
+| 远征 | **11 档**：`cibola`、`city_of_caesars`、`el_dorado`、`fountain_of_youth`、`gold_caravan`、`gold_fleet_nueva_espana` / `_tierra_firme`、`norumbega`、`quivira`、`saguenay`、`sierra_de_la_plata` |
+| 兵种/军事 | `unit_types` **7 档**、`unit_families` 1、`levies` 2、`casus_belli` **3**、`peace_treaties` **3**、`wargoals` 1、`subject_types` 1 |
+| 其他 | `heir_selections` 1、`parliament_types` 1、`building_types` 3、`bureaucracies` 2、`estate_privileges` 5、`auto_modifiers` 2、`religious_order_zeal_modifiers` 1（接修会系统，见 `vanilla\vanilla-culture-and-religion.md` §三·bis） |
+
+> **门控实测**：基础包对 `d009` 的门控 **93 处 / 25 个文件**（如 `advances\region_iberia.txt:181`、`building_types\unique_buildings.txt:1370`、`cabinet_actions\iberia.txt:14`）；DLC 目录内部另 **407 处** `d009` 门控（包内子内容开关）。全库 `has_dlc` 合计 **775 处**（`d008` 275 + `d009` 500）。
 ## 二、DLC 定义档（`main_menu\common\dlc\<pack>.txt`，实查字段表）
 
 > 逐字段权威表与 3 档对照见 **`fields\main_menu-common-dlc.md`**（本节只给机制要点与实例）。
 
-每个 DLC 一个档，原版 3 个（D000_shared 里）：`fate_of_the_phoenix.txt` / `ancient_monuments_pack.txt` / `sacred_sites_pack.txt`。**没有 readme/info，以下为 3 档全字段实查**：
+每个 DLC 一个档，原版 **4 个**（D000_shared 里）：`fate_of_the_phoenix.txt` / `ancient_monuments_pack.txt` / `sacred_sites_pack.txt` / **`across_the_pillars.txt`**。**没有 readme/info，以下为 4 档全字段实查**：
 
 ```txt
 fate_of_the_phoenix = {                        # 块名 = DLC 键（= .dlc.json 的 name）
@@ -308,7 +327,7 @@ pine_generator_low = {
 | 改 DLC 名称/图标/顺序 | `dlc\D000_shared\main_menu\common\dlc\<pack>.txt` + `icons\dlcs\` + 11 语言 yml | 只对官方 DLC 有意义 |
 | 改按键映射 | `loading_screen\input_profile\`（配 `_input_profile.info`） | — |
 
-**硬编码**：`.dds` 之外只少量接受 `.png`（`loading_screen\gfx` 有 23 个 `.png`、`.cur` 22 个）；DLC 的 `steam_id` 校验、`checksum_manifest.txt` 校验、`third_party_content` 标记、`.dlc.json` 的 `mp_synced` / `affects_save_compatibility` 由启动器与引擎读取。
+**硬编码**：`.dds` 之外只少量接受 `.png`（`loading_screen\gfx` 有 23 个 `.png`、`.cur` 22 个）；DLC 的 `steam_id` 校验、`checksum_manifest.txt` 校验、`third_party_content` 标记、`.dlc.json` 的 `mp_synced` / `affects_save_compatibility` 由引擎读取（**EU5 无独立启动器**）。
 
 ---
 

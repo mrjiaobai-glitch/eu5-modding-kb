@@ -2,7 +2,7 @@
 
 > **一句话**：用游戏自带测试系统、error.log 与 qa_debug 调试事件验证 mod 机制，含观察者模式跑局与常见错误的优先级分级。
 > **什么时候看**：mod 写完要验证时按本文流程走一遍；出报错先看这里的常见刷屏与归属判断。
-> **体量**：76 行 · 约 4 分钟通读
+> **体量**：75 行 · 约 4 分钟通读
 
 > **审查流程的配套**：逐文件审查用 `tools\review-checklist.md`（把全库「审查要点」按检查方式重排：脚本可判项 / 作用域对照表 / 语义陷阱 / **防误报白名单**）；本库引用过的数字若被怀疑，用 `tools\kb-self-audit.md` 的复跑方法回原版核对。
 
@@ -31,7 +31,7 @@ success_child = { desc = "MLO"  trigger = { c:MLO ?= { months_since_war > 12 } }
 
 ## 二、error.log 排错
 
-- 位置：`Documents\Paradox Interactive\Europa Universalis V\logs\error.log`（游戏运行目录的 logs 下）。
+- 位置：`D:\Documents\Paradox Interactive\Europa Universalis V\logs\error.log`（**本机 Documents 在 D 盘**；日志目录与 mod 目录同级）。
 - 每行报错含 **"Script location: <文件:行>"**——据此定位是哪个 mod 文件的问题。
 - 常见刷屏：变量未初始化（"Failed to fetch variable ... due to not being set"）、change_variable 写 value=N（"Invalid operation type in execution"）、作用域错（"Wrong scope: xxx, expected yyy"、"Scoped object is not valid"）、$参数$ 未传（missing）。
 - 判断归属：先看 "Script location:" 行指向 mod 文件还是原版（原版报错可能是 mod 引起的连锁）。

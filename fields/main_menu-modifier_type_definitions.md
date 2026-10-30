@@ -2,11 +2,11 @@
 
 > **一句话**：修正键注册表：显示层字段、必填的 game_data 与十种作用域类别，以及两条本地化键。
 > **什么时候看**：写任何修正键、要查它归哪类对象或补名称与说明时翻这篇。
-> **体量**：79 行 · 约 4 分钟通读
+> **体量**：104 行 · 约 5 分钟通读
 
 来源：**本类目没有 readme、也没有 info**——3 个档实查（`00_modifier_types.txt` **212,995 B / 2,393 键**、`01_byz.txt` 29 键、`02_generic_bureaucracies.txt` 14 键）。
 
-> ⚠️ **口径提醒**：本库其它篇引用的 "2393 个修正" 是**只算主档**的数字；**目录合计 2,436 个键**（2026-09 体检修正）。凡说"修正键必须在这里注册"的地方，指的都是本档。
+> ⚠️ **口径提醒**：本库其它篇引用的 "2,659 个修正" 是**只算主档**的数字；**目录合计 2,713 个键**（2026-10-29 复测）。凡说"修正键必须在这里注册"的地方，指的都是本档。
 
 ## 它是什么
 
@@ -62,7 +62,7 @@ MODIFIER_TYPE_DESC_<键>     # 说明（英文 loc 2,477 条）
 
 | 项 | 数据 |
 |---|---|
-| 键总数 | **2,436**（00_modifier_types 2,393 + 01_byz 29 + 02_generic_bureaucracies 14） |
+| 键总数 | **2,713**（00_modifier_types 2,659 + 01_byz 30 + 02_generic_bureaucracies 24；去重 2,711） |
 | 带 `ai = yes` | **48**（全部在 00 主档） |
 | category 分布 | country 1,870 / location 345 / IO 94 / unit 70 / character 43 / all 5 / movement 4 / religion 3 / province 1 / rebel 1 |
 | DLC 追加 | `01_byz.txt`、`02_generic_bureaucracies.txt` 是 DLC/内容包追加的键（44 个）——**mod 也可以照这个方式追加自己的档** |
@@ -76,3 +76,29 @@ MODIFIER_TYPE_DESC_<键>     # 说明（英文 loc 2,477 条）
 - **跨类目引用**（法律/改革/建筑/阶层特权/事件选项里的 `modifier` 字段）只认**已注册的键**；审查 mod 时必须把所有出现的修正键回本表比对（这是 `tools\review-checklist.md` 第二节列的第一条）。
 - **新键要同时给 loc 三件套**（`MODIFIER_TYPE_NAME_` / `_DESC_`，以及用它的对象的 loc）。
 - 未在 readme 中说明：本类目**没有任何官方文档**；`color` 的合法取值清单、`boolean` 与 `percent` 的界面渲染细节、`ai = yes` 具体影响哪些 AI 决策，均由引擎决定（`ai = yes` 的清单可反查 `vanilla\vanilla-ai.md`）。
+
+## 移速键作用域速查（2026-10 实查）
+
+完整机制见 `vanilla\vanilla-army-movement.md`。注册表里与军队移动直接相关的键，`category` 分三类：
+
+| 键 | 行 | `category` | 备注 |
+| --- | --- | --- | --- |
+| `army_movement_speed` | L4697 | `unit` | `percent=yes`，陆军移速主旋钮 |
+| `navy_movement_speed` | L4711 | `unit` | 海军 |
+| `army_disembark_speed` | L4704 | `unit` | 卸载/登陆 |
+| `movement_speed_if_no_road` | L4718 | `unit` | 无道路减免 |
+| `movement_speed_when_attached_to_another_unit` | L6107 | `unit` | 附属他军时 |
+| `land_morale_movement_cost` / `naval_morale_movement_cost` | L4620 / L4628 | `unit` | 移动耗士气速率 |
+| `movement_cost` / `hostile_movement_cost` / `friendly_movement_cost` | L4673 / L4681 / L4689 | `location` | 成本，与速度成反 |
+| `capital_movement_cost_modifier` | L2916 | `country` | 首都距离成本 |
+| `movement_blocked` | L5941 | `location`（`boolean`） | 完全断路 |
+## 整合速度键作用域速查（2026-10 实查）
+
+机制全貌见 `vanilla\vanilla-territory-integration.md`。地点四态 `integration_level`（`colonized`/`conquered`/`integrated`/`core`）的推进速度由这 4 个修正决定：
+
+| 键 | 行 | `category` | 备注 |
+| --- | --- | --- | --- |
+| `province_integration_speed` | L6253 | `province` | 内阁 `integrate_*` 期间给的省速度 |
+| `local_integration_speed` | L6259 | `location` | 地点级绝对速度（percent） |
+| `local_integration_speed_modifier` | L6265 | `location` | 地点级百分比（percent） |
+| `global_integration_speed_modifier` | L6272 | `country` | 全国百分比（percent） |

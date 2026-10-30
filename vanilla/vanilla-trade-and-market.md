@@ -2,7 +2,7 @@
 
 > **一句话**：讲商品进入市场之后的定价与流动：74 种商品字段、市场接入度与吸引力、商品储备与供需、市场间贸易路线、贸易容量与力量、收入分配和粮食三级体系。
 > **什么时候看**：加商品、改市场价格与供需、调市场归属或贸易容量，或做贸易战、通行费与粮食相关内容时翻这篇。
-> **体量**：215 行 · 约 10 分钟通读
+> **体量**：214 行 · 约 10 分钟通读
 
 版本基准：EU5 1.3.x。核心文件：`common\goods\`（6 文件，74 种商品）、`common\prices\`（8 文件）、`common\goods_demand\`（7 文件）、`common\production_methods\`（3 文件）、`common\generic_actions\markets.txt`（550 行，市场与贸易操作）、`loading_screen\common\defines\00_defines.txt` 的 **`NMarket`（1754–1837）** 与 **`NEconomy`（1839–1989，含 `TRADE_PATH_*`）**。机制描述引自游戏内百科词条（`game_concepts_l_simp_chinese.yml`）。
 

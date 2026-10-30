@@ -2,7 +2,7 @@
 
 > **一句话**：以原版实测数据搭一条任务链的最小可用集：三条硬规则、链与节点字段、select_trigger 目标选择、本地化键与图标。
 > **什么时候看**：第一次加任务链时按这七步做，写完再用最后一节的表格逐条自检。
-> **体量**：135 行 · 约 7 分钟通读
+> **体量**：134 行 · 约 7 分钟通读
 
 > **E2E 教程**：一条"能看到、能完成、有奖励、有本地化"的任务链，最小可用集。
 > 字段权威：`fields\common-missions.md`；机制全貌：`vanilla\vanilla-events-and-missions.md` §五。素材取自原版 11 条链 / 108 个节点的实测。
@@ -11,7 +11,7 @@
 
 1. **任务包默认是关的**：`mission_packs_enabled_rule` 默认 `mission_packs_disabled`（`main_menu\common\game_rules\00_game_rules.txt:155`）→ 链的 `visible` 第一行必须写 `game_has_missions_enabled = yes`，否则默认设置下不进候选池。
 2. **任务级 `on_start` / `on_completion` 默认不执行**：`mission_rewards` 默认 `only_end_mission_rewards`，带 `flag = task_rewards_disabled`（同文件 `:170`）→ **状态维护（`set_variable` / `remove_variable` / 清 `select_trigger` 的 flag）必须放 `on_persistent_start` / `on_persistent_completion` 或链级 `on_completion`**。
-3. **链不挂 on_action**：引擎按 `chance` + `POTENTIAL_MISSION_COUNT = 10`（`00_defines.txt:168`）自己抽候选。
+3. **链不挂 on_action**：引擎按 `chance` + `POTENTIAL_MISSION_COUNT = 10`（`00_defines.txt:180`）自己抽候选。
 
 ## 第 1 步：`common\missions\<链名>_mission_pack.txt`
 

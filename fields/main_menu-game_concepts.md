@@ -2,7 +2,7 @@
 
 > **一句话**：概念词条的注册表：texture 与 alias 两个字段、概念链接写法，以及与概念本地化键的成对要求。
 > **什么时候看**：界面上的概念链接不生效、要注册新概念或补词条解释时翻这篇。
-> **体量**：58 行 · 约 3 分钟通读
+> **体量**：57 行 · 约 3 分钟通读
 
 来源：**本类目没有 readme、也没有 info**——`00_game_concepts.txt`（**62,722 B / 696 条**）实查。
 
@@ -53,5 +53,5 @@ game_concept_modifier_desc: "Modifiers are values that influence how the game wo
 - **`alias` 里的每一项都要自己的 `game_concept_<别名>`**（原版 416 个别名全部有键）——只写别名不写键是高频错误。
 - **`texture` 不带扩展名**（写 `"modifiers/_default"` 而不是 `"modifiers/_default.dds"`）；路径以 `gfx\interface\icons\` 为根（与 `alert_descriptions` 的 `texture` 写法一致）。
 - **`hidden` 只有 1 处**：隐藏概念是异类写法，别照抄。
-- 概念是**全局命名空间**：mod 新增概念要用不易撞名的前缀（例如 `mymod_xxx`），否则会覆盖原版概念的名称与解释。
+- 概念是**全局命名空间**：mod 新增概念要用不易撞名的前缀（例如 `mymod_xxx`），否则会覆盖原版概念的名称与解释。⚠️ 覆盖方向**未实测**：2026-10-30 合并实测显示同名条目**先处理者胜、后到者丢弃**（见 `merging.md` §八）。
 - 未在 readme 中说明：本类目**没有任何官方文档**；`texture` 是否支持其它根路径、`hidden` 的确切表现、以及除 `alias`/`texture`/`hidden` 外是否还有引擎认得的字段，均未文档化。

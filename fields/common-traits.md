@@ -2,7 +2,7 @@
 
 > **一句话**：特质的字段与原版 147 个实测，含 readme 未列的九个字段、九类 category 与特质本地化三键。
 > **什么时候看**：写角色特质、要调出生或战斗后获得概率，或核对修正生效条件时翻这篇。
-> **体量**：116 行 · 约 6 分钟通读
+> **体量**：194 行 · 约 9 分钟通读
 
 来源：`in_game\common\traits\_traits.info`（790 B）+ 9 个数据文件 **147 个特质** 的实际用法
 > **注意**：本文件在 `in_game\common\traits\`（不在 `main_menu\common\`）。
@@ -91,7 +91,7 @@ education = { color = rgb { 80 161 115 } }          # 教育（9）
 ## 本地化（原版实测）
 
 - `<trait id>` = 名称、`desc_<trait id>` = 描述、`<trait id>_die_desc` = 角色去世时的追述（`main_menu\localization\<lang>\traits_l_simp_chinese.yml`）
-- 147/147 都有 `desc_*`；**唯一名称缺口的处理值得注意**：`arrogant`（`07_cabinet.txt:371`，cabinet 类）在 traits 文件里**没有** `arrogant:` 键，只有 `desc_arrogant` + `arrogant_die_desc`——名称实际由 `character_names_l_*.yml:29880` 的**人名词表条目**提供（键是全局的，所以游戏内显示正常）。
+- 147/147 都有 `desc_*`；**唯一名称缺口的处理值得注意**：`arrogant`（`07_cabinet.txt:381`，cabinet 类）在 traits 文件里**没有** `arrogant:` 键，只有 `desc_arrogant` + `arrogant_die_desc`——名称实际由 `character_names_l_*.yml:29880` 的**人名词表条目**提供（键是全局的，所以游戏内显示正常）。
   → 审查启示：**判断"缺 loc 键"必须全库搜，不能只看本类目的 loc 文件**；反之，改了同名的人名词条也会连带改掉特质名。
 
 ## 脚本面（原版 common\ 内引用计数）
@@ -113,3 +113,82 @@ education = { color = rgb { 80 161 115 } }          # 教育（9）
 - `upgrades_to` / `recovery_trait` / `juvenile_form` 引用的**必须是已存在的 trait id**（原版 `one_eyed`→`blind`、`scarred`→`disfigured`、`smallpox_trait`→`pockmarked_trait`、`castrated`→`eunuch`）；写错 id 时升级链断在一个不存在的特质上。
 - `custom_tags` 是自由文本标签（原版 `military tactical` 这类双词值说明**一个键可空格式多值**），不要当成枚举。
 - 未在 readme 中说明：`flavor` 的取值清单（在 `trait_flavor\`）、`category` 的完整 9 值、以及本文"readme 未列出的 8 个字段"。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\traits\` 全量 **10 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **注意**：本类目**本体没有 readme.txt**——下面全部是实测结果，不存在"漏写"一说。
+
+### 一、本体实际在用的字段（无 readme，纯实测）
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `flavor` | 64 | 2 | personality（41）、education（9）、government_approach（8）、interests（6） |
+| `is_bad` | 19 | 2 | yes（19） |
+| `yearly_chance_of_remove` | 11 | 2 | 0.04（3）、0.05（3）、0.6（1）、0.25（1）、0.07（1） |
+| `chance_on_birth` | 7 | 1 | 0.0003（2）、0.00015（1）、0.001（1）、0.0005（1）、0.01（1） |
+| `chance_after_battle` | 6 | 1 | 0.01（3）、0.02（1）、0.05（1）、0.005（1） |
+| `yearly_chance_to_die` | 3 | 1 | 0.55（1）、0.25（1）、0.35（1） |
+| `upgrades_to` | 2 | 1 | disfigured（1）、blind（1） |
+| `max_number_of_birth_siblings` | 1 | 1 | 1（1） |
+| `recovery_trait` | 1 | 1 | pockmarked_trait（1） |
+| `juvenile_form` | 1 | 1 | eunuch（1） |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`category`**（9 种）：ruler（45）、cabinet（21）、general（19）、health（13）、admiral（13）、artist（12）、religious_figure（11）、child（10）、explorer（5）
+- **`flavor`**（4 种）：personality（41）、education（9）、government_approach（8）、interests（6）
+- **`is_bad`**（1 种）：yes（19）
+- **`yearly_chance_of_remove`**（7 种）：0.04（3）、0.05（3）、0.6（1）、0.25（1）、0.07（1）、0.65（1）、0.06（1）
+- **`chance_on_birth`**（6 种）：0.0003（2）、0.00015（1）、0.001（1）、0.0005（1）、0.01（1）、0.15（1）
+- **`chance_after_battle`**（4 种）：0.01（3）、0.02（1）、0.05（1）、0.005（1）
+- **`color`**（4 种）：rgb { 193  117  61 }（1）、rgb { 119  70  168 }（1）、rgb { 80  161  115 }（1）、rgb { 63  125  199 }（1）
+- **`yearly_chance_to_die`**（3 种）：0.55（1）、0.25（1）、0.35（1）
+- **`upgrades_to`**（2 种）：disfigured（1）、blind（1）
+- **`max_number_of_birth_siblings`**（1 种）：1（1）
+- **`recovery_trait`**（1 种）：pockmarked_trait（1）
+- **`juvenile_form`**（1 种）：eunuch（1）
+
+### 三、该用哪些修正（本体在这个类目里实际用过，前 3）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `category` | 149 | 13 |
+| `custom_tags` | 65 | 7 |
+| `color` | 4 | 23 |
+
+### 四、深度 1 的块（子条目：政策／变体／子类型等）
+
+| 块名 | 次数 | 文件数 |
+| --- | --- | --- |
+| `modifier` | 149 | 9 |
+| `allow` | 77 | 6 |
+| `chance` | 27 | 2 |
+
+### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `NOT` | 61 | allow、OR |
+| `modifier` | 29 | chance |
+| `base` | 27 | chance |
+| `marriage_desirability` | 25 | modifier |
+| `war_declaration_stab_hit_tolerance` | 18 | modifier |
+| `bias_for_militarist_policies` | 15 | modifier |
+| `commander_combat_bonus` | 14 | modifier |
+| `always` | 13 | allow |
+| `monthly_political_influence_gain_modifier` | 12 | modifier |
+| `aggressiveness_modifier` | 11 | modifier |
+| `character_life_expectancy` | 11 | modifier |
+| `bias_for_diplomat_policies` | 11 | modifier |
+| `peace_offer_negotiation_power` | 10 | modifier |
+| `win_war_chance_threshold` | 9 | modifier |
+| `war_declaration_war_exhaustion_tolerance` | 9 | modifier |
+
+### 六、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `category` | 149 | 13 |
+| `custom_tags` | 65 | 7 |
+| `color` | 4 | 23 |

@@ -2,7 +2,7 @@
 
 > **一句话**：实查 2087 个文化、528 种语言、293 个宗教及其组／信条／学派／圣地／神祇／运动，给出地位容量、统一度、好感与同化改宗速率修正链。
 > **什么时候看**：加文化或宗教、改地位与容量、做运动传播或改宗内容，或需要宗教字段表（无官方 readme）时翻这篇。
-> **体量**：463 行 · 约 22 分钟通读
+> **体量**：540 行 · 约 25 分钟通读
 
 ## 目录
 
@@ -11,6 +11,7 @@
 - [二、文化（culture）](#二文化culture)
   - [2.1 定义层](#21-定义层)
   - [2.2 三层地位 + 容量](#22-三层地位--容量)
+  - [2.2b 脚本判定"某文化的档位"（含"某地优势文化在本国的接纳程度"，2026-10 实查）](#22b-脚本判定某文化的档位含某地优势文化在本国的接纳程度2026-10-实查)
   - [2.3 文化统一度](#23-文化统一度)
   - [2.4 文化好感（五档）](#24-文化好感五档)
   - [2.5 文化战争：传统 = 防御，影响 = 攻击](#25-文化战争传统--防御影响--攻击)
@@ -28,7 +29,10 @@
   - [3.8 宗教启用机制（⚠️ 最容易踩）](#38-宗教启用机制️-最容易踩)
   - [3.9 运动（movements）—— 宗教/文化的传播引擎](#39-运动movements-宗教文化的传播引擎)
   - [3.10 宗教 IO / 局势 / 灾难](#310-宗教-io--局势--灾难)
-- [四、语言（文化的硬依赖）](#四语言文化的硬依赖)
+- [三·bis、修会系统（religious orders，2026-10 补）](#三bis修会系统religious-orders2026-10-补)
+  - [三层结构：type → calling → zeal](#三层结构type--calling--zeal)
+  - [脚本接口](#脚本接口)
+  - [可改点 / 未证](#可改点--未证)
 - [五、耦合点（写 mod 时的接口总表）](#五耦合点写-mod-时的接口总表)
 - [六、Mod 改造建议（可改 vs 硬编码）](#六mod-改造建议可改-vs-硬编码)
 - [七、⚠️ 统计方法学警告（2026-09 本轮实测）](#七️-统计方法学警告2026-09-本轮实测)
@@ -165,6 +169,48 @@ my_culture = {
 
 - 相关效果：`add_accepted_culture` / `demote_accepted_culture` / `add_tolerated_culture` / `remove_tolerated_culture` / `change_culture` / `change_language` / `add_cultural_tradition` / `add_cultural_influence` / `set_cultural_view` / `change_cultural_view`（`effect_localization\culture_effects.txt`）。
 - 触发器（`trigger_localization\culture_triggers.txt`，20 条）：`cultural_tradition`、`cultural_tradition_power`、`cultural_influence`、`cultural_influence_power`、`cultural_view` / `reverse_cultural_view`、`is_accepted_in`、`is_primary_or_accepted_in`、`is_tolerated_in`、`has_culture_group`、`any_culture_group`、`has_shared_culture_group`、`has_graphical_culture`、`culture_opinion_impact`、`is_active`、`is_already_merged`、`is_merged_culture_group(_of)`、`merged_culture_group_contains_culture`、`has_any_culture_group`。
+
+### 2.2b 脚本判定"某文化的档位"（含"某地优势文化在本国的接纳程度"，2026-10 实查）
+
+档位是**离散四态**（主流 > 已接纳 > 相容 > 受歧视），**不是百分比**。本体用两套**方向相反**的触发器判定，都在 `trigger_localization\`。
+
+**方向 A · 国家作用域**（`country_triggers.txt`，root = 国家）——问"本国接不接受某文化"：
+
+| 触发器 | 行 | 语义 |
+| --- | --- | --- |
+| `has_primary_or_accepted_culture = <文化>` | L2743 | 主流或已接纳 |
+| `has_primary_or_accepted_or_tolerated_culture = <文化>` | L2754 | 主流/已接纳/相容（＝非受歧视） |
+| `has_accepted_culture = <文化>` | L2765 | 已接纳（不含主流） |
+| `has_tolerated_culture = <文化>` | L2776 | 相容 |
+
+**方向 B · 文化作用域**（`culture_triggers.txt`，root = 一个文化）——问"这文化在某国是什么档"：
+
+| 触发器 | 行 |
+| --- | --- |
+| `is_primary_or_accepted_in = <国家>` | L51 |
+| `is_accepted_in = <国家>` | L45 |
+| `is_tolerated_in = <国家>` | L57 |
+| `is_discriminated_in = <国家>` | ⚠️ 原版在用（见下 `promote_culture.txt:192`），但其 trigger_localization 注册行没在本次扫到的锚点里——**用前先 grep 复核** |
+
+**"某地点的优势文化在本国的接纳程度"的正解**：`.dominant_culture` 取该地**规模最大**的文化（优势文化，**与四档正交**，见 §术语对照），再喂给判定。本体最地道的是**方向 B**——把文化取成作用域再问（`cabinet_actions\promote_culture.txt:181`、`assimilate_area.txt:189`）：
+
+```
+scope:target_1.dominant_culture = { is_tolerated_in = scope:actor }
+dominant_culture = { is_primary_or_accepted_in = scope:actor }
+```
+
+方向 A 也等价（root 已是国家时）：
+
+```
+has_accepted_culture = location:fatehabad.dominant_culture
+```
+
+- `.dominant_culture` 可挂在（实测计数）：`scope:target_location`(×11)、`location`/`location:xxx`(×13)、`root`(×4)、`owner`(×2)、`capital`(×2)；另有 `secondary_culture`（`promote_culture.txt:94`）。
+- 判"完全不被接受"用三连（`promote_culture.txt:192`）：`NOT = { is_primary_or_accepted_in = … }` + `NOT = { is_tolerated_in = … }` + `is_discriminated_in = …`。
+
+**切换档位的脚本动作**（`effect_localization\country_effects.txt`）：`add_accepted_culture`(L1766) / `remove_accepted_culture`(L1793) / `demote_accepted_culture`(L1811，降一档) / `add_tolerated_culture`(L1802) / `remove_tolerated_culture`(L1820) / `add_discriminated_culture`(L1829) / `remove_discriminated_culture`(L1838)。**主流文化不能用这些键设**——改主流走通用行动 `change_primary_culture`（见 §2.2 表）。
+
+**未在文本证实（别当已证）**：① `is_discriminated_in` 的注册行；② `.dominant_culture` 在一地多文化时取"绝对多数"还是"任一最高档"（引擎侧）；③ **没有连续的"数值接纳度"**——本库找不到 `culture_acceptance` 类修正键，"程度"只有上述离散四态 + §2.2 的满意度/成本数值。
 
 ### 2.3 文化统一度
 
@@ -385,7 +431,37 @@ modifier = { tolerance_heretic = -2 }
 
 结束条件 `religious_turmoil_end_trigger`：宗教统一度 > 0.90 **或** 精神/人文轴 > 90 **或**（轴 < −60 且教士满意度 > 0.6 / 教士力量 > 0.20）。灾难期间解锁 3 个专属行动（`religious_turmoil_actions.txt`：推精神派、推人文派、支持皈依努力），全部以 `disaster_type = disaster_type:religious_turmoil` 为前置。
 
-## 四、语言（文化的硬依赖）
+## 三·bis、修会系统（religious orders，2026-10 补）
+
+> **与骑士团（`chivalric_orders`）不是一回事**：`chivalric_orders` 是**角色向勋位**（`potential` + `country_modifier` + `character_modifier` + `character_eligible`，如圣乔治勋章）；本节讲的是**持有地向的修会实体**（有类型、calling、狂热值，可占地、可换 calling、可改 zeal）。
+
+**数据位置**：`common\religious_order_types\`（2 档：`00_catholic.txt` + readme）、`common\religious_order_callings\`（4 档：iberian_military / mendicant / monastic + readme）、`common\religious_order_zeal_modifiers\`（1 档）、**主机逻辑** `generic_actions\religious_orders.txt`（约 1800 行：建会/入会/依附/换 calling/改 zeal）、持有地货物需求 `goods_demand\religious_orders.txt`（`religious_order_holding_demand`）、`attribute_columns\133_religious_order_type.txt`。
+
+### 三层结构：type → calling → zeal
+
+**① 修会类型 `religious_order_types`**（readme 全字段）：`color`、`default_founding_country_allow` / `default_founding_location_allow`（建国/建址条件，country/location 触发器）、`founding_name_pattern`、`location_overlay_loc_key`、`founding_cost_gold`、**`can_field_levies`（默认 no）**、`default_calling`、`valid_callings`、`holding_goods_demand`、`graphical_cultures`、`on_leader_death`、`content_priority`。
+
+本体三类：
+| 类型 | 颜色 / gfx | `on_leader_death` |
+|---|---|---|
+| `iberian_military_order_type` | 200 50 50 / military_order_gfx | 从持有地随机 pop（30–50 岁）产生新首领 |
+| `monastic_order_type` | 70 90 160 / monastic_gfx | 同上 |
+| `mendicant_order_type` | 120 85 50 / monastic_gfx | 同上 |
+
+**② calling `religious_order_callings`**：`valid_for_types`、`preferred_societal_values`（社会价值观偏好）、`location_trigger`、`location_modifier`、`country_modifier`（**按 持有地数 × zeal 缩放**）、`low_zeal_country_modifier`（**按 持有地数 × (100 − zeal) 缩放**）、`location_revenue_modifier`、`ai_will_select`。
+实例：`crusaders_calling`（iberian military；revenue 1.0、`local_levy_size_modifier +1.0`、低 zeal 时 `land_morale_modifier −0.03`、`global_mercenaries_modifier +0.25`）；`preachers_calling`（mendicant；`local_pop_conversion_speed_modifier +0.2`）；`contemplatives_calling`（monastic）。
+
+**③ 狂热 `religious_order_zeal_modifiers`**：`valid_for_callings` + `country_trigger` + `value`（0–100 尺度）。例：`zeal_at_war_with_heathen = 12`（对 crusaders/wardens/confidants/mariners 四个 calling）。`NReligion` 另有 `RELIGIOUS_ORDER_SOCIETAL_VALUE_PUSH = 0.05`（修会推动社会价值观的力度）。
+
+### 脚本接口
+- **效果**（`effect_localization\religious_order_effects.txt`）：`attach_to_religious_order`、`join_religious_order`、`change_religious_order_calling`、`change_religious_order_zeal`、`remove_religious_order`、`remove_all_religious_orders`。
+- **触发器**（`trigger_localization\religious_order_triggers.txt`）：`is_religious_order_member`、`is_holding_of_any_religious_order`、`has_any_religious_order_presence`、`num_locations_in_religious_order`、`religious_order_zeal`、`religious_order_type_foundable_by`。
+
+### 可改点 / 未证
+- 可改：类型/颜色/建国条件/`founding_cost_gold`/`can_field_levies`/`valid_callings`/zeal 触发与数值/calling 的 location·country 修正与缩放（缩放公式在注释里写死：`holdings × zeal` 与 `holdings × (100−zeal)`）。
+- **未证**：zeal 的**自然衰减/基础增长**（只见到 zeal_modifier 加值，未见月度基准）；`low_zeal_country_modifier` 的具体换算阈值（"low" 的判定线未见）；`can_field_levies` 与征召兵系统的确切挂接点。
+
+
 
 - `languages\` 528 个条目 = **名字库 + 构名规则**：`male_names`（446 条有）、`female_names`（439）、`dynasty_names`（436）、`lowborn`（436）、`family`（295）、`dialects`（31，**子块**，方言可继承/覆盖父语言）、`character_name_order`（23）、`character_name_short_regnal_number`（23）、`patronym_suffix_son`(15)/`_daughter`(13)、`patronym_prefix_son`(10)/`_daughter`(10)、`location_prefix`(18)/`_suffix`(6)/`_vowel`(4)/`_elision`(2)/`_ancient(_vowel)`、`descendant_prefix`/`_suffix`/`_male`/`_female`、`fallback`(4)、`require_genitive_location_names`、`ship_names`(3)、`dynasty_template_keys`(3)。
 - `language_families\` 56 个语族，只存 `color`。
@@ -454,6 +530,8 @@ modifier = { tolerance_heretic = -2 }
 ## 八、中文检索键
 
 概念（`game_concepts_l_simp_chinese.yml`）：`game_concept_culture`（文化）、`primary_culture`（主流文化）、`accepted_culture`（已接纳文化）、`tolerated_culture`（相容文化）、`dominant_culture`（优势文化）、`cultural_unity`（文化统一度）、`cultural_tradition`（文化传统）、`cultural_influence`（文化影响）、`culture_war` / `culture_war_power`（文化战争 / 文化战争力量）、`assimilation`（同化）、`religion`（宗教）、`religious_unity`（宗教统一度）、`tolerance`（容忍度）、`heretic` / `heresy`（异端）、`heathen`（异教）、`conversion`（皈依）、`reform_desire`（改革呼声）、`religious_influence`（宗教影响力）、`religious_head`（宗教领袖）、`cardinal`（枢机）、`patriarch`（牧首）、`canonization` / `saint`（封圣 / 圣人）、`religious_aspect`（宗教信条）、`religious_school`（宗教学派）、`sect`（宗派）、`religious_figure`（宗教人士）、`god` / `omen`（神 / 神谕）、`holy_site`（圣地）、`tithe`（什一税）、`movement`（运动）。
+
+档位判定与切换（脚本侧，详见 §2.2b）：**判定**——`has_accepted_culture` / `has_tolerated_culture` / `has_primary_or_accepted_culture` / `has_primary_or_accepted_or_tolerated_culture`（国家作用域）、`is_accepted_in` / `is_tolerated_in` / `is_primary_or_accepted_in` / `is_discriminated_in`（文化作用域）；**取某地文化**——`dominant_culture`（优势文化）/ `secondary_culture`；**切换**——`add_`/`remove_`/`demote_accepted_culture`、`add_`/`remove_tolerated_culture`、`add_`/`remove_discriminated_culture`、`change_primary_culture`。  
 
 好感档位（`general_tooltips_l_simp_chinese.yml:144–149 / 213–218`）：`culture_opinion_enemy/negative/neutral/positive/kindred` = 敌视 / 厌恶 / 中立 / 友好 / 亲密（`same` = 主流）；宗教同五档，另有 `CULTURE_OPINION_TOOLTIP` / `RELIGION_OPINION_TOOLTIP` 详解。
 

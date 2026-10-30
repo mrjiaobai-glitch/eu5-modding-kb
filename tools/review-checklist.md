@@ -2,9 +2,9 @@
 
 > **一句话**：把全库「审查要点」按检查方式重排的统一检查表：文件结构、引用完整性、作用域、语义陷阱、本地化、合并覆盖与防误报白名单。
 > **什么时候看**：逐文件审查 mod 时当主检查表用；判不准某条是不是错，就翻第七节白名单。
-> **体量**：86 行 · 约 4 分钟通读
+> **体量**：90 行 · 约 5 分钟通读
 
-> **用途**：`eu5-mod-review` 逐文件审查时的**统一检查表**。内容是把本库 23 篇 vanilla + 101 篇 fields 里的「审查要点」按**检查方式**重新归类——**能脚本判的给判据，判不了的给对照表**。每条末尾括号里是权威档，细节回原档看。
+> **用途**：`eu5-mod-review` 逐文件审查时的**统一检查表**。内容是把本库 27 篇 vanilla + 103 篇 fields 里的「审查要点」按**检查方式**重新归类——**能脚本判的给判据，判不了的给对照表**。每条末尾括号里是权威档，细节回原档看。
 
 ## 一、文件与结构（脚本可判）
 
@@ -23,7 +23,7 @@
 
 > 通例：**引用写错一律静默失效**（不报错、永不命中）。类目字段权威见 `fields\` 对应档；loc 键存在性规则见 `tools\loc-keys.md`。
 >
-> **两类高频引用另有专档**：修正键 → `fields\main_menu-modifier_type_definitions.md`（3 个档 / 2,436 键 / `category` 10 值 / 必填 `game_data`）；旗帜 COA 键 → `fields\main_menu-flag_definitions.md` 与 `fields\main_menu-coat_of_arms.md`（`coa = <键>` 必须能在 4,566 个 COA 键里找到，或写成 `list "<池名>"`）。
+> **两类高频引用另有专档**：修正键 → `fields\main_menu-modifier_type_definitions.md`（3 个档 / 2,713 键 / `category` 10 值 / 必填 `game_data`）；旗帜 COA 键 → `fields\main_menu-flag_definitions.md` 与 `fields\main_menu-coat_of_arms.md`（`coa = <键>` 必须能在 4,566 个 COA 键里找到，或写成 `list "<池名>"`）。
 
 ## 三、作用域（人工对照；kb 已记录的高频错误）
 
@@ -50,6 +50,8 @@
 - **`rebel_demands` 的 `concession_effect` 必须含 `pacify_rebel_pops`**（原版 12/13），否则让步后叛军不平息（`fields\common-rebel_demands.md`）。
 - **`defines` 覆盖原版零使用**：改常量牵动多人哈希与存档兼容（`fields\main_menu-game_rules.md`）。
 - **`law` 与 `policy` 是两个概念**（law 只锁/解锁，policy 才可切换）（`vanilla\vanilla-law-and-estate.md`）。
+- **`*_estate_allowed_*` / `*_migration_allowed` 这类布尔键，先查默认值再判断有没有用**：默认值在 `in_game\common\auto_modifiers\country.txt`（country base values）。默认已为 `yes` 的键，在特权/改革里再写一遍 = 空操作（实例：`tribes_estate_allowed_leading_military` base=**yes**，而 `global_tribesmen_migration_allowed` base=no、议会/内阁/通婚都只有贵族有 base）（`vanilla\vanilla-tribes-and-tribal-estate.md` §七·补）。
+- **`Select-String -Path` 只要有一个路径不存在，整条命令报错并把命中当 0**——"某键全库 0 处"这类结论必须先 `Test-Path` 或改用显式文件清单，否则会静默误判（本篇实测踩过）。
 - **`law`／`reform` 的 `potential` 会被引擎周期复查，失效即整条撤销**——potential 里出现**动态值**（兵力、阶层力量、金币、战争状态）即是错误；只允许政体／宗教／改革／tag 这类几乎不变的条件。要求"已生效后 potential 恒真"（`guides\law-design.md` §三、`cases\laws-events-and-estates-2026-09.md` §1）。
 
 ## 五、本地化（脚本可判）
@@ -79,7 +81,10 @@
 | `sort_keys` 里的 `their`/`our`/`will`/`works` | 原版真实键名（缩写），非笔误 |
 | `.txt.txt` 双扩展名 | 引擎按 `.txt` 后缀匹配，照常加载 |
 | 文档写"17 种附属国"这类数字 | ⚠️ **这条相反**：kb 自己错过（实为 20 个定义）——数字一律回原版数，见 `tools\kb-self-audit.md` |
+| 阶层私兵相关：`*_estate_allowed_private_army` 写在特权里 | 正常——**开关是国家修饰符，特权只是打开它**；给非贵族/哥萨克阶层开私兵必须同时补 `estates\00_default.txt` 的 `private_army_per_pop` + `private_army_unit_categories`（`fields\common-estates.md`） |
+| 远征：`can_start` 禁止某修正、`on_end` 却给同名修正 | **不是笔误，是节奏设计**（`thorough_survey` 7300 天挡住重开，`add_cooldown` 形同虚设）；改节奏要动奖励天数或删 `NOT`（`fields\common-expedition_types.md`） |
+| 远征：`stall_expedition = scope:expedition` 与 `pause_expedition = { }` 写法不同 | 前者**当值传**、后者**块内调用**，混用静默无效；停滞**没有引擎兜底**，每个选项必须自己 `resume_expedition` |
 
 ## 八、相关档
 
-`pitfalls.md`（实战坑全表） · `tools\loc-keys.md`（loc 键全表） · `tools\audit-ids.md`（角色体系 ID） · `tools\kb-self-audit.md`（本库数字体检与复跑清单） · `guides\testing.md`（游戏内测试流程） · `cases\`（真实 mod 复盘）
+`pitfalls.md`（实战坑全表） · `tools\loc-keys.md`（loc 键全表） · `tools\audit-ids.md`（角色体系 ID） · `tools\kb-self-audit.md`（本库数字体检与复跑清单） · `guides\testing.md`（游戏内测试流程） · `cases\`（真实 mod 复盘） · `fields\common-estates.md`（阶层数据与私兵） · `fields\common-expedition_types.md`（远征系统）

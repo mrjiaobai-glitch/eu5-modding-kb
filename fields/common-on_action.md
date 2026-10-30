@@ -2,7 +2,7 @@
 
 > **一句话**：事件调度钩子的字段全集、132 个硬编码钩子清单，以及 21 个原版数据档的顶层条目与作用域实测。
 > **什么时候看**：写或审查 on_action、要查某个引擎钩子的确切名字与 root 作用域时翻这篇。
-> **体量**：129 行 · 约 6 分钟通读
+> **体量**：128 行 · 约 6 分钟通读
 
 来源：`in_game\common\on_action\on_actions.info`（**3,263 B，全游戏最完整的调度语法文档**）+ 21 个数据 .txt（**279 KB / 顶层 216 条**）实查（本目录共 22 档 / 283 KB，另一个就是 `on_actions.info`）
 
@@ -92,18 +92,18 @@
 
 ## 本体实测补缺（2026-09 普查）
 
-> **数据源**：`in_game\common\on_action\` 全量 **21 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **数据源**：`in_game\common\on_action\` 全量 **27 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
 > **注意**：本类目**本体没有 readme.txt**——下面全部是实测结果，不存在"漏写"一说。
 
 ### 一、深度 1 的块（子条目：政策／变体／子类型等）
 
 | 块名 | 次数 | 文件数 |
 | --- | --- | --- |
-| `effect` | 105 | 11 |
+| `effect` | 125 | 17 |
+| `trigger` | 59 | 10 |
 | `events` | 53 | 11 |
-| `trigger` | 53 | 9 |
-| `random_events` | 38 | 15 |
-| `on_actions` | 17 | 11 |
+| `random_events` | 41 | 17 |
+| `on_actions` | 22 | 13 |
 | `first_valid_on_action` | 4 | 4 |
 | `random_on_action` | 1 | 1 |
 
@@ -111,18 +111,18 @@
 
 | 块内键 | 次数 | 出现于哪些父块 |
 | --- | --- | --- |
-| `location` | 633 | start_weather_system |
-| `limit` | 446 | every_close_relative、ordered_known_country、every_international_organizations_member_of、random_attacker |
-| `if` | 372 | else、value、on_game_start、c:NAP |
-| `type` | 203 | add_casus_belli_mutual_effect、create_international_organization、has_special_status_in_international_organization、remove_casus_belli_mutual_effect |
-| `start_weather_system` | 157 | random_list、else_if、weather_monthly_pulse、effect |
-| `length` | 157 | start_weather_system |
-| `strength` | 157 | start_weather_system |
-| `width` | 157 | start_weather_system |
+| `location` | 636 | start_weather_system、if、scope:target |
+| `limit` | 549 | random_avatar_for_god、every_cabinet、every_international_organizations_member_of、random_known_country |
+| `if` | 440 | every_international_organizations_member_of、on_game_start、on_international_organization_changed_leader、on_character_death |
+| `type` | 208 | add_estate_satisfaction、move_building、has_scripted_relation、add_cooldown |
 | `speed` | 157 | start_weather_system |
-| `not` | 97 | scope:winner、scope:target.owner、owner、scope:overlord |
-| `scope:target` | 91 | random_list、trigger、on_location_occupied、on_battle_won |
-| `scope:winner` | 83 | AND、OR、effect、? |
-| `trigger_event_non_silently` | 76 | scope:winner、on_ruler_death、scope:owner、c:BYZ |
-| `name` | 71 | add_to_variable_map、remove_from_variable_map、add_to_global_variable_list、remove_list_variable |
-| `OR` | 66 | scope:winner、scope:recipient、any_location_in_area、any_subject |
+| `width` | 157 | start_weather_system |
+| `length` | 157 | start_weather_system |
+| `start_weather_system` | 157 | ?、weather_monthly_pulse、if、effect |
+| `strength` | 157 | start_weather_system |
+| `not` | 122 | scope:winner、scope:location、if、scope:ruler |
+| `scope:target` | 100 | limit、?、every_estate_privilege、if |
+| `scope:winner` | 93 | limit、?、else、if |
+| `trigger_event_non_silently` | 93 | every_attacker、random、every_international_organization_member、every_country |
+| `OR` | 85 | scope:winner、scope:target.owner、any_owned_location、any_subject |
+| `name` | 78 | change_variable、is_target_in_global_variable_list、remove_list_global_variable、remove_from_variable_map |

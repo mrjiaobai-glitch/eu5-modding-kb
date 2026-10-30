@@ -2,7 +2,7 @@
 
 > **一句话**：国家定义的字段与 2340 个国家块的字段分布，标出 readme 模板里原版零使用的两个字段。
 > **什么时候看**：加国家、要写地图色与文化宗教定义，或核对难度与描述类别时翻这篇。
-> **体量**：45 行 · 约 3 分钟通读
+> **体量**：44 行 · 约 2 分钟通读
 
 来源：`in_game\setup\countries\00_readme.info`（注意扩展名为 .info，不是 readme.txt）
 
@@ -41,4 +41,4 @@ TAG = {
 
 **国家名/形容词不在这里**：在 `main_menu\localization\<lang>\country_names_l_<lang>.yml` 的 `<TAG>` / `<TAG>_ADJ` 两键（11 语言）。
 
-**下两步在别处**：领土与开局状态在 `main_menu\setup\start\10_countries.txt`（`own_control_core = { <location…> }` + `starting_technology_level` + `include = "<模板>"`，模板层 205 档见 `guides\game-layout.md` 的 `setup\` 段）；端到端流程见 **`guides\new-country-tutorial.md`**。
+**下两步在别处**：领土与开局状态在 `main_menu\setup\1337\10_countries.txt`（`own_control_core = { <location…> }` + `starting_technology_level` + `include = "<模板>"`，模板层 207 档见 `guides\game-layout.md` 的 `setup\` 段）；端到端流程见 **`guides\new-country-tutorial.md`**。

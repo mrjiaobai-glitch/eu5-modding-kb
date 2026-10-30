@@ -1,8 +1,8 @@
 # 事件制作（events）
 
-> **一句话**：官方事件格式的全字段清单，从 namespace、type 到 option，附四种触发方式、本地化键规则与原版 7,470 个事件的字段用量统计。
+> **一句话**：官方事件格式的全字段清单，从 namespace、type 到 option，附四种触发方式、本地化键规则与原版 7,963 个事件的字段用量统计。
 > **什么时候看**：动手写事件、或不确定某个事件字段原版到底用不用时，逐字段对照本文。
-> **体量**：109 行 · 约 5 分钟通读
+> **体量**：107 行 · 约 5 分钟通读
 
 权威来源：`in_game\events\readme.txt`（官方事件格式文档，115 行，逐条提炼如下）。真实样例：`in_game\events\volcano_events.txt`（火山，含 scripted_effect 嵌套）、`in_game\events\debug\qa_debug.txt`（调试事件模板）。
 
@@ -87,16 +87,16 @@ scripted_effect weak_volcano_damage = {
 
 `orphan = yes` + `trigger = { always = no }`（手动触发），immediate 里 `capital = { save_scope_as = start_location }` 保存作用域——这是验证硬编码效果（如 start_weather_system）的现成写法。
 
-## 原版惯例实测（349 档 / 7,470 事件全量）
+## 原版惯例实测（373 档 / 7,963 事件全量）
 
 | 字段 | 原版用量 | 结论 |
 |---|---|---|
 | `option` 14,603 / `immediate` 6,911 / `illustration_tags` 5,176 / `fire_only_once` 3,802 | 高 | 常规事件 = option + immediate + 图 + 只触发一次 |
-| `dynamic_historical_event` 3,232 | 高 | 历史事件的默认载体（`DHE\flavor_<TAG>.txt`，占全部事件 55.5%） |
+| `dynamic_historical_event` 3,232 | 高 | 历史事件的默认载体（`DHE\flavor_<TAG>.txt`，占全部事件 51.8%） |
 | `historical_info` 1,727 / `image` 1,601 | 中 | 带历史背景与插图才算"编年史感" |
 | `major` 174（2.3%）/ `hidden` **7** | 低 | 大事件通知与隐藏事件都是少数派，别当惯例 |
 | `interface_lock` / `exclusive` / `original_recipient_only` / `random_valid` / `show_as_unavailable` | **0** | 文档有、原版从不写；`interface_lock` 默认 yes 就够，`show_as_unavailable` 自标 NOT IMPLEMENTED |
-| `outcome` | neutral 7,331 / negative 126 / positive 50 | **不写 outcome 是绝对主流**；取值本身合法 |
+| `outcome` | neutral 7,500 / negative 272 / positive 191 | **不写 outcome 是绝对主流**；取值本身合法 |
 
 触发方式用量：on_action 挂接（`events = { }` 53 处 / `random_events = { }` 38 处 / `first_valid` 0 处）、脚本直触（`trigger_event_silently` 1,299 处、`trigger_event_non_silently` 1,249 处，含块式 `{ id = … years = … }` 433 处）、DHE 3,232 处。→ 体系解析见 `vanilla\vanilla-events-and-missions.md`。
 

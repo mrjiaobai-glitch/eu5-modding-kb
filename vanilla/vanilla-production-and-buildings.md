@@ -2,7 +2,7 @@
 
 > **一句话**：讲原产 RGO 与建筑两条生产路径：74 种商品、45 档建筑类型、生产方式输入与 41 个建筑上限公式，并标出 `main_menu` 区的数值来源。
 > **什么时候看**：加商品、建筑或生产方式，改建筑上限价格与建造需求，或遇到"改了没生效"要分清三区文件时翻这篇。
-> **体量**：465 行 · 约 22 分钟通读
+> **体量**：464 行 · 约 22 分钟通读
 
 ## 目录
 
@@ -148,7 +148,7 @@
 |---|---|---|
 | **地点等级** | `rural_settlement` 给 `local_max_rgo_size_modifier = **+1.0**`；`megalopolis` 给 **−0.5**；`town`/`city` 无此项 | `location_ranks\00_default.txt:186 / :33` |
 | **劳工识字率** | laborers 的 `literacy_impact` 给 `local_max_rgo_size_modifier = 0.1` | `pop_types\00_default.txt:130` |
-| **革新** | 例：`0_age_of_discovery.txt:402` 乡村 +0.2、`:531` 全局 +0.10；`0_age_of_renaissance.txt:495` 非乡村 +0.1；`0_age_of_absolutism.txt:22/107` +0.10/+0.20；`0_age_of_revolutions.txt:463` +0.25 | `advances\` |
+| **革新** | 例：`0_age_of_discovery.txt:402` 乡村 +0.2、`:531` 全局 +0.10；`0_age_of_renaissance.txt:178` 非乡村 +0.1；`0_age_of_absolutism.txt:22/107` +0.10/+0.20；`0_age_of_revolutions.txt:463` +0.25 | `advances\` |
 | **国家/文化修正** | 例：POL +0.2 & 农业扩张 −0.25、HUN +0.2、BUR `global_raw_material_output = 0.2` | `advances\country_*.txt`、`culture_*.txt` |
 
 - 上限修正全套：`global_max_rgo_size_modifier`、`local_max_rgo_size_modifier`、`global_max_rgo_size_modifier_in_rural`、`global_max_rgo_size_modifier_in_non_rural`、`local_max_rgo_size`（**绝对值**，非百分比，`decimals=0`，格式 `FormatPopCaps`）。
@@ -239,7 +239,7 @@ rgo_building_category = {
 | `AI_optimization_flag_coastal` | 2 | AI 选址标记 |
 | `on_construction_started` / `on_construction_ended` | 各 1 | **建造阶段钩子**（`trade_company_buildings.txt:67/76`） |
 | `content_priority` | 1 | 内容优先级 |
-| `lifts_fog_of_war` | 1 | `foreign_buildings.txt:95` |
+| `lifts_fog_of_war` | 1 | `foreign_buildings.txt:99` |
 | `ai_unique_location_list` | 1 | AI 专属选址清单 |
 
 另有 readme 登记但**建筑层不用**的两个：`audio_category`（实际写在类别文件里）、`output`（实际只写在生产方式里）。

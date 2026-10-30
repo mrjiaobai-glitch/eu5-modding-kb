@@ -2,7 +2,7 @@
 
 > **一句话**：外貌基因与族群两档：基因的六种顶层容器与继承、年龄曲线写法，族群按权重给基因分配取值区间并继承基模板。
 > **什么时候看**：做外貌与族群内容，或核对模板引号与权重为零的语义时看。
-> **体量**：112 行 · 约 6 分钟通读
+> **体量**：167 行 · 约 8 分钟通读
 
 来源：`in_game\common\genes\_genes.info`（1 050 B，**自称 "very incomplete"**）+ 10 个 genes 数据文件（418 KB）+ 54 个 ethnicities 文件（629 KB，**无 readme**）
 
@@ -109,3 +109,59 @@ ugliness_feature_categories = { chin mouth }
 - 权重 `0` 是合法值（原版大量存在），表示"保留该档但永不选中"；删掉它和设 0 语义不同。
 - genes 的形态条目要给出 `attribute` 与 `value = { min max }`；`attribute` 写错等于该基因不作用于任何骨骼。
 - 未在 readme 中说明：`ethnicities` **完全没有 readme**（上表由数据反推）、`accessory_genes` 的 `inheritable`、`age_presets` 的 `mode = add`、以及 `#@常量` 写法。
+
+## 本体实测补缺（2026-09 普查）
+
+> **数据源**：`in_game\common\genes-ethnicities\` 全量 **64 个 .txt** 实查（EU5 1.3.x）；本机脚本 `kb\scripts\kb-field-census.ps1` / `kb-merge-census.ps1` 生成，可复跑。
+> **注意**：本类目**本体没有 readme.txt**——下面全部是实测结果，不存在"漏写"一说。
+
+### 一、本体实际在用的字段（无 readme，纯实测）
+
+| 字段 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `template` | 58 | 52 | "ethnicity_template"（29）、"asian_ethnicity"（9）、"european_ethnicity"（4）、"african_ethnicity"（3）、"european_nordic_ethnicity"（2） |
+
+### 二、取值白名单（本体出现过的值 + 次数）
+
+- **`template`**（14 种）："ethnicity_template"（29）、"asian_ethnicity"（9）、"european_ethnicity"（4）、"african_ethnicity"（3）、"european_nordic_ethnicity"（2）、"european_west_ethnicity"（2）、"middle_eastern_ethnicity"（2）、"indian_ethnicity"（1）、"asian_austronesian_ethnicity"（1）、"european_slavic_ethnicity"（1）、"european_nordic_blonde_ethnicity"（1）、"american_andean_ethnicity"（1）、"oceanian_papuan_ethnicity"（1）、"american_ethnicity"（1）
+
+### 三、深度 1 的块（子条目：政策／变体／子类型等）
+
+| 块名 | 次数 | 文件数 |
+| --- | --- | --- |
+| `skin_color` | 61 | 55 |
+| `hair_color` | 59 | 54 |
+| `eye_color` | 58 | 53 |
+| `gene_stubble` | 47 | 45 |
+| `gene_eyebrows_outer` | 40 | 38 |
+| `gene_head_face_forward` | 40 | 39 |
+| `gene_eyebrows_inner` | 40 | 38 |
+| `hair_styles` | 40 | 38 |
+| `gene_nose_ridge_shape` | 40 | 40 |
+| `gene_lip_color` | 40 | 40 |
+| `gene_nose_height` | 38 | 38 |
+| `gene_nose_length` | 38 | 38 |
+| `gene_head_width` | 38 | 38 |
+| `gene_skin_detail` | 37 | 35 |
+| `gene_mouth_lower_lip_size` | 37 | 37 |
+| … | 另有 25 种 | |
+
+### 四、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+
+| 块内键 | 次数 | 出现于哪些父块 |
+| --- | --- | --- |
+| `age` | 528 | eye_hsv_shift_curve、hair_hsv_shift_curve、setting、skin_hsv_shift_curve |
+| `diffuse` | 452 | blend_modes、texture_override、textures |
+| `index` | 418 | aztec_royalty、disfigurement_01、chinese_01、european_beards |
+| `female` | 397 | aztec_royalty、disfigurement_01、chinese_01、european_beards |
+| `male` | 396 | aztec_royalty、disfigurement_01、european_beards、scars_01 |
+| `normal` | 394 | blend_modes、texture_override、textures |
+| `setting` | 393 | male、boy、girl、female |
+| `attribute` | 388 | setting |
+| `girl` | 347 | aztec_royalty、disfigurement_01、european_beards、scars_01 |
+| `boy` | 345 | aztec_royalty、disfigurement_01、european_beards、scars_01 |
+| `textures` | 320 | male_eyebrows_atlas_inner_01、decal、male_eyebrows_atlas_inner_02、male_eyebrows_atlas_outer_01 |
+| `adolescent_boy` | 309 | aztec_royalty、disfigurement_01、scars_01、smallpox_02 |
+| `adolescent_girl` | 308 | aztec_royalty、disfigurement_01、scars_01、smallpox_02 |
+| `curve` | 295 | age_preset_early_aging_hsv_curve、age_preset_regular_multiply、age_preset_late_aging_hsv_curve、age_preset_full_aging |
+| `body_part` | 259 | decal |

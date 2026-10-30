@@ -9,7 +9,7 @@
 | # | 读什么 | 大概耗时 | 读完你能做到 |
 | --- | --- | --- | --- |
 | 1 | `guides\game-layout.md` | 10 分钟 | 知道 EU5 的四个区（`in_game` / `loading_screen` / `main_menu` / `dlc`）、mod 该放哪、同名文件怎么合并 |
-| 2 | `guides\mod-skeleton.md` | 10 分钟 | 建出一个 launcher 认得的空 mod（`.metadata\metadata.json` 注册） |
+| 2 | `guides\mod-skeleton.md` | 10 分钟 | 建出一个游戏认得的空 mod（`.metadata\metadata.json` 注册；EU5 **无启动器**，游戏内 Mod 管理器启用） |
 | 3 | `guides\merging.md` | 10 分钟 | 知道什么时候用 INJECT、什么时候必须 REPLACE、为什么顺序敏感的块不能 INJECT |
 | 4 | `guides\event-making.md` + `fields\common-events.md` | 30 分钟 | 写出一个能进游戏、标题描述都正常显示的事件 |
 | 5 | `guides\localization.md` | 10 分钟 | 知道 EU5 本地化**必须 UTF-8 BOM**、键怎么起名、为什么要双镜像 |
@@ -26,7 +26,7 @@
 | 加一条法律／政策 | `guides\law-design.md` → `fields\common-laws.md` | **解锁链三处必须同步**（漏一处静默失效）；`potential` 只放几乎不变的条件（引擎会周期复查，失效即整条撤销）；新增前**显示名与键名都要查撞名** |
 | 加一个建筑／生产方式 | `fields\common-building_types.md`、`fields\common-production_methods.md` → `vanilla\vanilla-production-and-buildings.md` | 先认清原产（RGO）与建筑的接口：原产**不需要建筑**，制成品才走 `production_methods` |
 | 加／改科技与思潮 | `fields\common-advances.md` → `vanilla\vanilla-tech-and-age.md` → `guides\defines.md` | `advance` 是**革新**、`institution` 是**思潮**——不是"科技/制度" |
-| 做一个新国家 | `guides\new-country-tutorial.md` → `vanilla\vanilla-setup-data.md` → `fields\setup-countries.md` | 开局数据分三层：国家定义 / 开局模板（**首选**，`include = "<模板名>"`）/ `setup\start` |
+| 做一个新国家 | `guides\new-country-tutorial.md` → `vanilla\vanilla-setup-data.md` → `fields\setup-countries.md` | 开局数据分三层：国家定义 / 开局模板（**首选**，`include = "<模板名>"`）/ `setup\1337` |
 | 做一条任务链 | `guides\new-mission-pack-tutorial.md` → `fields\common-missions.md` → `vanilla\vanilla-events-and-missions.md` | 本地化键数量固定：链 5 个、节点 3 个 |
 | 改地图 / 开局人口 | `vanilla\vanilla-map-and-geography.md` → `vanilla\vanilla-setup-data.md` | 换地图位图时 `locations.png` 与 `named_locations\00_default.txt` 的键必须一致，否则地点认不出来 |
 | 调数值平衡 | `guides\defines.md` → `vanilla\` 对应篇 → `pitfalls.md` 第十节 | 新增修正值前先抽本体取值分布、取众数、吸附到**实际出现过的精确值**，别凭印象写 |

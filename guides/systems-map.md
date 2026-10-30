@@ -2,7 +2,7 @@
 
 > **一句话**：in_game\common\ 全部约 160 个类目按功能分组的总表，标注哪些有 readme、入口文件、实测规模与对应字段档。
 > **什么时候看**：动手做某个系统前，先在这里找它的类目入口文件与字段档，再去读原版样例。
-> **体量**：249 行 · 约 12 分钟通读
+> **体量**：253 行 · 约 12 分钟通读
 
 `in_game\common\` 全部类目（实查 ~160 个），按功能分组。**每类目制作流程**：看本表找入口文件 → read 原版样例 → 加载 `fields\` 对应字段文档核对字段 → 照抄改。标注 `[有readme]` 的类目其 `readme.txt` 是官方字段说明（73 个 total）。
 
@@ -18,6 +18,7 @@
 | employment_systems `[有readme]` | 就业系统（平等/先来先得/资本主义） | 00_default.txt |
 | town_rights `[有readme]` | 城镇权利（区域特色建筑/修正） | 00_traditions.txt、10_country_specific.txt… |
 | town_setups | 城镇初始布局 | 00_default.txt |
+| industry_types `[有readme]` | 产业类型（`textiles = { potential; goods = { cloth fine_cloth } }`，按商品归组，供建筑/产业归类） | 01_industries.txt |
 
 ## 军事
 
@@ -30,6 +31,7 @@
 | levies `[有readme]` | 征召（**特化单位必须放文件顶部**） | 00_default.txt |
 | recruitment_method `[有readme]` | 招募方式（strength/experience/build_time） | 00_default.txt |
 | subject_military_stances `[有readme]` | 附庸军事姿态（AI 优先级 float） | 00_default.txt |
+| unit_families `[有readme]` | 兵种家族（家族级 `limit = { add = … }` 加成，如 `cawa`、拜占庭 `varangians`） | 00_unit_families.txt、D008_byzantine_unit_families.txt |
 
 ## 人口与阶层
 
@@ -61,7 +63,7 @@
 
 > **政体 · 改革 · 官僚 · 社会价值观 · 国家等级 · 霸权**的完整机制（政府影响力五种形态与全部价格、328 项改革与槽位来源、25 个官僚部门的三态修正与 `entrenchment`、17 条社会价值轴与 30 个 `societal_value_push_*`、城镇特权与等级升级价）详见 `vanilla\vanilla-government-and-reform.md`；议会与叛乱诉求见 `vanilla\vanilla-law-and-estate.md`。
 
-> **角色 · 王朝 · 内阁**的完整机制（147 个特质 / 44 种继承法 / 15 种摄政 / 73 个内阁行动 / 34 个角色交互 / `NCharacter` 常量；**角色与王朝本体是开局数据**，在 `main_menu\setup\start\04_dynasties.txt` + `05_characters.txt`）详见 `vanilla\vanilla-character-dynasty-cabinet.md`。
+> **角色 · 王朝 · 内阁**的完整机制（147 个特质 / 44 种继承法 / 15 种摄政 / 73 个内阁行动 / 34 个角色交互 / `NCharacter` 常量；**角色与王朝本体是开局数据**，在 `main_menu\setup\1337\04_dynasties.txt` + `05_characters.txt`）详见 `vanilla\vanilla-character-dynasty-cabinet.md`。
 
 ## 文化与人口属性
 
@@ -83,6 +85,7 @@
 | religious_aspects / religious_factions / religious_focuses / religious_figures / religious_schools | 宗教五件套 | common.txt、calvinist.txt、sunni.txt… |
 | holy_sites / holy_site_types `[有readme]` | 圣地与类型 | 00_default.txt |
 | gods `[有readme]` | 神祇（religion/group 两种写法） | hellenism.txt… |
+| religious_order_types / _callings / _zeal_modifiers `[有readme]` | **修会**（类型→calling→zeal 三层；与 `chivalric_orders` 骑士团是两套；主机逻辑 `generic_actions\religious_orders.txt` 约 1800 行） | 00_catholic.txt 等；详见 `vanilla\vanilla-culture-and-religion.md` §三·bis |
 
 ## 外交与战争
 
@@ -100,9 +103,9 @@
 | scripted_relations `[有readme]` | 脚本化关系 | 00_default.txt |
 | scripted_diplomatic_objectives `[有readme]` | 脚本化外交目标 | 00_default.txt |
 | insults | 羞辱文本（**73 条**，全部只有 `trigger`；字段档 `fields\common-small-registries.md`） | 00_default.txt |
-| international_organizations `[有readme]` | 国际组织（**36 个 / 34 文件 / 282.7 KB**；`hre.txt` 29.9 KB 最大） | 按 IO 分文件：`hre.txt`、`middle_kingdom.txt`、`union.txt`、`catholic_church.txt`…（**无 `00_default.txt`**） |
+| international_organizations `[有readme]` | 国际组织（**36 个 / 35 文件 / 282.7 KB**；`hre.txt` 29.9 KB 最大） | 按 IO 分文件：`hre.txt`、`middle_kingdom.txt`、`union.txt`、`catholic_church.txt`…（**无 `00_default.txt`**） |
 | international_organization_special_statuses / _payments / _land_ownership_rules `[有readme]` | IO 三个子类目（地位含 `special_status_power`；付款 payer/payee **可为阶层**；土地规则含 `removed_by_peace_treaty`） | `hre.txt`、`middle_kingdom.txt`、`tithe.txt`… |
-| resolutions `[有readme]` | IO 决议（**18 个 / 24 文件 / 130 KB**；投票引擎：`votes`/`total_votes_needed`/`should_finalize_vote`） | `policy_vote.txt`、`hre_election.txt`、`high_kingship_election.txt`… |
+| resolutions `[有readme]` | IO 决议（**19 个 / 25 文件 / 135 KB**；投票引擎：`votes`/`total_votes_needed`/`should_finalize_vote`） | `policy_vote.txt`、`hre_election.txt`、`high_kingship_election.txt`… |
 | generic_actions\io_parliament / io_parliament_bribes / international_organizations* | IO 议会（**60 个月间隔**、会址须为 IO 拥有地点）、行贿、IO 政策议题 | 各同名文件 |
 | parliament_agendas / parliament_issues / parliament_types `[有readme]` | 议会三件套 | 00_default.txt、01_country_specific_parliament_issues.txt |
 | hegemons / formable_countries `[有readme]` | 霸权（见"政府与政治"组）/ 可成立国家 | 00_default.txt |
@@ -114,6 +117,7 @@
 | 类目 | 用途 | 入口文件 |
 |---|---|---|
 | generic_actions\colonial_charters.txt | **特许殖民地**（建/弃；目标 = **预设省份**，候选由引擎给） | 本文件（2 个动作） |
+| colonial_charter_goals | 殖民特许**处置目标**（`expand_subject` 并入殖民领 / `form_colonial_nation` 建殖民领 / `keep_as_territory` 留作本土；AI 对海外永不选 keep） | 三个同名文件 |
 | generic_actions\explorers.txt | 探索（开始/换探险家/取消；三选 = area + 出发港 + 角色） | 本文件（3 个动作） |
 | generic_actions\conquistadors.txt | 征服者（建立 `conquistador` 附属国） | 本文件（1 个动作） |
 | cabinet_actions\send_people_to_the_colonies / settle_the_frontier / settle_tribesmen / encourage_migration `[有readme]` | 殖民四内阁行动（`add_migration` 的三个来源） | 各同名文件 |
@@ -129,12 +133,13 @@
 
 ## 内容系统（事件/任务/灾难）
 
-**⚠️ 事件本体不在 `common\` 而在 `in_game\events\`**：**349 档 / 10.52 MB / 7,470 个事件 / 361 个 namespace**（权威：`events\readme.txt` 6.9 KB）；`DHE\` 159 档 / 6.2 MB / 4,145 事件（占 55.5%）、根目录散档 26 档 435 事件（`earthquake_events.txt` 137 KB 最大）、`missionevents\` 3 档 40 事件。
+**⚠️ 事件本体不在 `common\` 而在 `in_game\events\`**：**373 档 / 11.38 MB / 7,963 个事件 / 387 个 namespace**（权威：`events\readme.txt` 6.7 KB）；`DHE\` 159 档 / 6.2 MB / 4,145 事件（占 51.8%）、根目录散档 26 档 435 事件（`earthquake_events.txt` 137 KB 最大）、`missionevents\` 3 档 40 事件。
 
 | 类目 | 用途 | 入口文件 |
 |---|---|---|
 | on_action `[有 info]` | 触发钩子（**21 个数据档 + 1 个 .info / 279 KB / 顶层 216 条**；`_hardcoded.txt` 134 KB 装 132 个引擎钩子，含 6 个 `on_mission_*`） | `_hardcoded.txt`、`country_yearly.txt`、`location_pulses.txt`（天气/火山/地震）、`religion_flavor_pulse.txt`… |
 | scripted_effects `[有readme]` | 效果宏（$参数$） | 00_default.txt、country_effects.txt… |
+| decision_categories | 决议分类（`country_specific_decisions` / `expansion_decisions` / `government_decisions`…） | base_decision_categories.txt |
 | scripted_triggers `[有readme]` | 条件宏 | 00_default.txt、war_triggers.txt… |
 | script_values `[有 info]` | 数值与公式（**info 是完整数学 DSL 文档**；与 `guides\scripting-core.md` §一 分工） | 26 文件（`define_values.txt`、`unit_values.txt`…；**无 `00_default.txt`**） |
 | scripted_lists（main_menu） `[有 info]` | 自定义脚本列表（`base` 只写 `any_/random_/every_/ordered_` **之后**的部分 + `conditions`） | `main_menu\common\scripted_lists\` |
@@ -156,7 +161,7 @@
 | customizable_localization | 可定制本地化（动态文本） | 00_default.txt |
 | effect_localization / trigger_localization | 效果/触发自定义显示名 | 各 *_effects.txt、*_triggers.txt |
 
-> **事件 · 任务完整机制**（7,470 个事件的目录/字段/取值实测与"文档有、原版零用"清单、四种触发方式用量、DHE 布局、任务链候选池与 6 个 `on_mission_*` 钩子、默认游戏规则关任务包、任务 loc 子目录）详见 `vanilla\vanilla-events-and-missions.md`；字段权威见 `fields\common-events.md`、`fields\common-missions.md`。
+> **事件 · 任务完整机制**（7,963 个事件的目录/字段/取值实测与"文档有、原版零用"清单、四种触发方式用量、DHE 布局、任务链候选池与 6 个 `on_mission_*` 钩子、默认游戏规则关任务包、任务 loc 子目录）详见 `vanilla\vanilla-events-and-missions.md`；字段权威见 `fields\common-events.md`、`fields\common-missions.md`。
 
 ## 地图与地理
 
@@ -179,8 +184,8 @@
 | `map_data\ports.csv` / `adjacencies.csv` | 港口（4421）/ 跨海连接（184） |
 | `map_data\locations.png` + `named_locations\00_default.txt` | 地点位图与其颜色对照（键 = 颜色） |
 | `common\scripted_geography\` | 自定义地理包（可混任意层级；`scripted_geography:` 作用域 + 5 种专属脚本列表） |
-| `main_menu\setup\start\` | **开局数据层（全 25 档，编号 02–27、缺 01/17）**：`06_pops.txt` 5 MB 逐地点 `define_pop`、`05_characters.txt` **104,547 行**、`10_countries.txt` 1.58 MB 领土+`include`、`08_institutions` 662 KB、`07_cities_and_buildings` 257 KB、`04_dynasties` 238 KB、`15_IO` 67 KB、`12_diplomacy` 50 KB、`18_opinions` / `20_rivals` / `23_colonies` / `24_town_rights` / `25_area_preferences` / `26_ai_personalities` / `27_armies` / `19_diseases` / `22_situations` / `21_locations`（**本轮全部解析**）。**完整逐档表与"改开局动哪档"决策表见 `vanilla\vanilla-setup-data.md`** |
-| **`main_menu\setup\templates\`** | ★ **开局模板层（205 档）**：`include = "<模板名>"`（`10_countries.txt` 里 **5,256 次 / 192 去重**）拼开局——`government` 168 档（含继承法/议会/13 条社会价值观初值）、`starting_technology_level` 123、`discovered_regions/areas/provinces` 39/33/25、`court_language` 14、`country_rank` 10，**模板可嵌套**（57 档）。命名 `expl_<地区>` 与 `<宗教/文化区>_<政体>[_no_coast|_not_present|_no_censor…]`。**端到端用法见 `guides\new-country-tutorial.md` §2b** |
+| `main_menu\setup\1337\` | **开局数据层（全 26 档，编号 02–27、缺 01/17；新增 `04_religious_orders.txt`）**：`06_pops.txt` 5 MB 逐地点 `define_pop`、`05_characters.txt` **104,547 行**、`10_countries.txt` 1.58 MB 领土+`include`、`08_institutions` 662 KB、`07_cities_and_buildings` 257 KB、`04_dynasties` 238 KB、`15_IO` 67 KB、`12_diplomacy` 50 KB、`18_opinions` / `20_rivals` / `23_colonies` / `24_town_rights` / `25_area_preferences` / `26_ai_personalities` / `27_armies` / `19_diseases` / `22_situations` / `21_locations`（**本轮全部解析**）。**完整逐档表与"改开局动哪档"决策表见 `vanilla\vanilla-setup-data.md`** |
+| **`main_menu\setup\templates\`** | ★ **开局模板层（207 档）**：`include = "<模板名>"`（`10_countries.txt` 里 **5,361 次 / 220 去重**）拼开局——`government` 168 档（含继承法/议会/13 条社会价值观初值）、`starting_technology_level` 123、`discovered_regions/areas/provinces` 39/33/25、`court_language` 14、`country_rank` 10，**模板可嵌套**（57 档）。命名 `expl_<地区>` 与 `<宗教/文化区>_<政体>[_no_coast|_not_present|_no_censor…]`。**端到端用法见 `guides\new-country-tutorial.md` §2b** |
 
 详见 `vanilla\vanilla-map-and-geography.md`。
 
@@ -229,7 +234,7 @@
 | **字体层 `loading_screen\fonts\`** | **289 档 / 541 MB**（`.ttf` 250 + `.otf` 24，13 字族各带 `OFL.txt`）+ **6 个 `.font` 定义跨三区**（`loading_screen_fonts` / `cw_fonts` / headers ×2 / `in_game_fonts` / `main_menu_fonts`）：`fontfiles` 声明语言→字体文件（**有序=回退链**），`font` 声明样式名→字体组 | `vanilla\vanilla-audio-and-fonts.md` §二 |
 | `main_menu\gfx\interface\`（**资产主干**） | **icons 6,705 档 / 112 个主题目录**（modifier_types 1,377 · buildings 473 · flat_icons 461 · government_reforms 337 · religion 294 …）、**illustrations 1,065 档 / 25 个主题目录**（units 293 · location 241 · event 220 · disaster 32 · missions 11 …）、**advance 1,634 档**（革新图标，**任务节点图标也取自这里 108/108**） | `icons\<主题>\<名>.dds`、`illustrations\<主题>\<名>.dds` |
 | `in_game\gfx\`（**3D 资产**） | **22,369 档 / 7.6 GB**：models 17,327、terrain2 4,545、map 348（1.4 GB）、city_materials 37、compound_nodes 82 | `.mesh` + `.asset` 成对 |
-| `dlc\`（**DLC 层**） | 4 个包：`D000_shared` 24 档（3 个 DLC 定义 + 11 语言文案 + 图标）、`D008` **1,141 档 / 539 MB**（`in_game` 765 / `main_menu` 350 / `loading_screen` 23）、`D015` 107、`D017` 90；**只新增不覆盖**（与基础包 0 路径碰撞）；门控 `has_dlc = "<dlc 名>"`（**44 个基础包文件**在用） | `dlc\<包>\<区>\…` + `<包>.dlc.json` |
+| `dlc\`（**DLC 层**） | 5 个包：`D000_shared` 27 档（4 个 DLC 定义 + 11 语言文案 + 图标）、`D008` **1,200 档 / 523.5 MB**（`in_game` 767 / `main_menu` 361 / `loading_screen` 69）、**`D009` 3,273 档 / 1,200.9 MB**、`D015` 107、`D017` 90；**只新增不覆盖**（与基础包 0 路径碰撞）；门控 `has_dlc = "<dlc 名>"`（**368 处 / 66 个基础包文件**） | `dlc\<包>\<区>\…` + `<包>.dlc.json` |
 
 > **DLC 层与美术资源层的完整机制**（DLC 定义 13 字段实查表、`.dlc.json` 与 mod `metadata.json` 的关系、**图片路径解析实测**：`image` 是区根相对路径且跨基础包+DLC 找、`illustration_tags` 是**加权块** `{ 10 = happy }` 及其词汇表、单位外观三份官方 `.info` 与 9 级命名优先级、可改点表）详见 `vanilla\vanilla-dlc-and-assets.md`。⚠️ 尚未成档：`main_menu\common\flag_definitions`（187 KB）与 `coat_of_arms`（15 档）。
 
@@ -237,7 +242,7 @@
 
 ## main_menu\common（13 类目）
 
-achievements `[有readme]`（成就）、**coat_of_arms（纹章本体 + 随机池 + 图集，9 档 / 4,566 个 COA 键 + 5 池档 + `atlases.txt`；字段档 `fields\main_menu-coat_of_arms.md`）**、**flag_definitions（旗帜规则，259 列表 / 1,133 定义，**文件头自带官方 schema**；字段档 `fields\main_menu-flag_definitions.md`）**、**game_concepts（概念词条 696 条；字段档 `fields\main_menu-game_concepts.md`）**、game_rules（游戏规则，`_game_rules.info` 权威）、**modifier_icons（修正图标映射 2,427 条；字段档 `fields\main_menu-modifier_icons.md`）**、**modifier_type_definitions（修正键注册表，目录合计 2,436 键；字段档 `fields\main_menu-modifier_type_definitions.md`）**、**named_colors（具名色板 4,103 色；`setup\countries` 的 `color = map_*` 用了 1,004 次；字段档 `fields\main_menu-named_colors.md`）**、**scenarios（推荐开局卡 10 个；`flag` 是 **COA 键不是 tag**；字段档 `fields\main_menu-scenarios.md`）**、scripted_lists / scripted_triggers / script_values（主菜单域脚本）、static_modifiers（静态修正）。
+achievements `[有readme]`（成就）、**coat_of_arms（纹章本体 + 随机池 + 图集，9 档 / 4,566 个 COA 键 + 5 池档 + `atlases.txt`；字段档 `fields\main_menu-coat_of_arms.md`）**、**flag_definitions（旗帜规则，259 列表 / 1,133 定义，**文件头自带官方 schema**；字段档 `fields\main_menu-flag_definitions.md`）**、**game_concepts（概念词条 696 条；字段档 `fields\main_menu-game_concepts.md`）**、game_rules（游戏规则，`_game_rules.info` 权威）、**modifier_icons（修正图标映射 2,427 条；字段档 `fields\main_menu-modifier_icons.md`）**、**modifier_type_definitions（修正键注册表，目录合计 2,713 键；字段档 `fields\main_menu-modifier_type_definitions.md`）**、**named_colors（具名色板 4,103 色；`setup\countries` 的 `color = map_*` 用了 1,004 次；字段档 `fields\main_menu-named_colors.md`）**、**scenarios（推荐开局卡 10 个；`flag` 是 **COA 键不是 tag**；字段档 `fields\main_menu-scenarios.md`）**、scripted_lists / scripted_triggers / script_values（主菜单域脚本）、static_modifiers（静态修正）。
 
 > **纹章与旗帜完整机制**（五层模型、拿旗流程与 `priority` 竞争、`subject_canton` 与宗主角标、四个加权池与条件子池、图集四档尺寸、贴图 4,138 档 ≈519 MB、"想改什么动哪层"表）详见 `vanilla\vanilla-heraldry-and-flags.md`。
 

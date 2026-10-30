@@ -2,7 +2,7 @@
 
 > **一句话**：讲角色与王朝在开局数据而非 `common\`，并给出 147 个特质、44 种继承法、15 种摄政、73 个内阁行动与脚本接口的实查结论。
 > **什么时候看**：加角色或王朝、改继承与摄政规则、写内阁行动与角色交互，或调肖像基因与死因时翻这篇。
-> **体量**：410 行 · 约 19 分钟通读
+> **体量**：409 行 · 约 19 分钟通读
 
 ## 目录
 
@@ -18,7 +18,7 @@
   - [2.2 字段权威（`_traits.info`）](#22-字段权威_traitsinfo)
   - [2.3 获取途径（`NCharacter`）](#23-获取途径ncharacter)
 - [三、王朝（dynasty）](#三王朝dynasty)
-  - [3.1 定义在开局数据里（`main_menu\setup\start\04_dynasties.txt`）](#31-定义在开局数据里main_menusetupstart04_dynastiestxt)
+  - [3.1 定义在开局数据里（`main_menu\setup\1337\04_dynasties.txt`）](#31-定义在开局数据里main_menusetup133704_dynastiestxt)
   - [3.2 角色侧字段（`character_db`，`05_characters.txt`）](#32-角色侧字段character_db05_characterstxt)
   - [3.3 机制与脚本面](#33-机制与脚本面)
 - [四、继承（`heir_selections\`，**44 种 / 5 文件**）](#四继承heir_selections44-种--5-文件)
@@ -52,12 +52,12 @@
 | `common\death_reason\` | 3 文件（含 `02_life_expectancy.txt` 3.5KB） | 无 |
 | `common\designated_heir_reason\` | 1 文件 | 无 |
 | `common\artist_types\` / `artist_work\` | **13** 类型 / **21** 艺术品类型 | 各有 readme |
-| **`main_menu\setup\start\05_characters.txt`** | **2.4MB**（`character_db`） | — |
-| **`main_menu\setup\start\04_dynasties.txt`** | 238KB（`dynasty_manager`） | — |
+| **`main_menu\setup\1337\05_characters.txt`** | **2.4MB**（`character_db`） | — |
+| **`main_menu\setup\1337\04_dynasties.txt`** | 238KB（`dynasty_manager`） | — |
 | 常量 | **`NCharacter`（`defines` 1513–1573）** | — |
 | 脚本面 | 角色 **103 触发器 / 41 效果**；王朝 7 / 3（`trigger_localization\character_triggers.txt` 等） | — |
 
-> ⚠️ **`common\` 里没有 characters / dynasties 类目**——角色与王朝是**开局数据**（`character_db` / `dynasty_manager` 逐条定义具体人物与家族），不是"类型模板"。改"有哪些人"要去 `main_menu\setup\start\`，改"人怎么运作"才在 `common\`。
+> ⚠️ **`common\` 里没有 characters / dynasties 类目**——角色与王朝是**开局数据**（`character_db` / `dynasty_manager` 逐条定义具体人物与家族），不是"类型模板"。改"有哪些人"要去 `main_menu\setup\1337\`，改"人怎么运作"才在 `common\`。
 
 ## 术语对照（中文译名与内部名）
 
@@ -179,7 +179,7 @@ trait_name = {
 
 ## 三、王朝（dynasty）
 
-### 3.1 定义在开局数据里（`main_menu\setup\start\04_dynasties.txt`）
+### 3.1 定义在开局数据里（`main_menu\setup\1337\04_dynasties.txt`）
 
 ```
 dynasty_manager = {
@@ -389,7 +389,7 @@ balanced_education =
 | 加内阁行动 | `common\cabinet_actions\<新文件>.txt` | 修正按完成度缩放；`ability` 决定属性加值；**别忘了 `allow_cabinet_*` 之类的解锁修正（或用其它 `allow` 条件）** |
 | 加角色交互 | `common\character_interactions\<新文件>.txt` | **必须显式写 `on_own_nation` / `on_other_nation`**（默认都是 no） |
 | 加艺术家/艺术品 | `common\artist_types\` / `artist_work\` | 本地化键 `ARTIST_TYPE_NAME_/DESC_<id>`；作品偏好写在艺术品侧的 `allow` |
-| 改开局人物 / 家族 | `main_menu\setup\start\05_characters.txt`（2.4MB）/ `04_dynasties.txt` | ⚠️ **子女必须写在父母之后**，否则崩溃；文件很大，改前备份 |
+| 改开局人物 / 家族 | `main_menu\setup\1337\05_characters.txt`（2.4MB）/ `04_dynasties.txt` | ⚠️ **子女必须写在父母之后**，否则崩溃；文件很大，改前备份 |
 | 改年龄/生育/寿命/属性成长 | `NCharacter`（`defines` 1513–1573） | 全局生效 |
 | 改外貌遗传 | `common\genes\` + `ethnicities\` | `blend_range` 控制子代在双亲之间的取值区间 |
 | 改内阁规模 | `government_size`（修正 + 革新） | 席位数量与角色生成量都随之变化 |

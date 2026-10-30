@@ -2,7 +2,7 @@
 
 > **一句话**：神祇字段：两种宗教挂载写法、可用门槛、生效时长与三类缩放修正，以及性别显示与增删神祇的效果。
 > **什么时候看**：加神祇、配宗教挂载与名字键，或排查神没有名字时翻这篇。
-> **体量**：99 行 · 约 5 分钟通读
+> **体量**：109 行 · 约 5 分钟通读
 
 来源：`in_game\common\gods\readme.txt`
 
@@ -42,51 +42,56 @@
 
 | 字段 | 次数 | 文件数 | 常见取值（前 5） |
 | --- | --- | --- | --- |
-| `icon` | 95 | 7 | god_folk_blue（17）、god_folk_green（17）、god_folk_brown（9）、god_folk_dark_blue（9）、god_folk_black（7） |
-| `ability` | 6 | 1 | ADM（2）、DIP（2）、MIL（2） |
+| `ability` | 6 | 1 | ADM（2）、MIL（2）、DIP（2） |
 
 ### 二、取值白名单（本体出现过的值 + 次数）
 
 - **`is_female`**（1 种）：yes（25）
-- **`ability`**（3 种）：ADM（2）、DIP（2）、MIL（2）
+- **`ability`**（3 种）：ADM（2）、MIL（2）、DIP（2）
 
-### 三、readme 声明、但本类目内原版 0 使用
+### 三、该用哪些修正（本体在这个类目里实际用过，前 1）
+
+| 修正名 | 次数 | 文件数 | 常见取值（前 5） |
+| --- | --- | --- | --- |
+| `icon` | 95 | 9 |
+
+### 四、readme 声明、但本类目内原版 0 使用
 
 > ⚠ 只代表"本类目没用"，**不等于这个字段没意义**——同名字段常被别的类目使用。
 
 | 字段 | 本类目 | 全库其它类目 |
 | --- | --- | --- |
-| `add_god` | 0 次（11 档） | **有**（写在别的类目） |
-| `allow` | 0 次（11 档） | **有**（写在别的类目） |
-| `days` | 0 次（11 档） | **有**（写在别的类目） |
-| `location_modifier` | 0 次（11 档） | **有**（写在别的类目） |
-| `months` | 0 次（11 档） | **有**（写在别的类目） |
-| `name_key` | 0 次（11 档） | **有**（写在别的类目） |
-| `on_activate` | 0 次（11 档） | **有**（写在别的类目） |
-| `on_deactivate` | 0 次（11 档） | **有**（写在别的类目） |
-| `on_fully_activated` | 0 次（11 档） | **有**（写在别的类目） |
-| `OR` | 0 次（11 档） | **有**（写在别的类目） |
-| `province_modifier` | 0 次（11 档） | **有**（写在别的类目） |
-| `remove_god` | 0 次（11 档） | **有**（写在别的类目） |
+| `add_god` | 0 次（11 档） | **有**（出现在 3 个类目） |
+| `allow` | 0 次（11 档） | **有**（出现在 31 个类目） |
+| `days` | 0 次（11 档） | **有**（出现在 11 个类目） |
+| `location_modifier` | 0 次（11 档） | **有**（出现在 14 个类目） |
+| `months` | 0 次（11 档） | **有**（出现在 15 个类目） |
+| `name_key` | 0 次（11 档） | **有**（出现在 1 个类目） |
+| `on_activate` | 0 次（11 档） | **有**（出现在 4 个类目） |
+| `on_deactivate` | 0 次（11 档） | **有**（出现在 5 个类目） |
+| `on_fully_activated` | 0 次（11 档） | **有**（出现在 3 个类目） |
+| `OR` | 0 次（11 档） | **有**（出现在 17 个类目） |
+| `province_modifier` | 0 次（11 档） | **有**（出现在 1 个类目） |
+| `remove_god` | 0 次（11 档） | **有**（出现在 2 个类目） |
 | `weeks` | 0 次（11 档） | 全库也没有 → 疑似废弃字段 |
-| `years` | 0 次（11 档） | **有**（写在别的类目） |
+| `years` | 0 次（11 档） | **有**（出现在 23 个类目） |
 
-### 四、深度 1 的块（子条目：政策／变体／子类型等）
+### 五、深度 1 的块（子条目：政策／变体／子类型等）
 
 | 块名 | 次数 | 文件数 |
 | --- | --- | --- |
 | `omens` | 6 | 1 |
 
-### 五、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
+### 六、块内键最常见的前 15（modifier / trigger / effect 里实际写的）
 
 | 块内键 | 次数 | 出现于哪些父块 |
 | --- | --- | --- |
+| `country_modifier` | 60 | the_watcher_omen、the_lover_of_laughter_omen、wielder_of_the_trident_omen、immortal_omen |
 | `scale` | 60 | country_modifier |
-| `god` | 60 | president_of_games_omen、mother_of_love_omen、the_seductress_omen、the_desired_omen |
-| `potential` | 60 | president_of_games_omen、mother_of_love_omen、the_seductress_omen、the_desired_omen |
-| `add` | 60 | scale |
+| `god` | 60 | the_watcher_omen、the_lover_of_laughter_omen、wielder_of_the_trident_omen、immortal_omen |
 | `value` | 60 | scale |
-| `country_modifier` | 60 | president_of_games_omen、mother_of_love_omen、the_seductress_omen、the_desired_omen |
+| `add` | 60 | scale |
+| `potential` | 60 | the_watcher_omen、the_lover_of_laughter_omen、wielder_of_the_trident_omen、immortal_omen |
 | `name_key` | 50 | group、religion |
 | `religion` | 47 | religion |
 | `stability_cost_efficiency` | 29 | country_modifier |
@@ -94,5 +99,11 @@
 | `global_life_expectancy` | 21 | country_modifier |
 | `global_monthly_prosperity` | 20 | country_modifier |
 | `global_hostile_attrition` | 18 | country_modifier |
-| `NOT` | 15 | potential_trigger、custom_tooltip |
-| `smartism_balanced_gods` | 15 | potential_trigger、custom_tooltip、AND |
+| `potential_trigger` | 15 | country_modifier |
+| `smartism_balanced_gods` | 15 | potential_trigger、AND、custom_tooltip |
+
+### 七、引擎脚本命令/通用键（出现在 ≥5 个类目，不是本类目的字段 schema）
+
+| 键 | 次数 | 出现在多少个类目 |
+| --- | --- | --- |
+| `icon` | 95 | 9 |
