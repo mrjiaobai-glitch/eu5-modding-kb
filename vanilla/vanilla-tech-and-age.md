@@ -2,7 +2,7 @@
 
 > **一句话**：梳理时代—思潮—革新三层链条：6 个时代的修正与商品需求曲线、思潮 9 条传播通道速率、3178 条革新的字段与研究进度公式。
 > **什么时候看**：改时代节奏与修正、加思潮或革新、调研究速度，或要核对时代／思潮／革新这几个中文译名时翻这篇。
-> **体量**：253 行 · 约 12 分钟通读
+> **体量**：274 行 · 约 13 分钟通读
 
 版本基准：EU5 1.3.x。核心文件：`common\age\00_default.txt`、`common\advances\`（190+ 文件）、`common\institution\`（6 个时代文件 + readme）、`events\ages.txt`、`common\script_values\institution_spread.txt`、`loading_screen\common\defines\00_defines.txt:190-193`。
 
@@ -231,6 +231,27 @@
 - 通用行动 **偷科技**（`common\generic_actions\steal_technology.txt`，条件含 `num_of_advances_researched > scope:actor.num_of_advances_researched`）
 - 脚本值 `research_delta` / `institutions_delta`（`script_values\research_values.txt`，用于"借鉴先进国"类行动）
 
+### 名为 `innovativeness` 的革新与事件链（易与"创新度"混淆）
+
+本体里有一个**普通革新节点**就叫 `innovativeness`（中文名 **"求知若渴"**）：
+
+```
+innovativeness = {                # common\advances\4_choices_adm.txt:9
+	age = age_2_renaissance
+	icon = scholasticism
+	for = adm
+	requires = pound_lock_canals_advance
+	global_max_literacy = 5
+}
+```
+
+- 它**只是一个革新节点**，不是独立数值/资源——引擎 `trigger/effect/modifier/defines` 里都**没有** `innovativeness` 这个键（本库生成表 0 命中可证）。
+- 同名事件链 `events\innovativeness_events.txt`（515 行，namespace `innovativeness_events`，**15 个 country_event**：`1 / 3 / 4 / 6–17`）是围绕"科学/出版/发明"的随机事件：
+  - **触发**：已接纳思潮（`printing_press`、`renaissance`、`enlightenment`、`confessionalism`、`manufactories`）、`num_of_non_rural > 0`、邻国 `num_of_advances_researched >= root.num_of_advances_researched`、`num_of_advances_researched >= tech_level_to_advances_23`。
+  - **选项效果**：`add_research_progress = research_progress_*`（severe/mild/extreme 的奖惩）、`add_prestige`、`add_government_power`、`change_gold_effect scale = -3`、教士满意度、对邻国 opinion（`harbored_inventor` / `turned_away_inventor`）。
+  - **调度**：`on_action\country_biyearly.txt` 里逐个挂 `10 = innovativeness_events.N`（双年权重 10）。
+- 另有两处关联：教会行动 **`encourage_innovativeness`**（`generic_actions\church_power.txt`：type=religious、仅 `religion:anglican`、价格 `national_church_power`、效果 `add_research_progress = research_progress_severe_bonus`）；议会议题用 `has_advance = innovativeness` 做门槛。
+- ⚠️ **别把它当"创新度"**：EU5 没有这个数值资源；这里的 `innovativeness` 要么是革新节点，要么是事件/行动的命名空间。
 ## 五、Mod 改造建议（可改 vs 硬编码）
 
 | 想改什么 | 动哪里 | 注意 |

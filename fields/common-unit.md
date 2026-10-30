@@ -2,7 +2,7 @@
 
 > **一句话**：单位能力、单位类别与阵型偏好三件套的字段，含通用、陆战与海战三组战斗修正清单与作用域。
 > **什么时候看**：写单位能力或单位类别、要调战斗与后勤修正时翻这篇。
-> **体量**：180 行 · 约 9 分钟通读
+> **体量**：182 行 · 约 9 分钟通读
 
 覆盖 readme：`in_game\common\unit_abilities\readme.txt`、`in_game\common\unit_categories\readme.txt`、`in_game\common\unit_formation_preference\readme.txt`
 
@@ -31,6 +31,8 @@
 ```
 
 ## unit_categories（单位类别）
+
+> 每个属性的**作用、相关常量与验证状态**见 `reference\unit-attributes.md`（本档只讲字段与取值分布）。
 
 ```
 <unit_category_id> = {

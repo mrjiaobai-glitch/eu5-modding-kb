@@ -373,7 +373,7 @@
 | `order_type` | religious_order | religious_order_type |  |
 | `origin` | work_of_art, institution, disease_outbreak, disease | location |  |
 | `original_attacker_leader` | war | country |  |
-| `original_capital` | country | location |  |
+| `original_capital` | country | location | 语义未确认；见 `vanilla\vanilla-capital-and-historical-capital.md` |
 | `original_defender_leader` | war | country |  |
 | `original_outbreak` | disease | disease_outbreak |  |
 | `overlord` | country | country |  |
